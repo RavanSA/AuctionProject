@@ -5,4 +5,5 @@ sealed class AuthResult<T>(val data: T? = null){
     class UnAuthorized<T>: AuthResult<T>()
     class UnknownError<T>: AuthResult<T>()
 
+
 }
