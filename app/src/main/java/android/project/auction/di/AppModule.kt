@@ -4,15 +4,20 @@ import android.app.Application
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.project.auction.common.Constants
+import android.project.auction.data.remote.AuctionAPI
 import android.project.auction.data.remote.AuthAPI
+import android.project.auction.data.repository.AuctionRepositoryImpl
 import android.project.auction.data.repository.AuthRepositoryImpl
+import android.project.auction.domain.repository.AuctionRepository
 import android.project.auction.domain.repository.AuthRepository
-import android.project.auction.domain.use_case.AuctionAuthUseCase
-import android.project.auction.domain.use_case.auth.Authentication
-import android.project.auction.domain.use_case.logout.Logout
-import android.project.auction.domain.use_case.sign_in.SignIn
-import android.project.auction.domain.use_case.sign_up.SignUp
-import com.squareup.moshi.Moshi
+import android.project.auction.domain.use_case.AuctionProjectUseCase
+import android.project.auction.domain.use_case.authentication.AuctionAuthUseCase
+import android.project.auction.domain.use_case.authentication.auth.Authentication
+import android.project.auction.domain.use_case.authentication.logout.Logout
+import android.project.auction.domain.use_case.authentication.sign_in.SignIn
+import android.project.auction.domain.use_case.authentication.sign_up.SignUp
+import android.project.auction.domain.use_case.getcategories.GetCategories
+import android.project.auction.domain.use_case.getitems.GetItems
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,7 +25,6 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -51,8 +55,28 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideAuctionAPI(): AuctionAPI {
+
+        val okHttpClient = OkHttpClient.Builder()
+            .readTimeout(5, TimeUnit.MINUTES)
+            .connectTimeout(5, TimeUnit.MINUTES)
+            .writeTimeout(5, TimeUnit.MINUTES)
+            .build()
+
+
+
+        return Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+            .create(AuctionAPI::class.java)
+    }
+
+    @Provides
+    @Singleton
     fun provideSharedPref(app: Application): SharedPreferences {
-        return app.getSharedPreferences("prefs",MODE_PRIVATE)
+        return app.getSharedPreferences("prefs", MODE_PRIVATE)
     }
 
 
@@ -64,7 +88,25 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAuctionAuthUseCases(repository: AuthRepository, preferences: SharedPreferences): AuctionAuthUseCase {
+    fun provideAuctionRepository(api: AuctionAPI): AuctionRepository {
+        return AuctionRepositoryImpl(api)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuctionAPIUseCases(repository: AuctionRepository): AuctionProjectUseCase {
+        return AuctionProjectUseCase(
+            getCategories = GetCategories(repository = repository),
+            getItems = GetItems(repository = repository)
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuctionAuthUseCases(
+        repository: AuthRepository,
+        preferences: SharedPreferences
+    ): AuctionAuthUseCase {
         return AuctionAuthUseCase(
             signIn = SignIn(repository = repository, preferences = preferences),
             signUp = SignUp(repository = repository),

@@ -1,4 +1,4 @@
-package android.project.auction.domain.use_case.auth
+package android.project.auction.domain.use_case.authentication.auth
 
 import android.content.SharedPreferences
 import android.project.auction.common.AuthResult

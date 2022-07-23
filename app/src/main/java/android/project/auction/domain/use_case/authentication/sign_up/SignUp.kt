@@ -1,4 +1,4 @@
-package android.project.auction.domain.use_case.sign_up
+package android.project.auction.domain.use_case.authentication.sign_up
 
 import android.project.auction.common.AuthResult
 import android.project.auction.domain.repository.AuthRepository

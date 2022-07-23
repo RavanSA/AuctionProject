@@ -2,15 +2,16 @@ package android.project.auction.presentation.auth.signup
 
 import android.project.auction.R
 import android.project.auction.common.AuthResult
+import android.project.auction.presentation.Screen
 import android.project.auction.presentation.auth.AuthUiEvent
 import android.project.auction.presentation.auth.AuthViewModel
 import android.project.auction.presentation.auth.sign_in.dpToSp
 import android.project.auction.presentation.ui.common.LoadingScreen
+import android.project.auction.presentation.ui.theme.TextWhite
 import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -21,22 +22,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import android.project.auction.presentation.Screen
-import android.project.auction.presentation.ui.theme.TextWhite
-import kotlinx.coroutines.flow.collect
 
 
 @Composable
@@ -54,7 +47,7 @@ fun SignUpPage(
         viewModel.authResults.collect { authResult ->
             when(authResult) {
                 is AuthResult.Authorized -> {
-                    navController.navigate(Screen.SecretScreen.route)
+                    navController.navigate(Screen.AuctionListScreen.route)
                 }
                 is AuthResult.UnAuthorized -> {
                     Toast.makeText(context,

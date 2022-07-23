@@ -1,13 +1,9 @@
 package android.project.auction.presentation.auth
 
 import android.project.auction.common.AuthResult
-import android.project.auction.domain.use_case.AuctionAuthUseCase
-import android.project.auction.presentation.auth.AuthState
-import android.project.auction.presentation.auth.AuthUiEvent
+import android.project.auction.domain.use_case.authentication.AuctionAuthUseCase
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel

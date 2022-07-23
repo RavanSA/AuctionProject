@@ -1,9 +1,13 @@
-package android.project.auction.presentation.auth.sign_in
+package android.project.auction.presentation.auctionlist
 
 import android.project.auction.common.AuthResult
+import android.project.auction.presentation.Screen
+import android.project.auction.presentation.auctionlist.components.ItemListItem
 import android.project.auction.presentation.auth.AuthUiEvent
 import android.project.auction.presentation.auth.AuthViewModel
+import android.project.auction.presentation.auth.sign_in.dpToSp
 import android.project.auction.presentation.ui.common.LoadingScreen
+import android.project.auction.presentation.ui.common.bottomNav.BottomNav
 import android.project.auction.presentation.ui.common.navDrawer.DrawerBody
 import android.project.auction.presentation.ui.common.navDrawer.DrawerHeader
 import android.project.auction.presentation.ui.common.navDrawer.NavDrawerItem
@@ -11,33 +15,33 @@ import android.project.auction.presentation.ui.common.topBar.TopBar
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import android.project.auction.presentation.Screen
-import android.project.auction.presentation.ui.common.bottomNav.BottomNav
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.filled.*
-import androidx.compose.ui.draw.clip
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
 @Composable
-fun SecretScreen(
+fun AuctionListScreen(
     navController: NavController,
-    viewModel: AuthViewModel = hiltViewModel()
+    viewModel: AuthViewModel = hiltViewModel(),
+    auctionViewModel: AuctionListViewModel = hiltViewModel()
 ) {
 
     val state = viewModel.state
@@ -45,14 +49,17 @@ fun SecretScreen(
     val scaffoldState: ScaffoldState = rememberScaffoldState()
     val scope: CoroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(viewModel, context ){
+    val auctionListState = auctionViewModel.state
+
+    LaunchedEffect(viewModel, context) {
         viewModel.authResults.collect { authResult ->
-            when(authResult) {
+            when (authResult) {
                 is AuthResult.UnAuthorized -> {
                     navController.navigate(Screen.LoginScreen.route)
                 }
                 is AuthResult.UnknownError -> {
-                    Toast.makeText(context,
+                    Toast.makeText(
+                        context,
                         "UNKNOWN ERROR OCCURED",
                         Toast.LENGTH_LONG).show()
                 }
@@ -129,20 +136,71 @@ fun SecretScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            Text(text = "You're authenticated!", color = Color.White)
+
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(auctionListState.value.item) { item ->
+                    ItemListItem(item = item, onItemClick = {})
+                }
+            }
+
+//            LazyColumn(modifier = Modifier.fillMaxSize() ){
+//                items(auctionListState.value.categories) { categories ->
+//                    CategoriesListItem(category = categories, onItemClick = {})
+//                }
+//            }
+
+//            LazyColumn(modifier = Modifier.fillMaxSize() ){
+//                items(auctionListState.value.item) { item ->
+//                    ItemListItem(item = item, onItemClick = {} )
+//                }
+//            }
+//
+//
+//            Text(text = "You're authenticated!", color = Color.Black)
+//
+//            Spacer(modifier = Modifier.padding(10.dp))
+//
+//
+//
+//            Button(onClick = {
+//                viewModel.onEvent(AuthUiEvent.Logout)
+//            }, modifier = Modifier
+//                .fillMaxWidth(0.8f)
+//                .height(50.dp)) {
+//                Text(text = "Logout", fontSize = dpToSp(20.dp), color = Color.White)
+//            }
+
+        }
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+//        LazyColumn(modifier = Modifier.fillMaxSize() ){
+//            items(auctionListState.value.item) { item ->
+//                ItemListItem(item = item, onItemClick = {} )
+//            }
+//        }
+
+
+            Text(text = "You're authenticated!", color = Color.Black)
 
             Spacer(modifier = Modifier.padding(10.dp))
 
-            Button(onClick = {
-                viewModel.onEvent(AuthUiEvent.Logout)
-            }, modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .height(50.dp)) {
+
+
+            Button(
+                onClick = {
+                    viewModel.onEvent(AuthUiEvent.Logout)
+                }, modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .height(50.dp)
+            ) {
                 Text(text = "Logout", fontSize = dpToSp(20.dp), color = Color.White)
             }
-
         }
     }
+
 
 
     if (state.value.isLoading) {
