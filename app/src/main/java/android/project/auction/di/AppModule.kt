@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.project.auction.common.Constants
+import android.project.auction.data.local.AppDatabase
 import android.project.auction.data.remote.AuctionAPI
 import android.project.auction.data.remote.AuthAPI
 import android.project.auction.data.repository.AuctionRepositoryImpl
@@ -18,6 +19,7 @@ import android.project.auction.domain.use_case.authentication.sign_in.SignIn
 import android.project.auction.domain.use_case.authentication.sign_up.SignUp
 import android.project.auction.domain.use_case.getcategories.GetCategories
 import android.project.auction.domain.use_case.getitems.GetItems
+import androidx.room.Room
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -94,10 +96,13 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAuctionAPIUseCases(repository: AuctionRepository): AuctionProjectUseCase {
+    fun provideAuctionAPIUseCases(
+        repository: AuctionRepository,
+        db: AppDatabase
+    ): AuctionProjectUseCase {
         return AuctionProjectUseCase(
             getCategories = GetCategories(repository = repository),
-            getItems = GetItems(repository = repository)
+            getItems = GetItems(repository = repository, db)
         )
     }
 
@@ -113,6 +118,16 @@ object AppModule {
             authentication = Authentication(repository = repository, preferences = preferences),
             logout = Logout(repository = repository, preferences = preferences)
         )
+    }
+
+    @Singleton
+    @Provides
+    fun provideAuctionDatabase(app: Application): AppDatabase {
+        return Room.databaseBuilder(
+            app,
+            AppDatabase::class.java,
+            "auctiondb.db"
+        ).build()
     }
 
 }

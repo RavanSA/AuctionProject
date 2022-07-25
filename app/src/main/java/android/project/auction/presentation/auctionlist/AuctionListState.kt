@@ -9,5 +9,7 @@ data class AuctionListState(
     val errorCategories: String = "",
     val isItemLoading: Boolean = true,
     val item: List<Item> = emptyList(),
-    val errorItem: String = ""
+    val errorItem: String = "",
+    val isItemRefreshing: Boolean = false,
+    val searchQuery: String = ""
 )
