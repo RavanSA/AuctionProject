@@ -2,6 +2,7 @@ package android.project.auction.presentation.auth
 
 import android.project.auction.common.AuthResult
 import android.project.auction.domain.use_case.authentication.AuctionAuthUseCase
+import android.project.auction.domain.use_case.validateform.ValidationUseCase
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -15,8 +16,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authUseCases: AuctionAuthUseCase
-) : ViewModel(){
+    private val authUseCases: AuctionAuthUseCase,
+    private val validationUseCase: ValidationUseCase
+) : ViewModel() {
 
     private val _state = mutableStateOf(AuthState())
     val state: State<AuthState> = _state
@@ -24,12 +26,15 @@ class AuthViewModel @Inject constructor(
     private val resultChannel = Channel<AuthResult<Unit>>()
     val authResults = resultChannel.receiveAsFlow()
 
+    private val validationEventChannel = Channel<ValidationEvent>()
+    val validationEvents = validationEventChannel.receiveAsFlow()
+
     init {
         authenticate()
     }
 
-    fun onEvent(event: AuthUiEvent){
-        when(event){
+    fun onEvent(event: AuthUiEvent) {
+        when (event) {
             is AuthUiEvent.SignInUsernameChanged -> {
                 _state.value = state.value.copy(
                     signInUsername = event.value
@@ -58,6 +63,16 @@ class AuthViewModel @Inject constructor(
                     signUpPassword = event.value
                 )
             }
+            is AuthUiEvent.SignUpRepeatedPasswordChanged -> {
+                _state.value = state.value.copy(
+                    signUpRepeatedPassword = event.value
+                )
+            }
+            is AuthUiEvent.AcceptTerms -> {
+                _state.value = state.value.copy(
+                    acceptedTerms = event.value
+                )
+            }
             is AuthUiEvent.SignUp -> {
                 signUp()
             }
@@ -67,8 +82,33 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    private fun signUp(){
-        viewModelScope.launch{
+    private fun signUp() {
+        val emailResult = validationUseCase.validateEmail.execute(state.value.signUpUsername)
+        val passwordResult = validationUseCase.validatePassword.execute(state.value.signUpPassword)
+        val repeatedPasswordResult = validationUseCase.validateRepeatedPassword.execute(
+            state.value.signUpPassword, state.value.signUpRepeatedPassword
+        )
+        val termsResult = validationUseCase.validateTerms.execute(state.value.acceptedTerms)
+
+        val hasError = listOf(
+            emailResult,
+            passwordResult,
+            repeatedPasswordResult,
+            termsResult
+        ).any { !it.successful }
+
+        if (hasError) {
+            _state.value = state.value.copy(
+                signUpUsernameError = emailResult.errorMessage,
+                signUpPasswordError = passwordResult.errorMessage,
+                signUpRepeatedPasswordError = repeatedPasswordResult.errorMessage,
+                termsError = termsResult.errorMessage
+            )
+            return
+        }
+
+        viewModelScope.launch {
+
             _state.value = state.value.copy(
                 isLoading = true
             )
@@ -79,14 +119,36 @@ class AuthViewModel @Inject constructor(
             )
 
             resultChannel.send(result)
+            validationEventChannel.send(ValidationEvent.Success)
+
             _state.value = state.value.copy(
                 isLoading = false
             )
         }
     }
 
-    private fun signIn(){
-        viewModelScope.launch{
+    private fun signIn() {
+        val emailResultSignIn = validationUseCase.validateEmail.execute(state.value.signInUsername)
+        val passwordResultSignIn =
+            validationUseCase.validatePassword.execute(state.value.signInPassword)
+
+        val hasError = listOf(
+            emailResultSignIn,
+            passwordResultSignIn,
+        ).any { !it.successful }
+
+        if (hasError) {
+            _state.value = state.value.copy(
+                signInUsernameError = emailResultSignIn.errorMessage,
+                signInPasswordError = passwordResultSignIn.errorMessage
+            )
+            return
+        }
+
+
+        viewModelScope.launch {
+
+
             _state.value = state.value.copy(
                 isLoading = true
             )
@@ -96,6 +158,8 @@ class AuthViewModel @Inject constructor(
             )
 
             resultChannel.send(result)
+            validationEventChannel.send(ValidationEvent.Success)
+
             _state.value = state.value.copy(
                 isLoading = false
             )
@@ -131,6 +195,10 @@ class AuthViewModel @Inject constructor(
             )
 
         }
+    }
+
+    sealed class ValidationEvent {
+        object Success : ValidationEvent()
     }
 
 }

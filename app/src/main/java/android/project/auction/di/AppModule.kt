@@ -19,6 +19,7 @@ import android.project.auction.domain.use_case.authentication.sign_in.SignIn
 import android.project.auction.domain.use_case.authentication.sign_up.SignUp
 import android.project.auction.domain.use_case.getcategories.GetCategories
 import android.project.auction.domain.use_case.getitems.GetItems
+import android.project.auction.domain.use_case.validateform.*
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
@@ -103,6 +104,17 @@ object AppModule {
         return AuctionProjectUseCase(
             getCategories = GetCategories(repository = repository),
             getItems = GetItems(repository = repository, db)
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideValidationUseCases(): ValidationUseCase {
+        return ValidationUseCase(
+            validateEmail = ValidateEmail(),
+            validatePassword = ValidatePassword(),
+            validateRepeatedPassword = ValidateRepeatedPassword(),
+            validateTerms = ValidateTerms(),
         )
     }
 

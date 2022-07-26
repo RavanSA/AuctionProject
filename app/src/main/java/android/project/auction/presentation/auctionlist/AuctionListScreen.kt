@@ -4,6 +4,7 @@ import android.project.auction.common.AuthResult
 import android.project.auction.presentation.Screen
 import android.project.auction.presentation.auctionlist.components.CategoriesListItem
 import android.project.auction.presentation.auctionlist.components.InspirationItem
+import android.project.auction.presentation.auth.AuthUiEvent
 import android.project.auction.presentation.auth.AuthViewModel
 import android.project.auction.presentation.ui.common.LoadingScreen
 import android.project.auction.presentation.ui.common.bottomNav.BottomNav
@@ -108,15 +109,24 @@ fun AuctionListScreen(
                 contentDescription = "Go to Settings Screen",
                 icon = Icons.Default.Settings
             ),
-            NavDrawerItem(
-                id = "help",
-                title = "Help",
-                contentDescription = "Go to Help Screen",
-                icon = Icons.Default.Info
+                NavDrawerItem(
+                    id = "help",
+                    title = "Help",
+                    contentDescription = "Go to Help Screen",
+                    icon = Icons.Default.Info
+                ),
+                NavDrawerItem(
+                    id = "logout",
+                    title = "Logout",
+                    contentDescription = "Go to Login Screen",
+                    icon = Icons.Default.Info
+                )
             ),
-        ), onItemClick ={
-            println("Clicked on ${it.title}")
-        }
+            onItemClick = {
+                if (it.title == "Logout") {
+                    viewModel.onEvent(AuthUiEvent.Logout)
+                }
+            }
         )
     },
         bottomBar = {

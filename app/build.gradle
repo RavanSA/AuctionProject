@@ -99,5 +99,7 @@ dependencies {
     //Swipe Refresh
     implementation "com.google.accompanist:accompanist-swiperefresh:0.24.2-alpha"
 
+    //Material Icon
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
 
 }

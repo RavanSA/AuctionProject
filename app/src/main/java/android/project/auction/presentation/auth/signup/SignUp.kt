@@ -12,10 +12,11 @@ import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -39,6 +41,7 @@ fun SignUpPage(
 ) {
 
     var showPassword by remember { mutableStateOf(false) }
+    var showRepeatedPassword by remember { mutableStateOf(false) }
 
     val state = viewModel.state
     val context = LocalContext.current
@@ -103,15 +106,26 @@ fun SignUpPage(
                         onValueChange = {
                             viewModel.onEvent(AuthUiEvent.SignUpUsernameChanged(it))
                         },
-                        label = { Text(text = "Email Address") },
-                        placeholder = { Text(text = "Email Address") },
+                        label = { Text(text = "Email Address", color = Color.Black) },
+                        placeholder = { Text(text = "Email Address", color = Color.Black) },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(0.8f),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             focusedBorderColor = Color.Black,
                             unfocusedBorderColor = Color.Black
-                        )
+                        ),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Email
+                        ),
+                        isError = state.value.signUpUsernameError != null,
                     )
+                    if (state.value.signUpUsernameError != null) {
+                        Text(
+                            text = state.value.signUpUsernameError ?: "",
+                            color = MaterialTheme.colors.error,
+                            modifier = Modifier.align(Alignment.End)
+                        )
+                    }
 
                     Spacer(modifier = Modifier.padding(15.dp))
 
@@ -120,8 +134,8 @@ fun SignUpPage(
                         onValueChange = {
                             viewModel.onEvent(AuthUiEvent.SignUpFullNameChanged(it))
                         },
-                        label = { Text(text = "Full Name") },
-                        placeholder = { Text(text = "Full Name") },
+                        label = { Text(text = "Full Name", color = Color.Black) },
+                        placeholder = { Text(text = "Full Name", color = Color.Black) },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(0.8f),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -130,13 +144,6 @@ fun SignUpPage(
                         )
                     )
 
-//                    OutlinedTextField(
-//                        label = { Text(text = "Phone Number") },
-//                        placeholder = { Text(text = "Phone Number") },
-//                        singleLine = true,
-//                        modifier = Modifier.fillMaxWidth(0.8f),
-//                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
-//                    )
                     Spacer(modifier = Modifier.padding(15.dp))
 
                     OutlinedTextField(
@@ -144,19 +151,20 @@ fun SignUpPage(
                         onValueChange = {
                             viewModel.onEvent(AuthUiEvent.SignUpPasswordChanged(it))
                         },
-                        label = { Text(text = "Password") },
-                        placeholder = { Text(text = "Password") },
+                        isError = state.value.signUpPasswordError != null,
+                        label = { Text(text = "Password", color = Color.Black) },
+                        placeholder = { Text(text = "Password", color = Color.Black) },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(0.8f),
                         visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon = {
                             val image = if (showPassword)
-                                Icons.Filled.KeyboardArrowUp
-                            else Icons.Filled.KeyboardArrowDown
+                                Icons.Filled.Visibility
+                            else Icons.Filled.VisibilityOff
                             val description = if (showPassword) "Hide password" else "Show password"
 
-                            IconButton(onClick = {showPassword = !showPassword}){
-                                Icon(imageVector  = image, description)
+                            IconButton(onClick = { showPassword = !showPassword }) {
+                                Icon(imageVector = image, description)
                             }
                         },
                         colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -164,37 +172,87 @@ fun SignUpPage(
                             unfocusedBorderColor = Color.Black
                         )
                     )
+                    if (state.value.signUpPasswordError != null) {
+                        Text(
+                            text = state.value.signUpPasswordError ?: "",
+                            color = MaterialTheme.colors.error,
+                            modifier = Modifier.align(Alignment.End)
+                        )
+                    }
 
                     Spacer(modifier = Modifier.padding(15.dp))
 
-//                    OutlinedTextField(
-//                        value = confirmPasswordValue.value,
-//                        onValueChange = { confirmPasswordValue.value = it },
-//                        label = { Text(text = "Confirm Password") },
-//                        placeholder = { Text(text = "Confirm Password") },
-//                        singleLine = true,
-//                        modifier = Modifier.fillMaxWidth(0.8f),
-//                        trailingIcon = {
-//                            IconButton(onClick = {
-//                                confirmPasswordVisibility.value = !confirmPasswordVisibility.value
-//                            }) {
-//                                Icon(
-//                                    imageVector = vectorResource(id = R.drawable.password_eye),
-//                                    tint = if (confirmPasswordVisibility.value) primaryColor else Color.Gray
-//                                )
-//                            }
-//                        },
-//                        visualTransformation = if (confirmPasswordVisibility.value) VisualTransformation.None
-//                        else PasswordVisualTransformation()
-//                    )
+                    OutlinedTextField(
+                        value = state.value.signUpRepeatedPassword,
+                        onValueChange = {
+                            viewModel.onEvent(AuthUiEvent.SignUpRepeatedPasswordChanged(it))
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password
+                        ),
+                        isError = state.value.signUpRepeatedPasswordError != null,
+                        label = { Text(text = "Confirm Password", color = Color.Black) },
+                        placeholder = { Text(text = "Confirm Password", color = Color.Black) },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(0.8f),
+                        visualTransformation = if (showRepeatedPassword) VisualTransformation.None else PasswordVisualTransformation(),
+                        trailingIcon = {
+                            val image = if (showRepeatedPassword)
+                                Icons.Filled.Visibility
+                            else Icons.Filled.VisibilityOff
+                            val description =
+                                if (showRepeatedPassword) "Hide password" else "Show password"
 
+                            IconButton(onClick = { showRepeatedPassword = !showRepeatedPassword }) {
+                                Icon(imageVector = image, description)
+                            }
+                        },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = Color.Black,
+                            unfocusedBorderColor = Color.Black
+                        )
+                    )
+                    if (state.value.signUpRepeatedPasswordError != null) {
+                        Text(
+                            text = state.value.signUpRepeatedPasswordError ?: "",
+                            color = MaterialTheme.colors.error,
+                            modifier = Modifier.align(Alignment.End)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.padding(15.dp))
+
+                    Row(
+                        modifier = Modifier
+                    ) {
+                        Checkbox(
+                            checked = state.value.acceptedTerms,
+                            onCheckedChange = {
+                                viewModel.onEvent(AuthUiEvent.AcceptTerms(it))
+                            }
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(text = "Accept terms")
+                    }
+                    if (state.value.termsError != null) {
+                        Text(
+                            text = state.value.termsError ?: "",
+                            color = MaterialTheme.colors.error,
+                        )
+                    }
 
                     Spacer(modifier = Modifier.padding(10.dp))
-                    Button(onClick = {
-                        viewModel.onEvent(AuthUiEvent.SignUp)
-                    }, modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .height(50.dp)) {
+                    Button(
+                        onClick = {
+                            viewModel.onEvent(AuthUiEvent.SignUp)
+                        }, modifier = Modifier
+                            .fillMaxWidth(0.8f)
+                            .height(50.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color.Black,
+                            contentColor = Color.White
+                        )
+                    ) {
                         Text(text = "Sign Up", fontSize = dpToSp(20.dp))
                     }
                     Spacer(modifier = Modifier.padding(20.dp))
@@ -207,10 +265,11 @@ fun SignUpPage(
                     )
                     Spacer(modifier = Modifier.padding(20.dp))
                 }
-            }
         }
+    }
 
-    if (state.value.isLoading) {
+    if (state.value.isLoading
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -221,4 +280,4 @@ fun SignUpPage(
         }
     }
 
-    }
+}

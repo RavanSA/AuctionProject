@@ -11,10 +11,11 @@ import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
@@ -114,14 +116,27 @@ fun LoginPage(
                         onValueChange = {
                             viewModel.onEvent(AuthUiEvent.SignInUsernameChanged(it))
                         },
-                        label = { Text(text = "Email Address") },
-                        placeholder = { Text(text = "Email Address") },
+                        label = { Text(text = "Email Address", color = Color.Black) },
+                        placeholder = { Text(text = "Email Address", color = Color.Black) },
                         singleLine = true,
+                        isError = state.value.signInUsernameError != null,
+
                         modifier = Modifier.fillMaxWidth(0.8f),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             focusedBorderColor = Black,
-                            unfocusedBorderColor = Black)
+                            unfocusedBorderColor = Black
+                        ),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Email
+                        )
                     )
+                    if (state.value.signInUsernameError != null) {
+                        Text(
+                            text = state.value.signInUsernameError ?: "",
+                            color = MaterialTheme.colors.error,
+                            modifier = Modifier.align(Alignment.End)
+                        )
+                    }
 
                     OutlinedTextField(
                         value = state.value.signInPassword,
@@ -131,25 +146,36 @@ fun LoginPage(
                         visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon = {
                             val image = if (showPassword)
-                                Icons.Filled.KeyboardArrowUp
-                            else Icons.Filled.KeyboardArrowDown
+                                Icons.Default.Visibility
+                            else Icons.Default.VisibilityOff
                             val description = if (showPassword) "Hide password" else "Show password"
 
-                            IconButton(onClick = {showPassword = !showPassword}){
-                                Icon(imageVector  = image, description)
+                            IconButton(onClick = { showPassword = !showPassword }) {
+                                Icon(imageVector = image, description)
                             }
                         },
-                        label = { Text("Password") },
-                        placeholder = { Text(text = "Password") },
+                        label = { Text("Password", color = Color.Black) },
+                        placeholder = { Text(text = "Password", color = Color.Black) },
                         singleLine = true,
-
+                        isError = state.value.signInPasswordError != null,
                         modifier = Modifier
                             .fillMaxWidth(0.8f)
                             .focusRequester(focusRequester = focusRequester),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             focusedBorderColor = Black,
-                            unfocusedBorderColor = Black)
+                            unfocusedBorderColor = Black
+                        ),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password
+                        ),
                     )
+                    if (state.value.signInPasswordError != null) {
+                        Text(
+                            text = state.value.signInPasswordError ?: "",
+                            color = MaterialTheme.colors.error,
+                            modifier = Modifier.align(Alignment.End)
+                        )
+                    }
 
                     Spacer(modifier = Modifier.padding(10.dp))
 
@@ -176,7 +202,11 @@ fun LoginPage(
                         },
                         modifier = Modifier
                             .fillMaxWidth(0.8f)
-                            .height(50.dp)
+                            .height(50.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color.Black,
+                            contentColor = Color.White
+                        )
                     ) {
                         Text(text = "Sign In")
                     }
@@ -223,7 +253,8 @@ fun LoginPage(
                                     navController.navigate(Screen.SignUpScreen.route)
                                 }),
                                 fontSize = dpToSp(dp = 15.dp),
-                                color = Color.Blue
+                                color = Color.Black,
+                                fontWeight = FontWeight.Thin,
                             )
                         }
                     }
