@@ -1,6 +1,6 @@
 package android.project.auction.domain.model.item
 
-data class Item(
+data class ItemDetail(
     val description: String,
     val endTime: String,
     val id: String,
@@ -12,5 +12,6 @@ data class Item(
     val categoryId: String,
     val title: String,
     val userFullName: String,
-    val userId: String
+    val userId: String,
+    val subCategoryName: String
 )

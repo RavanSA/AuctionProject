@@ -3,7 +3,7 @@ package android.project.auction.domain.use_case.getitems
 import android.project.auction.common.Resource
 import android.project.auction.data.local.AppDatabase
 import android.project.auction.data.local.entity.toItem
-import android.project.auction.data.remote.dto.items.toItems
+import android.project.auction.data.remote.dto.items.getitems.toItems
 import android.project.auction.domain.model.item.Item
 import android.project.auction.domain.repository.AuctionRepository
 import kotlinx.coroutines.flow.Flow

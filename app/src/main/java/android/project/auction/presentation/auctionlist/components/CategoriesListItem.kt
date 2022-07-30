@@ -1,8 +1,11 @@
 package android.project.auction.presentation.auctionlist.components
 
 import android.project.auction.domain.model.category.Category
-import android.util.Log
+import android.project.auction.presentation.auctionlist.AuctionListEvent
+import android.project.auction.presentation.auctionlist.AuctionListViewModel
+import android.project.auction.presentation.ui.theme.TextWhite
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -10,47 +13,42 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun CategoriesListItem(
-    category: Category,
-    onItemClick: (Category) -> Unit
+    auctionViewModel: AuctionListViewModel = hiltViewModel(),
+    category: Category
 ) {
-
-//    Text(
-//        text = category.name,
-//        style = MaterialTheme.typography.body1,
-//        overflow = TextOverflow.Ellipsis
-//    )
     Row(
         modifier = Modifier
             .fillMaxWidth()
-
-            // Size 100 dp
-            .background(Color.White), // Background White
-
-        // Align Items in Center
+            .background(TextWhite)
+            .clickable {
+                auctionViewModel.onEvent(
+                    AuctionListEvent.OnSearchQueryChange(category.id)
+                )
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
-
     ) {
-        // Text Composable which displays some
-        // kind of message , text color is green
         Card(
-            modifier = Modifier.padding(4.dp),
-
-            ) {
+            modifier = Modifier
+                .padding(4.dp)
+                .background(TextWhite),
+        ) {
             Column(
-                modifier = Modifier.padding(2.dp)
+                modifier = Modifier
+                    .padding(2.dp)
+                    .background(TextWhite)
             ) {
                 Text(
                     text = category.name,
                     modifier = Modifier
                         .background(
-                            color = Color.White,
+                            color = TextWhite,
                             shape = RoundedCornerShape(4.dp)
                         )
                         .padding(15.dp),
@@ -60,8 +58,4 @@ fun CategoriesListItem(
             }
         }
     }
-
-
-
-    Log.d("CATEGORYNAME", category.name)
 }

@@ -3,7 +3,7 @@ package android.project.auction.presentation.auctionlist
 import android.project.auction.common.AuthResult
 import android.project.auction.presentation.Screen
 import android.project.auction.presentation.auctionlist.components.CategoriesListItem
-import android.project.auction.presentation.auctionlist.components.InspirationItem
+import android.project.auction.presentation.auctionlist.components.ItemList
 import android.project.auction.presentation.auth.AuthUiEvent
 import android.project.auction.presentation.auth.AuthViewModel
 import android.project.auction.presentation.ui.common.LoadingScreen
@@ -12,6 +12,7 @@ import android.project.auction.presentation.ui.common.navDrawer.DrawerBody
 import android.project.auction.presentation.ui.common.navDrawer.DrawerHeader
 import android.project.auction.presentation.ui.common.navDrawer.NavDrawerItem
 import android.project.auction.presentation.ui.common.topBar.TopBar
+import android.project.auction.presentation.ui.theme.TextWhite
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -26,7 +27,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -79,16 +79,17 @@ fun AuctionListScreen(
     Scaffold(
         topBar = {
             Column(
-                modifier = Modifier
+                modifier = Modifier.background(TextWhite)
             ) {
                 TopBar(
                     title = "Auction",
-                    icon = Icons.Default.ThumbUp,
+                    icon = Icons.Default.Menu,
                     onNavigationIconClick = {
                         scope.launch {
                             scaffoldState.drawerState.open()
                         }
-                    }
+                    },
+                    leftIcon = Icons.Default.Add
                 )
                 SearchBar()
             }
@@ -154,7 +155,8 @@ fun AuctionListScreen(
         },
         content = {
             MainScreenBody(
-                auctionViewModel = auctionViewModel
+                auctionViewModel = auctionViewModel,
+                navController = navController
             )
         }
 
@@ -181,31 +183,34 @@ fun SearchBar(
 ) {
     val auctionItemState = auctionViewModel.stateItem
 
-    OutlinedTextField(
-        value = auctionItemState.searchQuery,
-        onValueChange = {
-            auctionViewModel.onEvent(
-                AuctionListEvent.OnSearchQueryChange(it)
-            )
-        },
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth(),
-        placeholder = {
-            Text(text = "Search...")
-        },
-        maxLines = 1,
-        singleLine = true
-    )
+    Column(modifier = Modifier.background(TextWhite)) {
+        OutlinedTextField(
+            value = auctionItemState.searchQuery,
+            onValueChange = {
+                auctionViewModel.onEvent(
+                    AuctionListEvent.OnSearchQueryChange(it)
+                )
+            },
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+                .background(TextWhite),
+            placeholder = {
+                Text(text = "Search...")
+            },
+            maxLines = 1,
+            singleLine = true
+        )
+    }
 }
 
 @Composable
 fun MainScreenBody(
-    auctionViewModel: AuctionListViewModel = hiltViewModel()
+    auctionViewModel: AuctionListViewModel = hiltViewModel(),
+    navController: NavController
 ) {
 
     val auctionItemState = auctionViewModel.stateItem
-    val auctionCategoriesState = auctionViewModel.state
 
     val swipeRefreshState = rememberSwipeRefreshState(
         isRefreshing = auctionViewModel.stateItem.isItemRefreshing
@@ -214,11 +219,12 @@ fun MainScreenBody(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(TextWhite)
     ) {
-        CategoriesLazyRow(auctionListState = auctionCategoriesState)
+        CategoriesLazyRow(
+            auctionViewModel = auctionViewModel
+        )
 
-//        ItemLazyColumn(auctionListState = auctionItemState)
 
         Column(
             modifier = Modifier
@@ -229,11 +235,12 @@ fun MainScreenBody(
                     auctionViewModel.onEvent(AuctionListEvent.Refresh)
                 }
             ) {
-//                CategoriesLazyRow(auctionListState = auctionCategoriesState)
 
-//                CategoriesLazyRow(auctionListState = auctionCategoriesState)
                 Spacer(modifier = Modifier.size(10.dp))
-                ItemLazyColumn(auctionListState = auctionItemState)
+                ItemLazyColumn(
+                    auctionListState = auctionItemState,
+                    navController = navController
+                )
             }
         }
     }
@@ -242,10 +249,9 @@ fun MainScreenBody(
 
 @Composable
 fun CategoriesLazyRow(
-    auctionListState: State<AuctionListState>
+    auctionViewModel: AuctionListViewModel = hiltViewModel()
 ) {
-    Log.d("CATEGORYLAZYITEMS", auctionListState.value.toString())
-
+    val auctionCategoriesState = auctionViewModel.state
 
     Column(modifier = Modifier) {
         Text(
@@ -258,11 +264,12 @@ fun CategoriesLazyRow(
         )
 
         LazyRow(
+            modifier = Modifier.background(TextWhite),
             contentPadding = PaddingValues(0.dp),
             horizontalArrangement = Arrangement.spacedBy(2.dp)
         ) {
-            items(auctionListState.value.categories) { categories ->
-                CategoriesListItem(category = categories, onItemClick = {})
+            items(auctionCategoriesState.value.categories) { categories ->
+                CategoriesListItem(auctionViewModel = auctionViewModel, category = categories)
                 Log.d("CATEFORYITEMS", categories.toString())
             }
         }
@@ -271,7 +278,8 @@ fun CategoriesLazyRow(
 
 @Composable
 fun ItemLazyColumn(
-    auctionListState: AuctionListState
+    auctionListState: AuctionListState,
+    navController: NavController
 ) {
 
     Column(modifier = Modifier) {
@@ -286,13 +294,16 @@ fun ItemLazyColumn(
             fontSize = 20.sp
         )
 
-
         LazyColumn(
             contentPadding = PaddingValues(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(auctionListState.item) { item ->
-                InspirationItem(item = item)
+                ItemList(item = item,
+                    onItemClick = {
+                        navController.navigate(Screen.AuctionItemDetailScreen.route + "/${item.id}")
+                    }
+                )
             }
         }
     }

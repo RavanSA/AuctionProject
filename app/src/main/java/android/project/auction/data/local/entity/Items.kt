@@ -24,6 +24,8 @@ data class Items(
     val startingPrice: Int,
     @ColumnInfo(name = "sub_category_id")
     val subCategoryId: String,
+    @ColumnInfo(name = "category_id")
+    val categoryId: String,
     @ColumnInfo(name = "item_title")
     val title: String,
     @ColumnInfo(name = "seller_username")
@@ -43,6 +45,7 @@ fun Items.toItem(): Item {
         startTime = startTime,
         startingPrice = startingPrice,
         subCategoryId = subCategoryId,
+        categoryId = categoryId,
         title = title,
         userFullName = "userFullName",
         userId = userId

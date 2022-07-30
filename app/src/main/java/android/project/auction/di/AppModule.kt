@@ -18,6 +18,7 @@ import android.project.auction.domain.use_case.authentication.logout.Logout
 import android.project.auction.domain.use_case.authentication.sign_in.SignIn
 import android.project.auction.domain.use_case.authentication.sign_up.SignUp
 import android.project.auction.domain.use_case.getcategories.GetCategories
+import android.project.auction.domain.use_case.getitemdetail.GetItemDetail
 import android.project.auction.domain.use_case.getitems.GetItems
 import android.project.auction.domain.use_case.validateform.*
 import androidx.room.Room
@@ -103,7 +104,8 @@ object AppModule {
     ): AuctionProjectUseCase {
         return AuctionProjectUseCase(
             getCategories = GetCategories(repository = repository),
-            getItems = GetItems(repository = repository, db)
+            getItems = GetItems(repository = repository, db),
+            getItemDetail = GetItemDetail(repository = repository)
         )
     }
 

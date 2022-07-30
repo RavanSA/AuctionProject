@@ -1,4 +1,4 @@
-package android.project.auction.data.remote.dto.items
+package android.project.auction.data.remote.dto.items.getitems
 
 data class ItemDto(
     val `data`: List<ItemDataDto>,

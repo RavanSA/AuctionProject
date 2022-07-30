@@ -20,7 +20,7 @@ interface ItemsDao {
             SELECT * 
             FROM Items
             WHERE LOWER(item_title) LIKE '%' || LOWER(:query) || '%' OR
-                UPPER(:query) == description
+                LOWER(category_id) LIKE '%' || LOWER(:query) || '%' 
         """
     )
     suspend fun searchCompanyListing(query: String): List<Items>
