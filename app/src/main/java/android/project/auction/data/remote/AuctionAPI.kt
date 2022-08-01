@@ -1,5 +1,6 @@
 package android.project.auction.data.remote
 
+import android.project.auction.data.remote.dto.bids.BidsHistoryDto
 import android.project.auction.data.remote.dto.categories.Categories
 import android.project.auction.data.remote.dto.items.getitems.ItemDto
 import android.project.auction.data.remote.dto.items.itemdetail.ItemDetailDto
@@ -16,5 +17,8 @@ interface AuctionAPI {
 
     @GET("Items/{itemId}")
     suspend fun getItemDetailById(@Path("itemId") itemId: String): ItemDetailDto
+
+    @GET("/Bids/bidhistory/{itemId}")
+    suspend fun getBidsHistoryByItemId(@Path("itemId") itemId: String): BidsHistoryDto
 
 }

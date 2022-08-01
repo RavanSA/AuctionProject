@@ -3,7 +3,6 @@ package android.project.auction.presentation.auctionlist.components
 import android.project.auction.domain.model.category.Category
 import android.project.auction.presentation.auctionlist.AuctionListEvent
 import android.project.auction.presentation.auctionlist.AuctionListViewModel
-import android.project.auction.presentation.ui.theme.TextWhite
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -13,6 +12,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -25,7 +25,7 @@ fun CategoriesListItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(TextWhite)
+            .background(White)
             .clickable {
                 auctionViewModel.onEvent(
                     AuctionListEvent.OnSearchQueryChange(category.id)
@@ -37,18 +37,18 @@ fun CategoriesListItem(
         Card(
             modifier = Modifier
                 .padding(4.dp)
-                .background(TextWhite),
+                .background(White),
         ) {
             Column(
                 modifier = Modifier
                     .padding(2.dp)
-                    .background(TextWhite)
+                    .background(White)
             ) {
                 Text(
                     text = category.name,
                     modifier = Modifier
                         .background(
-                            color = TextWhite,
+                            color = White,
                             shape = RoundedCornerShape(4.dp)
                         )
                         .padding(15.dp),

@@ -3,7 +3,9 @@ package android.project.auction.presentation.auctionitemdetail
 import android.project.auction.common.Resource
 import android.project.auction.domain.use_case.AuctionProjectUseCase
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,9 +23,35 @@ class AuctionItemDetailViewModel @Inject constructor(
     private val _state = mutableStateOf(AuctionItemDetailState())
     val state: State<AuctionItemDetailState> = _state
 
+    var stateBidHistory by mutableStateOf(AuctionItemDetailState())
+
+
     init {
         savedStateHandle.get<String>("itemId")?.let { itemId ->
             getItemDetail(itemId)
+            getBidHistory(itemId)
+        }
+    }
+
+    private fun getBidHistory(itemId: String) {
+        useCase.getBidHistory.invoke(itemId = itemId).onEach { result ->
+            when (result) {
+                is Resource.Loading -> {
+                    stateBidHistory = stateBidHistory.copy(
+                        isBidHistoryLoading = true
+                    )
+                }
+                is Resource.Success -> {
+                    stateBidHistory = stateBidHistory.copy(
+                        bidHistory = result.data ?: emptyList()
+                    )
+                }
+                is Resource.Error -> {
+                    stateBidHistory = stateBidHistory.copy(
+                        bidError = "Error Occured"
+                    )
+                }
+            }
         }
     }
 

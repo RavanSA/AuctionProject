@@ -2,26 +2,35 @@ package android.project.auction.presentation.auctionitemdetail
 
 import android.project.auction.R
 import android.project.auction.domain.model.item.ItemDetail
-import android.project.auction.presentation.ui.theme.TextWhite
+import android.project.auction.presentation.auctionlist.components.ProfileImage
+import android.project.auction.presentation.auth.sign_in.dpToSp
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.background
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.skydoves.landscapist.glide.GlideImage
@@ -40,13 +49,19 @@ fun AuctionItemDetailScreen(
     auctionItemDetailViewModel: AuctionItemDetailViewModel = hiltViewModel()
 ) {
 
+    var offset by remember { mutableStateOf(0f) }
+
     val state = auctionItemDetailViewModel.state
+
+    val scrollState = rememberScrollState()
+
+    val bidHistoryState = auctionItemDetailViewModel.stateBidHistory
 
 
     Scaffold(
         topBar = {
             TopAppBar(
-                backgroundColor = TextWhite,
+                backgroundColor = White,
                 title = {
                     Row(
                         modifier = Modifier.padding(15.dp),
@@ -69,7 +84,9 @@ fun AuctionItemDetailScreen(
             )
         },
         content = {
+
             AuctionDetailContent(state)
+
         }
     )
 }
@@ -79,36 +96,68 @@ fun AuctionItemDetailScreen(
 fun AuctionDetailContent(
     state: State<AuctionItemDetailState>
 ) {
-    Surface(
-        modifier = Modifier
-            .background(TextWhite),
-        shape = MaterialTheme.shapes.small,
-        color = TextWhite,
-        contentColor = TextWhite
-    ) {
 
-        Column(
+    Column(
+        modifier = Modifier
+            .background(White)
+            .fillMaxSize()
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-//            NetworkImage(imageUrl = "")
+            item {
+                Spacer(modifier = Modifier.size(30.dp))
 
-            Text(text = "${state.value.itemDetails?.title}")
+                NetworkImage(imageUrl = "")
+                Spacer(modifier = Modifier.size(30.dp))
 
-//            state.value.itemDetails?.let { AuctionStatusCard(itemDetails = it) }
-//
-//            Text(text = "Current Bid")
-//            Text(text = "${state.value.itemDetails?.startingPrice}")
+                Text(
+                    text = "${state.value.itemDetails?.title}",
+                    color = Color.Black,
+                    maxLines = 1,
+                    modifier = Modifier.padding(start = 16.dp),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
+                Spacer(modifier = Modifier.size(30.dp))
 
+                state.value.itemDetails?.let { AuctionStatusCard(itemDetails = it) }
+                Spacer(modifier = Modifier.size(30.dp))
+
+                state.value.itemDetails?.let { CurrentBidComponent(itemDetails = it) }
+
+                Spacer(modifier = Modifier.size(20.dp))
+
+                state.value.itemDetails?.description?.let {
+                    ItemDetailDescription(
+                        itemDetailDescription = it
+                    )
+                }
+            }
+
+            items(5) {
+                Text(text = " BidHistory $it")
+            }
+
+            item {
+                Text(text = "LAST ELEMENT")
+            }
         }
+
+        StickyPlaceBidButton()
     }
 }
+
 
 @Composable
 fun NetworkImage(
     imageUrl: String,
     modifier: Modifier = Modifier
-        .size(300.dp)
+        .size(375.dp)
         .clip(RoundedCornerShape(15.dp, 15.dp, 15.dp, 15.dp)),
     contentScale: ContentScale = ContentScale.Fit,
     fadeIn: Boolean = true,
@@ -133,41 +182,217 @@ fun AuctionStatusCard(
     itemDetails: ItemDetail
 ) {
     Column(
-
+        modifier = Modifier
+            .background(Color.White)
+            .fillMaxWidth(0.9f)
+            .shadow(
+                elevation = 1.dp,
+                shape = RoundedCornerShape(2.dp)
+            ),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Card(
-            modifier = Modifier.background(Color.White),
-        ) {
+
             Row(
                 modifier = Modifier
-                    .padding(2.dp)
-                    .background(TextWhite),
-                horizontalArrangement = Arrangement.SpaceBetween
+                    .padding(2.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = itemDetails.startTime,
                     modifier = Modifier
-                        .background(
-                            color = TextWhite,
-                            shape = RoundedCornerShape(4.dp)
-                        )
+
                         .padding(15.dp),
                     overflow = TextOverflow.Clip,
-                    maxLines = 1
+                    maxLines = 1,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
                 )
 
                 Text(
-                    text = "Live",
+                    text = "        Live",
                     modifier = Modifier
-                        .background(
-                            color = Color.Black,
-                            shape = RoundedCornerShape(4.dp)
-                        )
                         .padding(15.dp),
                     overflow = TextOverflow.Clip,
-                    maxLines = 1
+                    maxLines = 1,
+                    color = Color.Black,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
                 )
+            }
+    }
+}
+
+
+@Composable
+fun CurrentBidComponent(
+    itemDetails: ItemDetail
+) {
+    Column(
+        modifier = Modifier
+            .background(Color.White)
+            .fillMaxWidth(0.9f)
+            .shadow(
+                elevation = 1.dp,
+                shape = RoundedCornerShape(2.dp)
+            ),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.size(10.dp))
+
+        Text(
+            text = "CurrentBid",
+            color = Color.Gray,
+            maxLines = 1,
+            modifier = Modifier.padding(start = 16.dp),
+            fontWeight = FontWeight.Bold,
+            fontSize = 20.sp
+        )
+        Spacer(modifier = Modifier.size(10.dp))
+
+        Text(
+            text = "${itemDetails?.startingPrice}$",
+            color = Color.Black,
+            maxLines = 1,
+            modifier = Modifier.padding(start = 16.dp),
+            fontWeight = FontWeight.Bold,
+            fontSize = 30.sp
+        )
+        Spacer(modifier = Modifier.size(5.dp))
+
+        Row(
+            modifier = Modifier
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            ProfileImage(
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(CircleShape)                       // clip to the circle shape
+                    .border(2.dp, Color.Gray, CircleShape)
+            )
+            Text(
+                "@" + itemDetails?.userFullName,
+                color = Color.Black,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.size(15.dp))
+
+        }
+        Spacer(modifier = Modifier.size(5.dp))
+
+    }
+}
+
+@Composable
+fun ItemDetailDescription(
+    itemDetailDescription: String
+) {
+
+    var showMore by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .background(Color.White)
+            .fillMaxWidth(0.9f)
+            .shadow(
+                elevation = 1.dp,
+                shape = RoundedCornerShape(2.dp)
+            ),
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.SpaceBetween,
+
+        ) {
+
+        Text(
+            text = "Description",
+            color = Color.Black,
+            maxLines = 1,
+            modifier = Modifier.padding(start = 16.dp),
+            fontWeight = FontWeight.Bold,
+            fontSize = 20.sp
+        )
+
+        Column(modifier = Modifier
+            .animateContentSize(animationSpec = tween(100))
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) { showMore = !showMore }) {
+            if (showMore) {
+                Text(
+                    text = itemDetailDescription,
+                    modifier = Modifier.padding(16.dp),
+                    overflow = TextOverflow.Clip,
+                    maxLines = 15,
+                    color = Color.Black,
+                    fontSize = 15.sp
+                )
+            } else {
+                if (itemDetailDescription.length > 20) {
+                    Text(
+                        text = "$itemDetailDescription....more",
+                        modifier = Modifier.padding(16.dp),
+                        overflow = TextOverflow.Clip,
+                        maxLines = 1,
+                        color = Color.Black,
+                        fontSize = 15.sp
+                    )
+                } else {
+                    Text(
+                        text = itemDetailDescription,
+                        modifier = Modifier.padding(16.dp),
+                        overflow = TextOverflow.Clip,
+                        maxLines = 1,
+                        color = Color.Black,
+                        fontSize = 15.sp
+                    )
+                }
             }
         }
     }
+}
+
+
+@Composable
+fun ScrollableColumn(
+    modifier: Modifier = Modifier,
+    scrollState: ScrollState = rememberScrollState(0),
+    verticalArrangement: Arrangement.Vertical = Arrangement.Top,
+    horizontalGravity: Alignment.Horizontal = Alignment.Start,
+    reverseScrollDirection: Boolean = false,
+    isScrollEnabled: Boolean = true,
+    children: @Composable ColumnScope.() -> Unit
+) {
+
+}
+
+
+@Composable
+fun StickyPlaceBidButton(
+
+) {
+    Button(
+        onClick = {
+        }, modifier = Modifier
+            .fillMaxWidth()
+            .height(50.dp),
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = Color.Black,
+            contentColor = Color.White
+        )
+    ) {
+        Text(text = "Place a Bid", fontSize = dpToSp(20.dp))
+    }
+}
+
+@Composable
+fun BidHistoryCard(
+
+) {
+
 }

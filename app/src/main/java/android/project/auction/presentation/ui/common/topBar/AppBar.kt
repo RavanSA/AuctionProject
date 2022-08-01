@@ -1,12 +1,12 @@
 package android.project.auction.presentation.ui.common.topBar
 
-import android.project.auction.presentation.ui.theme.TextWhite
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -25,7 +25,7 @@ fun TopBar(
 //        .width(72.dp - appBarHorizontalPadding)
 
     TopAppBar(
-        backgroundColor = TextWhite,
+        backgroundColor = White,
         elevation = 0.dp,
         modifier = Modifier.fillMaxWidth(),
 

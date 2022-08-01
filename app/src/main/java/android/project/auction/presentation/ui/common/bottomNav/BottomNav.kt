@@ -1,7 +1,6 @@
 package android.project.auction.presentation.ui.common.bottomNav
 
-import android.project.auction.R
-import android.project.auction.presentation.Screen
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,9 +15,9 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -55,9 +54,11 @@ fun BottomNav(navController: NavController) {
     BottomNavigation(
         modifier = Modifier
             .padding(12.dp, 0.dp, 12.dp, 0.dp)
-            .height(100.dp),
+            .height(100.dp)
+            .background(White),
         //backgroundColor = Color.White,
-        elevation = 0.dp
+        elevation = 0.dp,
+        backgroundColor = White
     ) {
         items.forEach {
             BottomNavigationItem(
@@ -67,23 +68,20 @@ fun BottomNav(navController: NavController) {
                             imageVector = it,
                             contentDescription = "",
                             modifier = Modifier.size(35.dp),
-                            //tint = Color.Gray
-
+                            tint = Color.Gray
                         )
                     }
                 },
                 label = {
-                    it.title.let {
-                        Text(
-                            text = it,
-                            //color = Color.Gray
-                        )
-                    }
+                    Text(
+                        text = it.title,
+                        color = Color.Gray
+                    )
                 },
                 selected = currentRoute?.hierarchy?.any { it.route == it.route } == true,
 
-                selectedContentColor = Color(R.color.purple_700),
-                unselectedContentColor = Color.White.copy(alpha = 0.4f),
+                selectedContentColor = Color.Black,
+                unselectedContentColor = Color.White,
                 onClick = {}
 
             )

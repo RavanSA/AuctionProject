@@ -154,14 +154,16 @@ fun NetworkImage(
 }
 
 @Composable
-fun ProfileImage() {
+fun ProfileImage(
+    modifier: Modifier = Modifier
+        .size(64.dp)
+        .clip(CircleShape)                       // clip to the circle shape
+        .border(2.dp, Color.Gray, CircleShape)
+) {
     Image(
         painter = painterResource(R.drawable.sample_avatar),
         contentDescription = "avatar",
         contentScale = ContentScale.Crop,            // crop the image if it's not a square
-        modifier = Modifier
-            .size(64.dp)
-            .clip(CircleShape)                       // clip to the circle shape
-            .border(2.dp, Color.Gray, CircleShape)   // add a border (optional)
+        modifier = modifier  // add a border (optional)
     )
 }

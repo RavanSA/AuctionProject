@@ -12,7 +12,6 @@ import android.project.auction.presentation.ui.common.navDrawer.DrawerBody
 import android.project.auction.presentation.ui.common.navDrawer.DrawerHeader
 import android.project.auction.presentation.ui.common.navDrawer.NavDrawerItem
 import android.project.auction.presentation.ui.common.topBar.TopBar
-import android.project.auction.presentation.ui.theme.TextWhite
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -32,6 +31,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Black
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -79,7 +80,7 @@ fun AuctionListScreen(
     Scaffold(
         topBar = {
             Column(
-                modifier = Modifier.background(TextWhite)
+                modifier = Modifier.background(White)
             ) {
                 TopBar(
                     title = "Auction",
@@ -134,10 +135,12 @@ fun AuctionListScreen(
             BottomAppBar(
                 modifier = Modifier
                     .height(65.dp)
-                    .clip(RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp)),
+                    .clip(RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp))
+                    .background(Color.White),
                 cutoutShape = CircleShape,
                 //backgroundColor = Color.White,
-                elevation = 22.dp
+                elevation = 22.dp,
+                backgroundColor = Color.White
             ) {
                 BottomNav(navController = navController)
             }
@@ -148,7 +151,8 @@ fun AuctionListScreen(
             FloatingActionButton(
                 shape = CircleShape,
                 onClick = {},
-                contentColor = Color.White
+                contentColor = Color.White,
+                backgroundColor = Black
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add icon")
             }
@@ -183,7 +187,7 @@ fun SearchBar(
 ) {
     val auctionItemState = auctionViewModel.stateItem
 
-    Column(modifier = Modifier.background(TextWhite)) {
+    Column(modifier = Modifier.background(White)) {
         OutlinedTextField(
             value = auctionItemState.searchQuery,
             onValueChange = {
@@ -194,7 +198,7 @@ fun SearchBar(
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth()
-                .background(TextWhite),
+                .background(White),
             placeholder = {
                 Text(text = "Search...")
             },
@@ -219,7 +223,7 @@ fun MainScreenBody(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(TextWhite)
+            .background(White)
     ) {
         CategoriesLazyRow(
             auctionViewModel = auctionViewModel
@@ -264,7 +268,7 @@ fun CategoriesLazyRow(
         )
 
         LazyRow(
-            modifier = Modifier.background(TextWhite),
+            modifier = Modifier.background(Color.White),
             contentPadding = PaddingValues(0.dp),
             horizontalArrangement = Arrangement.spacedBy(2.dp)
         ) {
@@ -304,6 +308,9 @@ fun ItemLazyColumn(
                         navController.navigate(Screen.AuctionItemDetailScreen.route + "/${item.id}")
                     }
                 )
+            }
+            item {
+                Spacer(modifier = Modifier.size(60.dp))
             }
         }
     }
