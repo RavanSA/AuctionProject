@@ -1,16 +1,22 @@
 package android.project.auction.presentation.auctionitemdetail
 
 import android.project.auction.R
+import android.project.auction.domain.model.bids.Bids
 import android.project.auction.domain.model.item.ItemDetail
 import android.project.auction.presentation.auctionlist.components.ProfileImage
 import android.project.auction.presentation.auth.sign_in.dpToSp
+import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -26,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -34,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.skydoves.landscapist.glide.GlideImage
+import kotlinx.coroutines.launch
 
 
 //@Preview
@@ -43,58 +51,124 @@ import com.skydoves.landscapist.glide.GlideImage
 //}
 
 
+@ExperimentalMaterialApi
 @Composable
 fun AuctionItemDetailScreen(
     navController: NavController,
     auctionItemDetailViewModel: AuctionItemDetailViewModel = hiltViewModel()
 ) {
 
-    var offset by remember { mutableStateOf(0f) }
+    val bottomState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden
+    )
 
     val state = auctionItemDetailViewModel.state
 
-    val scrollState = rememberScrollState()
-
     val bidHistoryState = auctionItemDetailViewModel.stateBidHistory
 
+    val context = LocalContext.current
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                backgroundColor = White,
-                title = {
-                    Row(
-                        modifier = Modifier.padding(15.dp),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text("Details")
+    LaunchedEffect(auctionItemDetailViewModel, context) {
+        auctionItemDetailViewModel.bidResult.collect { result ->
+            when (result) {
+                is AuctionItemDetailEvent.OnBidAmountPlaced -> {
 
-                    }
-                },
-                navigationIcon = {
-                    IconButton(onClick = {}) {
-                        Icon(Icons.Default.ArrowBack, "Menu")
-                    }
-                },
-                actions = {
-                    IconButton(onClick = {}) {
-                        Icon(Icons.Default.Favorite, "Menu")
+                }
+            }
+        }
+    }
+
+
+    ModalBottomSheetLayout(
+        sheetState = bottomState,
+        sheetContent = {
+            Column(
+                modifier = Modifier,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Bid History",
+                    color = Color.Black,
+                    maxLines = 1,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
+                Divider(
+                    modifier = Modifier.padding(5.dp),
+                    color = Color.Black
+                )
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .defaultMinSize(minHeight = 1.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+                    items(bidHistoryState.bidHistory) { bidHistory ->
+                        Column(
+                            modifier = Modifier
+                                .background(Color.White)
+                                .fillMaxWidth(0.9f),
+                            horizontalAlignment = Alignment.Start,
+                            verticalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            BidHistoryUserDetails(bidHistory)
+                            Divider(
+                                modifier = Modifier.padding(3.dp),
+                                color = Color.Gray
+                            )
+                        }
                     }
                 }
-            )
+            }
         },
-        content = {
+        sheetShape = RoundedCornerShape(
+            topStart = 30.dp,
+            topEnd = 30.dp
+        ),
+    ) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    backgroundColor = White,
+                    title = {
+                        Row(
+                            modifier = Modifier.padding(15.dp),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text("Details")
 
-            AuctionDetailContent(state)
+                        }
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = {}) {
+                            Icon(Icons.Default.ArrowBack, "Menu")
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = {}) {
+                            Icon(Icons.Default.Favorite, "Menu")
+                        }
+                    }
+                )
+            },
+            content = {
 
-        }
-    )
+                AuctionDetailContent(state, bidHistoryState, bottomState)
+
+            }
+        )
+    }
 }
 
-
+@ExperimentalMaterialApi
 @Composable
 fun AuctionDetailContent(
-    state: State<AuctionItemDetailState>
+    state: State<AuctionItemDetailState>,
+    bidhistoryState: AuctionItemDetailState,
+    bottomState: ModalBottomSheetState
 ) {
 
     Column(
@@ -137,11 +211,23 @@ fun AuctionDetailContent(
                         itemDetailDescription = it
                     )
                 }
+                BidHistoryCard(modifier = Modifier, bottomState = bottomState)
             }
 
-            items(5) {
-                Text(text = " BidHistory $it")
+            itemsIndexed(bidhistoryState.bidHistory) { index, bidhistory ->
+                Column(
+                    modifier = Modifier
+                        .background(Color.White)
+                        .fillMaxWidth(0.9f),
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    if (index < 5) {
+                        BidHistoryUserDetails(bidhistory)
+                    }
+                }
             }
+
 
             item {
                 Text(text = "LAST ELEMENT")
@@ -359,25 +445,14 @@ fun ItemDetailDescription(
 
 
 @Composable
-fun ScrollableColumn(
-    modifier: Modifier = Modifier,
-    scrollState: ScrollState = rememberScrollState(0),
-    verticalArrangement: Arrangement.Vertical = Arrangement.Top,
-    horizontalGravity: Alignment.Horizontal = Alignment.Start,
-    reverseScrollDirection: Boolean = false,
-    isScrollEnabled: Boolean = true,
-    children: @Composable ColumnScope.() -> Unit
-) {
-
-}
-
-
-@Composable
 fun StickyPlaceBidButton(
-
+    auctionItemDetailViewModel: AuctionItemDetailViewModel = hiltViewModel()
 ) {
     Button(
         onClick = {
+            auctionItemDetailViewModel.onEvent(
+                AuctionItemDetailEvent.OnBidAmountPlaced
+            )
         }, modifier = Modifier
             .fillMaxWidth()
             .height(50.dp),
@@ -386,13 +461,102 @@ fun StickyPlaceBidButton(
             contentColor = Color.White
         )
     ) {
-        Text(text = "Place a Bid", fontSize = dpToSp(20.dp))
+        Text(
+            text = "Place a Bid", fontSize = dpToSp(20.dp),
+        )
+    }
+}
+
+@ExperimentalMaterialApi
+@Composable
+fun BidHistoryCard(
+    modifier: Modifier = Modifier,
+    bottomState: ModalBottomSheetState
+) {
+
+    val sheetState = rememberBottomSheetState(
+        initialValue = BottomSheetValue.Collapsed
+    )
+
+    val scaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = sheetState
+    )
+
+    val coroutineScope = rememberCoroutineScope()
+
+    Column(
+        modifier = Modifier
+            .background(Color.White)
+            .fillMaxWidth(0.9f),
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.Start
+    ) {
+        Spacer(modifier = Modifier.size(10.dp))
+
+        Row(
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Text(
+                text = "Bid History",
+                color = Color.Gray,
+                maxLines = 1,
+                modifier = Modifier.padding(start = 14.dp),
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp
+            )
+
+            Text(
+                text = "See all",
+                color = Color.Gray,
+                maxLines = 1,
+                modifier = Modifier
+                    .padding(start = 40.dp)
+                    .clickable {
+                        coroutineScope.launch {
+                            bottomState.show()
+                        }
+                    },
+                fontSize = 15.sp
+            )
+        }
+        Spacer(modifier = Modifier.size(10.dp))
     }
 }
 
 @Composable
-fun BidHistoryCard(
-
+fun BidHistoryUserDetails(
+    bids: Bids
 ) {
+    Log.d("BID HISTORY", bids.toString())
+    Row(
+        modifier = Modifier
+            .padding(8.dp),
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.Top
+    ) {
+        ProfileImage(
+            modifier = Modifier
+                .size(32.dp)
+                .clip(CircleShape)                       // clip to the circle shape
+                .border(2.dp, Color.Gray, CircleShape)
+        )
+        Column() {
+            Text(
+                "@" + "userfullname",
+                color = Color.Black,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
 
+            Text(
+                "" + bids.amount,
+                color = Color.Black,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+        }
+    }
 }
+

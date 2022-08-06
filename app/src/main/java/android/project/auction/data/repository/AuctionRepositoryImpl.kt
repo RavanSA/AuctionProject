@@ -2,6 +2,7 @@ package android.project.auction.data.repository
 
 import android.project.auction.data.remote.AuctionAPI
 import android.project.auction.data.remote.dto.bids.BidsHistoryDto
+import android.project.auction.data.remote.dto.bids.PlaceBidRequest
 import android.project.auction.data.remote.dto.categories.Categories
 import android.project.auction.data.remote.dto.items.getitems.ItemDto
 import android.project.auction.data.remote.dto.items.itemdetail.ItemDetailDto
@@ -27,6 +28,16 @@ class AuctionRepositoryImpl @Inject constructor(
 
     override suspend fun getBidsHistoryByItemId(itemId: String): BidsHistoryDto {
         return api.getBidsHistoryByItemId(itemId)
+    }
+
+    override suspend fun placeBidAmount(amount: Int, itemId: String, userId: String) {
+        return api.placeBidAmount(
+            PlaceBidRequest(
+                amount = amount,
+                itemId = itemId,
+                userId = userId
+            )
+        )
     }
 
 }

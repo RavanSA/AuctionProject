@@ -104,7 +104,11 @@ fun SignUpPage(
                     OutlinedTextField(
                         value = state.value.signUpUsername,
                         onValueChange = {
-                            viewModel.onEvent(AuthUiEvent.SignUpUsernameChanged(it))
+                            viewModel.onEvent(
+                                AuthUiEvent.SignUpUsernameChanged(
+                                    it
+                                )
+                            )
                         },
                         label = { Text(text = "Email Address", color = Color.Black) },
                         placeholder = { Text(text = "Email Address", color = Color.Black) },

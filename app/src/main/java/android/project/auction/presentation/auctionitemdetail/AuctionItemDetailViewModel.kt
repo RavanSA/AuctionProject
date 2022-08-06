@@ -2,6 +2,7 @@ package android.project.auction.presentation.auctionitemdetail
 
 import android.project.auction.common.Resource
 import android.project.auction.domain.use_case.AuctionProjectUseCase
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,8 +11,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,16 +25,41 @@ class AuctionItemDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    var itemID: String = ""
+
     private val _state = mutableStateOf(AuctionItemDetailState())
     val state: State<AuctionItemDetailState> = _state
 
     var stateBidHistory by mutableStateOf(AuctionItemDetailState())
 
+    var statePlaceBid by mutableStateOf(AuctionItemDetailState())
+
+    private val resultChannel = Channel<Flow<Resource<Unit>>>()
+    val bidResult = resultChannel.receiveAsFlow()
 
     init {
         savedStateHandle.get<String>("itemId")?.let { itemId ->
             getItemDetail(itemId)
             getBidHistory(itemId)
+            getItemId(itemId)
+        }
+    }
+
+    private fun getItemId(itemId: String) {
+        itemID = itemId
+    }
+
+    fun onEvent(event: AuctionItemDetailEvent) {
+        when (event) {
+            is AuctionItemDetailEvent.BidAmountChanged -> {
+                statePlaceBid = statePlaceBid.copy(
+                    bidAmount = event.amount
+                )
+            }
+
+            is AuctionItemDetailEvent.OnBidAmountPlaced -> {
+                placeBidAmount()
+            }
         }
     }
 
@@ -37,27 +67,31 @@ class AuctionItemDetailViewModel @Inject constructor(
         useCase.getBidHistory.invoke(itemId = itemId).onEach { result ->
             when (result) {
                 is Resource.Loading -> {
+                    Log.d("RESOURCELOADING", result.data.toString())
+
                     stateBidHistory = stateBidHistory.copy(
                         isBidHistoryLoading = true
                     )
                 }
                 is Resource.Success -> {
-                    stateBidHistory = stateBidHistory.copy(
-                        bidHistory = result.data ?: emptyList()
-                    )
+                    Log.d("RESOURCESUCCES", result.data.toString())
+                    result.data?.let { listings ->
+                        stateBidHistory = stateBidHistory.copy(
+                            bidHistory = listings
+                        )
+                    }
                 }
                 is Resource.Error -> {
+                    Log.d("RESORCE ERROR", result.data.toString())
+
                     stateBidHistory = stateBidHistory.copy(
                         bidError = "Error Occured"
                     )
                 }
             }
-        }
+        }.launchIn(viewModelScope)
     }
 
-    fun onEvent() {
-
-    }
 
     private fun getItemDetail(itemId: String) {
         useCase.getItemDetail.invoke(itemId).onEach { result ->
@@ -79,6 +113,43 @@ class AuctionItemDetailViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    private fun placeBidAmount() {
+
+        viewModelScope.launch {
+            stateBidHistory = stateBidHistory.copy(
+                postingBidAmount = true
+            )
+
+            val result = useCase.placeBidAmount.invoke(
+                amount = statePlaceBid.bidAmount,
+                itemId = itemID,
+                userId = "//TODO"
+            )
+
+            resultChannel.send(result)
+            stateBidHistory = stateBidHistory.copy(
+                postingBidAmount = false
+            )
+
+        }
+
+        //        useCase.placeBidAmount.invoke(amount, itemId, userId).onEach { result ->
+//            when(result) {
+//                is Resource.Success -> {
+//                    statePlaceBid = statePlaceBid.copy(
+//                        bidAmount =
+//                    )
+//                }
+//                is Resource.Error -> {
+//
+//                }
+//                is Resource.Loading -> {
+//
+//                }
+//            }
+//        }
     }
 
 }

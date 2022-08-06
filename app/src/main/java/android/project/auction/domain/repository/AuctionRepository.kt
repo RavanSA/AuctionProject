@@ -14,4 +14,6 @@ interface AuctionRepository {
     suspend fun getItemDetailById(itemId: String): ItemDetailDto
 
     suspend fun getBidsHistoryByItemId(itemId: String): BidsHistoryDto
+
+    suspend fun placeBidAmount(amount: Int, itemId: String, userId: String)
 }

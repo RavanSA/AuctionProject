@@ -58,7 +58,6 @@ fun AuctionListScreen(
     val scope: CoroutineScope = rememberCoroutineScope()
     val auctionItemState = auctionViewModel.stateItem
 
-
     val auctionListState = auctionViewModel.state
 
     LaunchedEffect(viewModel, context) {

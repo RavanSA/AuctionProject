@@ -21,6 +21,7 @@ import android.project.auction.domain.use_case.getbidhistory.GetBidHistory
 import android.project.auction.domain.use_case.getcategories.GetCategories
 import android.project.auction.domain.use_case.getitemdetail.GetItemDetail
 import android.project.auction.domain.use_case.getitems.GetItems
+import android.project.auction.domain.use_case.placebidamount.PlaceBidAmount
 import android.project.auction.domain.use_case.validateform.*
 import androidx.room.Room
 import dagger.Module
@@ -107,7 +108,8 @@ object AppModule {
             getCategories = GetCategories(repository = repository),
             getItems = GetItems(repository = repository, db),
             getItemDetail = GetItemDetail(repository = repository),
-            getBidHistory = GetBidHistory(repository = repository)
+            getBidHistory = GetBidHistory(repository = repository),
+            placeBidAmount = PlaceBidAmount(repository = repository)
         )
     }
 
