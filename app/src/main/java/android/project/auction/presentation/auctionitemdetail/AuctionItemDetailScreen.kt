@@ -3,6 +3,7 @@ package android.project.auction.presentation.auctionitemdetail
 import android.project.auction.R
 import android.project.auction.domain.model.bids.Bids
 import android.project.auction.domain.model.item.ItemDetail
+import android.project.auction.presentation.Screen
 import android.project.auction.presentation.auctionlist.components.ProfileImage
 import android.project.auction.presentation.auth.sign_in.dpToSp
 import android.util.Log
@@ -68,15 +69,15 @@ fun AuctionItemDetailScreen(
 
     val context = LocalContext.current
 
-    LaunchedEffect(auctionItemDetailViewModel, context) {
-        auctionItemDetailViewModel.bidResult.collect { result ->
-            when (result) {
-                is AuctionItemDetailEvent.OnBidAmountPlaced -> {
-
-                }
-            }
-        }
-    }
+//    LaunchedEffect(auctionItemDetailViewModel, context) {
+//        auctionItemDetailViewModel.bidResult.collect { result ->
+//            when (result) {
+//                is AuctionItemDetailEvent.OnBidAmountPlaced -> {
+//
+//                }
+//            }
+//        }
+//    }
 
 
     ModalBottomSheetLayout(
@@ -143,7 +144,11 @@ fun AuctionItemDetailScreen(
                         }
                     },
                     navigationIcon = {
-                        IconButton(onClick = {}) {
+                        IconButton(onClick = {
+                            navController.navigate(
+                                Screen.AuctionListScreen.route
+                            )
+                        }) {
                             Icon(Icons.Default.ArrowBack, "Menu")
                         }
                     },
@@ -156,7 +161,7 @@ fun AuctionItemDetailScreen(
             },
             content = {
 
-                AuctionDetailContent(state, bidHistoryState, bottomState)
+                AuctionDetailContent(state, bidHistoryState, bottomState, navController)
 
             }
         )
@@ -168,7 +173,8 @@ fun AuctionItemDetailScreen(
 fun AuctionDetailContent(
     state: State<AuctionItemDetailState>,
     bidhistoryState: AuctionItemDetailState,
-    bottomState: ModalBottomSheetState
+    bottomState: ModalBottomSheetState,
+    navController: NavController
 ) {
 
     Column(
@@ -234,7 +240,13 @@ fun AuctionDetailContent(
             }
         }
 
-        StickyPlaceBidButton()
+        state.value.itemDetails?.id?.let {
+            StickyPlaceBidButton(
+                navController,
+                it
+            )
+
+        }
     }
 }
 
@@ -446,12 +458,15 @@ fun ItemDetailDescription(
 
 @Composable
 fun StickyPlaceBidButton(
-    auctionItemDetailViewModel: AuctionItemDetailViewModel = hiltViewModel()
+    navController: NavController,
+    itemId: String
 ) {
+
+    Log.d("ITEMID", itemId)
     Button(
         onClick = {
-            auctionItemDetailViewModel.onEvent(
-                AuctionItemDetailEvent.OnBidAmountPlaced
+            navController.navigate(
+                Screen.PlaceBidAmountScreen.route + "/${itemId}"
             )
         }, modifier = Modifier
             .fillMaxWidth()

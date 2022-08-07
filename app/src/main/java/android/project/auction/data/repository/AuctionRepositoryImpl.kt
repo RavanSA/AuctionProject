@@ -7,6 +7,8 @@ import android.project.auction.data.remote.dto.categories.Categories
 import android.project.auction.data.remote.dto.items.getitems.ItemDto
 import android.project.auction.data.remote.dto.items.itemdetail.ItemDetailDto
 import android.project.auction.domain.repository.AuctionRepository
+import android.util.Log
+import retrofit2.Response
 import javax.inject.Inject
 
 class AuctionRepositoryImpl @Inject constructor(
@@ -30,7 +32,15 @@ class AuctionRepositoryImpl @Inject constructor(
         return api.getBidsHistoryByItemId(itemId)
     }
 
-    override suspend fun placeBidAmount(amount: Int, itemId: String, userId: String) {
+    override suspend fun placeBidAmount(
+        amount: Int,
+        itemId: String,
+        userId: String
+    ): Response<Unit> {
+        Log.d("RESPONSEBIDTEST2", amount.toString())
+        Log.d("RESPONSEITEMID", itemId)
+        Log.d("RESPONSEUSERID", userId)
+
         return api.placeBidAmount(
             PlaceBidRequest(
                 amount = amount,

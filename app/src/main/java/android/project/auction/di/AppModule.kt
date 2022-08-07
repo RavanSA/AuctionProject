@@ -102,14 +102,15 @@ object AppModule {
     @Singleton
     fun provideAuctionAPIUseCases(
         repository: AuctionRepository,
-        db: AppDatabase
+        db: AppDatabase,
+        preferences: SharedPreferences
     ): AuctionProjectUseCase {
         return AuctionProjectUseCase(
             getCategories = GetCategories(repository = repository),
             getItems = GetItems(repository = repository, db),
             getItemDetail = GetItemDetail(repository = repository),
             getBidHistory = GetBidHistory(repository = repository),
-            placeBidAmount = PlaceBidAmount(repository = repository)
+            placeBidAmount = PlaceBidAmount(repository = repository, preferences = preferences)
         )
     }
 

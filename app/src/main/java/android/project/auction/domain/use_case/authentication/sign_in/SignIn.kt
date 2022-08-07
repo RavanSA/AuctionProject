@@ -23,7 +23,12 @@ class SignIn @Inject constructor(
 
             preferences
                 .edit()
-                .putString("JWT",response.data.token)
+                .putString("JWT", response.data.token)
+                .apply()
+
+            preferences
+                .edit()
+                .putString("USERID", response.data.userId)
                 .apply()
 
             AuthResult.Authorized()

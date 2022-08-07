@@ -1,5 +1,6 @@
 package android.project.auction.presentation.ui.common.bottomNav
 
+import android.project.auction.presentation.Screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -60,7 +61,9 @@ fun BottomNav(navController: NavController) {
         elevation = 0.dp,
         backgroundColor = White
     ) {
-        items.forEach {
+        items.forEach { it ->
+            val route = it.route
+
             BottomNavigationItem(
                 icon = {
                     it.icon.let {
@@ -78,12 +81,24 @@ fun BottomNav(navController: NavController) {
                         color = Color.Gray
                     )
                 },
-                selected = currentRoute?.hierarchy?.any { it.route == it.route } == true,
+                selected = currentRoute?.hierarchy?.any {
+                    route == it.route
+                } == true,
 
                 selectedContentColor = Color.Black,
                 unselectedContentColor = Color.White,
-                onClick = {}
-
+                onClick = {
+                    when (it.title) {
+                        "Home" -> {
+                            navController.navigate(
+                                Screen.AuctionListScreen.route
+                            )
+                        }
+                        "Categories" -> {}
+                        "Favorites" -> {}
+                        "Profile" -> {}
+                    }
+                }
             )
         }
     }

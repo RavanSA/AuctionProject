@@ -4,6 +4,7 @@ import android.project.auction.data.remote.dto.bids.BidsHistoryDto
 import android.project.auction.data.remote.dto.categories.Categories
 import android.project.auction.data.remote.dto.items.getitems.ItemDto
 import android.project.auction.data.remote.dto.items.itemdetail.ItemDetailDto
+import retrofit2.Response
 
 interface AuctionRepository {
 
@@ -15,5 +16,5 @@ interface AuctionRepository {
 
     suspend fun getBidsHistoryByItemId(itemId: String): BidsHistoryDto
 
-    suspend fun placeBidAmount(amount: Int, itemId: String, userId: String)
+    suspend fun placeBidAmount(amount: Int, itemId: String, userId: String): Response<Unit>
 }

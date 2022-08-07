@@ -10,6 +10,7 @@ data class AuctionItemDetailState(
     val isBidHistoryLoading: Boolean = false,
     val bidHistory: List<Bids> = emptyList(),
     val bidError: String = "",
-    val bidAmount: Int = 0,
+    val bidAmount: String = "",
+    val itemID: String = "",
     val postingBidAmount: Boolean = false
 )

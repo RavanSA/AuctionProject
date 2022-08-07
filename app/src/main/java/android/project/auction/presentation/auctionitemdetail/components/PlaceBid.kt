@@ -3,6 +3,8 @@ package android.project.auction.presentation.auctionitemdetail.components
 import android.project.auction.presentation.auctionitemdetail.AuctionItemDetailEvent
 import android.project.auction.presentation.auctionitemdetail.AuctionItemDetailViewModel
 import android.project.auction.presentation.auth.sign_in.dpToSp
+import android.util.Log
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,12 +20,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
 
 @Composable
 fun PlaceBid(
-    itemId: String,
-    amount: String
+    savedStateHandle: SavedStateHandle,
+    navController: NavController
 ) {
+
+    var itemID = ""
+    savedStateHandle.get<String>("itemId")?.let { itemId ->
+        Log.d("ITEMIDPLACE", itemId)
+        itemID = itemId
+    }
+
+    val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+
 
     Scaffold(
         topBar = {
@@ -39,7 +52,9 @@ fun PlaceBid(
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = {
+                        onBackPressedDispatcher?.onBackPressed()
+                    }) {
                         Icon(Icons.Default.Clear, "Menu")
                     }
                 },
@@ -49,18 +64,21 @@ fun PlaceBid(
             )
         },
         content = {
-
+            PlaceBidContent(itemID)
         }
     )
-
 }
+
 
 @Composable
 fun PlaceBidContent(
+    itemID: String,
     auctionItemDetailViewModel: AuctionItemDetailViewModel = hiltViewModel()
 ) {
 
     val state = auctionItemDetailViewModel.statePlaceBid
+
+    Log.d("ITEMIDPLACEBID", itemID)
 
     Box(
         modifier = Modifier
@@ -68,7 +86,6 @@ fun PlaceBidContent(
             .background(Color.White),
         contentAlignment = Alignment.TopCenter
     ) {
-
 
         Column(
             modifier = Modifier
@@ -86,18 +103,19 @@ fun PlaceBidContent(
                 ),
                 fontSize = dpToSp(30.dp)
             )
-
+            Log.d("STATEBIDAMOUNT", state.bidAmount)
             OutlinedTextField(
-                value = state.bidAmount.toString(),
+                value = state.bidAmount,
                 onValueChange = {
+                    Log.d("ITEMEVENT", itemID)
                     auctionItemDetailViewModel.onEvent(
-                        AuctionItemDetailEvent.BidAmountChanged(amount = it.toInt())
+                        AuctionItemDetailEvent.BidAmountChanged(amount = it, itemId = itemID)
                     )
                 },
                 label = { Text(text = "Amount", color = Color.Black) },
                 placeholder = { Text(text = "Bid Amount", color = Color.Black) },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth(0.8f),
+                modifier = Modifier.fillMaxWidth(0.9f),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Color.Black,
                     unfocusedBorderColor = Color.Black
@@ -107,6 +125,7 @@ fun PlaceBidContent(
                 )
             )
 
+            Spacer(modifier = Modifier.size(10.dp))
 
             Button(
                 onClick = {
@@ -114,7 +133,7 @@ fun PlaceBidContent(
                         AuctionItemDetailEvent.OnBidAmountPlaced
                     )
                 }, modifier = Modifier
-                    .fillMaxWidth(0.8f)
+                    .fillMaxWidth(0.9f)
                     .height(50.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color.Black,

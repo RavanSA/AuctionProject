@@ -5,6 +5,7 @@ import android.project.auction.data.remote.dto.bids.PlaceBidRequest
 import android.project.auction.data.remote.dto.categories.Categories
 import android.project.auction.data.remote.dto.items.getitems.ItemDto
 import android.project.auction.data.remote.dto.items.itemdetail.ItemDetailDto
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -27,6 +28,6 @@ interface AuctionAPI {
     @POST("Bids")
     suspend fun placeBidAmount(
         @Body bidAmount: PlaceBidRequest
-    )
+    ): Response<Unit>
 
 }

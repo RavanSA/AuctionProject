@@ -46,6 +46,7 @@ class AuctionItemDetailViewModel @Inject constructor(
     }
 
     private fun getItemId(itemId: String) {
+        Log.d("GETTINGITEMID", itemId)
         itemID = itemId
     }
 
@@ -53,10 +54,10 @@ class AuctionItemDetailViewModel @Inject constructor(
         when (event) {
             is AuctionItemDetailEvent.BidAmountChanged -> {
                 statePlaceBid = statePlaceBid.copy(
-                    bidAmount = event.amount
+                    bidAmount = event.amount,
+                    itemID = event.itemId
                 )
             }
-
             is AuctionItemDetailEvent.OnBidAmountPlaced -> {
                 placeBidAmount()
             }
@@ -116,40 +117,28 @@ class AuctionItemDetailViewModel @Inject constructor(
     }
 
     private fun placeBidAmount() {
-
+        Log.d("BIDITEMID", statePlaceBid.itemID)
         viewModelScope.launch {
             stateBidHistory = stateBidHistory.copy(
                 postingBidAmount = true
             )
 
-            val result = useCase.placeBidAmount.invoke(
-                amount = statePlaceBid.bidAmount,
-                itemId = itemID,
-                userId = "//TODO"
+            Log.d("BIDAMOUNT", statePlaceBid.bidAmount.toInt().toString())
+
+
+            useCase.placeBidAmount.invoke(
+                amount = statePlaceBid.bidAmount.toInt(),
+                itemId = itemID
             )
 
-            resultChannel.send(result)
+            Log.d("BIDITENID", statePlaceBid.itemID)
+
+//            Log.d("BIDTEST", result.toString())
+
+//            resultChannel.send(result)
             stateBidHistory = stateBidHistory.copy(
                 postingBidAmount = false
             )
-
         }
-
-        //        useCase.placeBidAmount.invoke(amount, itemId, userId).onEach { result ->
-//            when(result) {
-//                is Resource.Success -> {
-//                    statePlaceBid = statePlaceBid.copy(
-//                        bidAmount =
-//                    )
-//                }
-//                is Resource.Error -> {
-//
-//                }
-//                is Resource.Loading -> {
-//
-//                }
-//            }
-//        }
     }
-
 }

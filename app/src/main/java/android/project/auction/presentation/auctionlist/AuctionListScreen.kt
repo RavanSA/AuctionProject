@@ -127,6 +127,11 @@ fun AuctionListScreen(
                 if (it.title == "Logout") {
                     viewModel.onEvent(AuthUiEvent.Logout)
                 }
+                if (it.title == "Home") {
+                    navController.navigate(
+                        Screen.AuctionListScreen.route
+                    )
+                }
             }
         )
     },
@@ -149,7 +154,11 @@ fun AuctionListScreen(
         floatingActionButton = {
             FloatingActionButton(
                 shape = CircleShape,
-                onClick = {},
+                onClick = {
+                    navController.navigate(
+                        Screen.PostItemScreen.route
+                    )
+                },
                 contentColor = Color.White,
                 backgroundColor = Black
             ) {

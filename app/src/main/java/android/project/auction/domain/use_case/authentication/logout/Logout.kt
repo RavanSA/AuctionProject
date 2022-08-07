@@ -23,6 +23,11 @@ class Logout @Inject constructor(
                 .putString("JWT", null)
                 .apply()
 
+            preferences
+                .edit()
+                .putString("USERID", null)
+                .apply()
+
             AuthResult.UnAuthorized()
 
         } catch (e: HttpException) {
