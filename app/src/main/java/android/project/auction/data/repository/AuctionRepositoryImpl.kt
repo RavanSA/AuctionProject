@@ -4,6 +4,7 @@ import android.project.auction.data.remote.AuctionAPI
 import android.project.auction.data.remote.dto.bids.BidsHistoryDto
 import android.project.auction.data.remote.dto.bids.PlaceBidRequest
 import android.project.auction.data.remote.dto.categories.Categories
+import android.project.auction.data.remote.dto.categories.subcategories.SubCategoriesDto
 import android.project.auction.data.remote.dto.items.getitems.ItemDto
 import android.project.auction.data.remote.dto.items.itemdetail.ItemDetailDto
 import android.project.auction.domain.repository.AuctionRepository
@@ -48,6 +49,10 @@ class AuctionRepositoryImpl @Inject constructor(
                 userId = userId
             )
         )
+    }
+
+    override suspend fun getCategoriesWithSubcategories(): SubCategoriesDto {
+        return api.getCategoriesWithSubCategories()
     }
 
 }

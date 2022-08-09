@@ -8,6 +8,7 @@ import android.project.auction.presentation.auctionlist.AuctionListScreen
 import android.project.auction.presentation.auth.sign_in.LoginPage
 import android.project.auction.presentation.auth.signup.SignUpPage
 import android.project.auction.presentation.postitem.PostItem
+import android.project.auction.presentation.postitem.components.SubCategegoriesList
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.ExperimentalMaterialApi
@@ -43,6 +44,9 @@ class MainActivity : ComponentActivity() {
                 }
                 composable(route = Screen.PostItemScreen.route) {
                     PostItem(navController = navController)
+                }
+                composable(route = Screen.SubCategoriesScreen.route + "/{categoryId}") {
+                    SubCategegoriesList(navController = navController)
                 }
             }
         }

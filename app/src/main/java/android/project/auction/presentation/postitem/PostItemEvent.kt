@@ -1,4 +1,5 @@
 package android.project.auction.presentation.postitem
 
-class PostItemEvent {
+sealed class PostItemEvent {
+    object OnCategoryItemClicked : PostItemEvent()
 }

@@ -45,7 +45,7 @@ fun PostItem(
             }
         },
         content = {
-            CategoriesList(categoriesState)
+            CategoriesList(categoriesState, navController, postItemViewModel)
         }
     )
 
@@ -74,3 +74,4 @@ fun SearchBar(
         )
     }
 }
+

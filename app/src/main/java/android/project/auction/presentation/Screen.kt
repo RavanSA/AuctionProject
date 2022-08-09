@@ -8,6 +8,7 @@ sealed class Screen(val route: String) {
     object AuctionItemDetailScreen : Screen("item_detail_screen")
     object PlaceBidAmountScreen : Screen("place_bid_amount_screen")
     object PostItemScreen : Screen("post_item_screen")
+    object SubCategoriesScreen : Screen("sub_categories_screen")
     object HomeScreen : Screen("home_screen")
     object CategoriesScreen : Screen("categories_screen")
     object FavoritesScreen : Screen("favorites_screen")
