@@ -1,5 +1,6 @@
 package android.project.auction.domain.use_case
 
+import android.project.auction.domain.use_case.createitem.CreateItem
 import android.project.auction.domain.use_case.getbidhistory.GetBidHistory
 import android.project.auction.domain.use_case.getcategories.GetCategories
 import android.project.auction.domain.use_case.getcategories.GetSubCategories
@@ -13,5 +14,6 @@ data class AuctionProjectUseCase(
     val getItemDetail: GetItemDetail,
     val getBidHistory: GetBidHistory,
     val placeBidAmount: PlaceBidAmount,
-    val getSubCategories: GetSubCategories
+    val getSubCategories: GetSubCategories,
+    val createItem: CreateItem
 )

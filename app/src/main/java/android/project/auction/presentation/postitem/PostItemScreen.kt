@@ -17,16 +17,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 
 @Composable
 fun PostItem(
-    navController: NavController,
-    postItemViewModel: PostItemViewModel = hiltViewModel()
+    navController: NavController
 ) {
-
-    val categoriesState = postItemViewModel.state
 
     Scaffold(
         topBar = {
@@ -45,7 +41,7 @@ fun PostItem(
             }
         },
         content = {
-            CategoriesList(categoriesState, navController, postItemViewModel)
+            CategoriesList(navController)
         }
     )
 

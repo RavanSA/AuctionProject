@@ -2,9 +2,12 @@ package android.project.auction.data.repository
 
 import android.project.auction.data.remote.AuctionAPI
 import android.project.auction.data.remote.dto.bids.BidsHistoryDto
+import android.project.auction.data.remote.dto.bids.HighestBidDto
 import android.project.auction.data.remote.dto.bids.PlaceBidRequest
 import android.project.auction.data.remote.dto.categories.Categories
 import android.project.auction.data.remote.dto.categories.subcategories.SubCategoriesDto
+import android.project.auction.data.remote.dto.items.createitem.CreateItemRequest
+import android.project.auction.data.remote.dto.items.createitem.CreateItemResponse
 import android.project.auction.data.remote.dto.items.getitems.ItemDto
 import android.project.auction.data.remote.dto.items.itemdetail.ItemDetailDto
 import android.project.auction.domain.repository.AuctionRepository
@@ -55,4 +58,24 @@ class AuctionRepositoryImpl @Inject constructor(
         return api.getCategoriesWithSubCategories()
     }
 
+    override suspend fun createItem(createItemRequest: CreateItemRequest): CreateItemResponse {
+        Log.d("CREATEREPOREQUES", createItemRequest.toString())
+        return api.createItem(
+            createItemRequest.title,
+            createItemRequest.description,
+            createItemRequest.startingPrice,
+            createItemRequest.minIncrease,
+            createItemRequest.startTime,
+            createItemRequest.endTime,
+            createItemRequest.subCategoryId,
+            createItemRequest.categoryId,
+            createItemRequest.userId
+        )
+    }
+
+    override suspend fun getHighestBidByItemId(itemId: String): HighestBidDto {
+        return api.getHighestByItemId(
+            itemId = itemId
+        )
+    }
 }

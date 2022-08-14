@@ -17,6 +17,7 @@ import android.project.auction.domain.use_case.authentication.auth.Authenticatio
 import android.project.auction.domain.use_case.authentication.logout.Logout
 import android.project.auction.domain.use_case.authentication.sign_in.SignIn
 import android.project.auction.domain.use_case.authentication.sign_up.SignUp
+import android.project.auction.domain.use_case.createitem.CreateItem
 import android.project.auction.domain.use_case.getbidhistory.GetBidHistory
 import android.project.auction.domain.use_case.getcategories.GetCategories
 import android.project.auction.domain.use_case.getcategories.GetSubCategories
@@ -112,7 +113,8 @@ object AppModule {
             getItemDetail = GetItemDetail(repository = repository),
             getBidHistory = GetBidHistory(repository = repository),
             placeBidAmount = PlaceBidAmount(repository = repository, preferences = preferences),
-            getSubCategories = GetSubCategories(repository = repository)
+            getSubCategories = GetSubCategories(repository = repository),
+            createItem = CreateItem(repository = repository, preferences = preferences)
         )
     }
 

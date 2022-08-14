@@ -117,25 +117,16 @@ class AuctionItemDetailViewModel @Inject constructor(
     }
 
     private fun placeBidAmount() {
-        Log.d("BIDITEMID", statePlaceBid.itemID)
         viewModelScope.launch {
             stateBidHistory = stateBidHistory.copy(
                 postingBidAmount = true
             )
-
-            Log.d("BIDAMOUNT", statePlaceBid.bidAmount.toInt().toString())
-
 
             useCase.placeBidAmount.invoke(
                 amount = statePlaceBid.bidAmount.toInt(),
                 itemId = itemID
             )
 
-            Log.d("BIDITENID", statePlaceBid.itemID)
-
-//            Log.d("BIDTEST", result.toString())
-
-//            resultChannel.send(result)
             stateBidHistory = stateBidHistory.copy(
                 postingBidAmount = false
             )

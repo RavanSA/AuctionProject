@@ -1,6 +1,8 @@
 package android.project.auction
 
 import android.os.Bundle
+import android.project.auction.domain.model.category.SubAndCategory
+import android.project.auction.domain.model.category.SubCategories
 import android.project.auction.presentation.Screen
 import android.project.auction.presentation.auctionitemdetail.AuctionItemDetailScreen
 import android.project.auction.presentation.auctionitemdetail.components.PlaceBid
@@ -8,6 +10,7 @@ import android.project.auction.presentation.auctionlist.AuctionListScreen
 import android.project.auction.presentation.auth.sign_in.LoginPage
 import android.project.auction.presentation.auth.signup.SignUpPage
 import android.project.auction.presentation.postitem.PostItem
+import android.project.auction.presentation.postitem.components.CreateItem
 import android.project.auction.presentation.postitem.components.SubCategegoriesList
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -45,8 +48,23 @@ class MainActivity : ComponentActivity() {
                 composable(route = Screen.PostItemScreen.route) {
                     PostItem(navController = navController)
                 }
-                composable(route = Screen.SubCategoriesScreen.route + "/{categoryId}") {
-                    SubCategegoriesList(navController = navController)
+                composable(route = Screen.SubCategoriesScreen.route) {
+                    val subCategory = navController
+                        .previousBackStackEntry?.savedStateHandle?.get<SubCategories>("subcategory")
+
+                    subCategory?.let { it1 ->
+                        SubCategegoriesList(
+                            navController = navController,
+                            category = it1
+                        )
+                    }
+
+                }
+                composable(route = Screen.CreateItemScreen.route) {
+                    val subAndCategory = navController
+                        .previousBackStackEntry?.savedStateHandle?.get<SubAndCategory>("itemCategory")
+
+                    subAndCategory?.let { it -> CreateItem(navController = navController, it) }
                 }
             }
         }

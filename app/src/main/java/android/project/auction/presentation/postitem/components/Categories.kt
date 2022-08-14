@@ -1,10 +1,8 @@
 package android.project.auction.presentation.postitem.components
 
 import android.project.auction.R
-import android.project.auction.domain.model.category.Category
+import android.project.auction.domain.model.category.SubCategories
 import android.project.auction.presentation.Screen
-import android.project.auction.presentation.postitem.PostItemEvent
-import android.project.auction.presentation.postitem.PostItemState
 import android.project.auction.presentation.postitem.PostItemViewModel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -15,7 +13,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,55 +21,52 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 
 @Composable
 fun CategoriesList(
-    category: State<PostItemState>,
-    navController: NavController,
-    postItemViewModel: PostItemViewModel
+    navController: NavController
 ) {
     CategoriesContent(
-        category = category,
-        navController = navController,
-        postItemViewModel = postItemViewModel
+        navController = navController
     )
 }
 
 @Composable
 fun CategoriesContent(
-    category: State<PostItemState>,
-    navController: NavController,
-    postItemViewModel: PostItemViewModel
+    navController: NavController
 ) {
     Column(
         modifier = Modifier.padding(15.dp),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.Start
     ) {
-        CategoriesLazyColumn(category.value.categories, navController, postItemViewModel)
+        CategoriesLazyColumn(navController)
     }
 }
 
 @Composable
 fun CategoriesLazyColumn(
-    categories: List<Category>,
     navController: NavController,
-    postItemViewModel: PostItemViewModel
+    postItemViewModel: PostItemViewModel = hiltViewModel()
 ) {
+
+    val subCategory = postItemViewModel.stateSubCategories.subCategories
+
     LazyColumn(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.Start
     ) {
-        items(categories) { category ->
-            CategoriesItem(category = category, navController = navController, postItemViewModel)
+        items(subCategory) { subCategory ->
+            CategoriesItem(category = subCategory, navController = navController, postItemViewModel)
         }
     }
 }
 
 @Composable
 fun CategoriesItem(
-    category: Category,
+    category: SubCategories,
     navController: NavController,
     postItemViewModel: PostItemViewModel
 ) {
@@ -80,10 +74,13 @@ fun CategoriesItem(
         modifier = Modifier
             .padding(10.dp)
             .clickable {
-                postItemViewModel.onEvent(
-                    PostItemEvent.OnCategoryItemClicked
+                navController.currentBackStackEntry?.savedStateHandle?.set(
+                    key = "subcategory",
+                    value = category
                 )
-                navController.navigate(Screen.SubCategoriesScreen.route + "/${category.id}")
+                navController.navigate(
+                    Screen.SubCategoriesScreen.route
+                )
             },
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.Top
