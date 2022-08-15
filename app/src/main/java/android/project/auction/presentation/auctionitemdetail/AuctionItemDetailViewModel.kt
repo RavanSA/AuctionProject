@@ -1,6 +1,7 @@
 package android.project.auction.presentation.auctionitemdetail
 
 import android.project.auction.common.Resource
+import android.project.auction.data.remote.dto.bids.HighestBid
 import android.project.auction.domain.use_case.AuctionProjectUseCase
 import android.util.Log
 import androidx.compose.runtime.State
@@ -34,6 +35,8 @@ class AuctionItemDetailViewModel @Inject constructor(
 
     var statePlaceBid by mutableStateOf(AuctionItemDetailState())
 
+    var stateHighestBid by mutableStateOf(AuctionItemDetailState())
+
     private val resultChannel = Channel<Flow<Resource<Unit>>>()
     val bidResult = resultChannel.receiveAsFlow()
 
@@ -42,6 +45,7 @@ class AuctionItemDetailViewModel @Inject constructor(
             getItemDetail(itemId)
             getBidHistory(itemId)
             getItemId(itemId)
+            getHighestBid(itemId)
         }
     }
 
@@ -98,6 +102,8 @@ class AuctionItemDetailViewModel @Inject constructor(
         useCase.getItemDetail.invoke(itemId).onEach { result ->
             when (result) {
                 is Resource.Success -> {
+                    Log.d("TSTHİHESGTBID", result.data.toString())
+
                     _state.value = AuctionItemDetailState(
                         itemDetails = result.data
                     )
@@ -131,5 +137,30 @@ class AuctionItemDetailViewModel @Inject constructor(
                 postingBidAmount = false
             )
         }
+    }
+
+    private fun getHighestBid(itemId: String) {
+        useCase.getHighestBid.invoke(itemId).onEach { result ->
+            when (result) {
+                is Resource.Loading -> {
+                    stateHighestBid = stateHighestBid.copy(
+                        highestBidLoading = true
+                    )
+                }
+                is Resource.Success -> {
+                    stateHighestBid = stateHighestBid.copy(
+                        highestBid = result.data ?: HighestBid(
+                            0.0,
+                            "", "", "", ""
+                        )
+                    )
+                }
+                is Resource.Error -> {
+                    stateHighestBid = stateHighestBid.copy(
+                        error = result.message ?: "ERROR OCCURED"
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 }

@@ -27,4 +27,5 @@ interface AuctionRepository {
     suspend fun createItem(createItemRequest: CreateItemRequest): CreateItemResponse
 
     suspend fun getHighestBidByItemId(itemId: String): HighestBidDto
+
 }

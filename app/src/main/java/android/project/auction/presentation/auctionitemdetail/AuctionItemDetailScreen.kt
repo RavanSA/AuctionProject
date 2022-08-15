@@ -65,6 +65,8 @@ fun AuctionItemDetailScreen(
 
     val state = auctionItemDetailViewModel.state
 
+    val highestBidState = auctionItemDetailViewModel.stateHighestBid
+
     val bidHistoryState = auctionItemDetailViewModel.stateBidHistory
 
     val context = LocalContext.current
@@ -161,7 +163,13 @@ fun AuctionItemDetailScreen(
             },
             content = {
 
-                AuctionDetailContent(state, bidHistoryState, bottomState, navController)
+                AuctionDetailContent(
+                    state,
+                    bidHistoryState,
+                    bottomState,
+                    navController,
+                    highestBidState
+                )
 
             }
         )
@@ -174,8 +182,10 @@ fun AuctionDetailContent(
     state: State<AuctionItemDetailState>,
     bidhistoryState: AuctionItemDetailState,
     bottomState: ModalBottomSheetState,
-    navController: NavController
+    navController: NavController,
+    highestBidState: AuctionItemDetailState
 ) {
+
 
     Column(
         modifier = Modifier
@@ -208,7 +218,9 @@ fun AuctionDetailContent(
                 state.value.itemDetails?.let { AuctionStatusCard(itemDetails = it) }
                 Spacer(modifier = Modifier.size(30.dp))
 
-                state.value.itemDetails?.let { CurrentBidComponent(itemDetails = it) }
+//                state.value.highestBid?.let { CurrentBidComponent(highestBid = it, ) }
+
+                CurrentBidComponent(highestBidState = highestBidState)
 
                 Spacer(modifier = Modifier.size(20.dp))
 
@@ -325,8 +337,10 @@ fun AuctionStatusCard(
 
 @Composable
 fun CurrentBidComponent(
-    itemDetails: ItemDetail
+    highestBidState: AuctionItemDetailState
 ) {
+
+
     Column(
         modifier = Modifier
             .background(Color.White)
@@ -350,8 +364,9 @@ fun CurrentBidComponent(
         )
         Spacer(modifier = Modifier.size(10.dp))
 
+
         Text(
-            text = "${itemDetails?.startingPrice}$",
+            text = "${highestBidState.highestBid?.amount}$",
             color = Color.Black,
             maxLines = 1,
             modifier = Modifier.padding(start = 16.dp),
@@ -369,11 +384,11 @@ fun CurrentBidComponent(
             ProfileImage(
                 modifier = Modifier
                     .size(32.dp)
-                    .clip(CircleShape)                       // clip to the circle shape
+                    .clip(CircleShape)
                     .border(2.dp, Color.Gray, CircleShape)
             )
             Text(
-                "@" + itemDetails?.userFullName,
+                "@userFullName",
                 color = Color.Black,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -403,7 +418,6 @@ fun ItemDetailDescription(
             ),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.SpaceBetween,
-
         ) {
 
         Text(

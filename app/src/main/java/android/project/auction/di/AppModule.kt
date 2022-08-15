@@ -21,6 +21,7 @@ import android.project.auction.domain.use_case.createitem.CreateItem
 import android.project.auction.domain.use_case.getbidhistory.GetBidHistory
 import android.project.auction.domain.use_case.getcategories.GetCategories
 import android.project.auction.domain.use_case.getcategories.GetSubCategories
+import android.project.auction.domain.use_case.gethighestbid.GetHighestBid
 import android.project.auction.domain.use_case.getitemdetail.GetItemDetail
 import android.project.auction.domain.use_case.getitems.GetItems
 import android.project.auction.domain.use_case.placebidamount.PlaceBidAmount
@@ -114,7 +115,8 @@ object AppModule {
             getBidHistory = GetBidHistory(repository = repository),
             placeBidAmount = PlaceBidAmount(repository = repository, preferences = preferences),
             getSubCategories = GetSubCategories(repository = repository),
-            createItem = CreateItem(repository = repository, preferences = preferences)
+            createItem = CreateItem(repository = repository, preferences = preferences),
+            getHighestBid = GetHighestBid(repository = repository)
         )
     }
 
