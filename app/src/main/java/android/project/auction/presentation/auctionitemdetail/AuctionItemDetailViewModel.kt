@@ -3,6 +3,7 @@ package android.project.auction.presentation.auctionitemdetail
 import android.project.auction.common.Resource
 import android.project.auction.data.remote.dto.bids.HighestBid
 import android.project.auction.domain.use_case.AuctionProjectUseCase
+import android.project.auction.domain.use_case.authentication.AuctionAuthUseCase
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -23,6 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AuctionItemDetailViewModel @Inject constructor(
     private val useCase: AuctionProjectUseCase,
+    private val authUseCase: AuctionAuthUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -107,6 +109,8 @@ class AuctionItemDetailViewModel @Inject constructor(
                     _state.value = AuctionItemDetailState(
                         itemDetails = result.data
                     )
+                    getUserId()
+
                 }
                 is Resource.Loading -> {
                     _state.value = AuctionItemDetailState(
@@ -163,4 +167,15 @@ class AuctionItemDetailViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
     }
+
+    private fun getUserId() {
+        viewModelScope.launch {
+            Log.d("LOGUSERID", authUseCase.userId.invoke())
+            _state.value = state.value.copy(
+                userId = authUseCase.userId.invoke()
+            )
+
+        }
+    }
+
 }

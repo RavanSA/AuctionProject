@@ -1,5 +1,6 @@
 package android.project.auction.data.repository
 
+import android.content.SharedPreferences
 import android.project.auction.data.remote.AuthAPI
 import android.project.auction.data.remote.dto.auth.authsignin.AuthSignInRequest
 import android.project.auction.data.remote.dto.auth.authsignin.LoginResponse
@@ -10,7 +11,8 @@ import javax.inject.Inject
 
 
 class AuthRepositoryImpl @Inject constructor(
-    private val api: AuthAPI
+    private val api: AuthAPI,
+    private val preferences: SharedPreferences
 ) : AuthRepository {
 
 
@@ -43,6 +45,10 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun logout(): Unit {
         return api.logout()
+    }
+
+    override suspend fun getUserIDFromPreferences(): String {
+        return preferences.getString("USERID", null) ?: "UNAUTHORIZED USER"
     }
 
 }

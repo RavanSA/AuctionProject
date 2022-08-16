@@ -14,6 +14,7 @@ import android.project.auction.domain.repository.AuthRepository
 import android.project.auction.domain.use_case.AuctionProjectUseCase
 import android.project.auction.domain.use_case.authentication.AuctionAuthUseCase
 import android.project.auction.domain.use_case.authentication.auth.Authentication
+import android.project.auction.domain.use_case.authentication.auth.GetUserId
 import android.project.auction.domain.use_case.authentication.logout.Logout
 import android.project.auction.domain.use_case.authentication.sign_in.SignIn
 import android.project.auction.domain.use_case.authentication.sign_up.SignUp
@@ -91,8 +92,11 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAuthRepository(api: AuthAPI): AuthRepository {
-        return AuthRepositoryImpl(api)
+    fun provideAuthRepository(
+        api: AuthAPI,
+        preferences: SharedPreferences
+    ): AuthRepository {
+        return AuthRepositoryImpl(api, preferences)
     }
 
     @Provides
@@ -141,7 +145,8 @@ object AppModule {
             signIn = SignIn(repository = repository, preferences = preferences),
             signUp = SignUp(repository = repository),
             authentication = Authentication(repository = repository, preferences = preferences),
-            logout = Logout(repository = repository, preferences = preferences)
+            logout = Logout(repository = repository, preferences = preferences),
+            userId = GetUserId(repository = repository)
         )
     }
 

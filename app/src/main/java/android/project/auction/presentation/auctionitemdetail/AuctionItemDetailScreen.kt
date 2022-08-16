@@ -71,15 +71,6 @@ fun AuctionItemDetailScreen(
 
     val context = LocalContext.current
 
-//    LaunchedEffect(auctionItemDetailViewModel, context) {
-//        auctionItemDetailViewModel.bidResult.collect { result ->
-//            when (result) {
-//                is AuctionItemDetailEvent.OnBidAmountPlaced -> {
-//
-//                }
-//            }
-//        }
-//    }
 
 
     ModalBottomSheetLayout(
@@ -218,8 +209,6 @@ fun AuctionDetailContent(
                 state.value.itemDetails?.let { AuctionStatusCard(itemDetails = it) }
                 Spacer(modifier = Modifier.size(30.dp))
 
-//                state.value.highestBid?.let { CurrentBidComponent(highestBid = it, ) }
-
                 CurrentBidComponent(highestBidState = highestBidState)
 
                 Spacer(modifier = Modifier.size(20.dp))
@@ -252,10 +241,12 @@ fun AuctionDetailContent(
             }
         }
 
-        state.value.itemDetails?.id?.let {
+        state.value.itemDetails?.let {
             StickyPlaceBidButton(
                 navController,
-                it
+                it,
+                state.value.userId,
+                highestBidState
             )
 
         }
@@ -473,14 +464,40 @@ fun ItemDetailDescription(
 @Composable
 fun StickyPlaceBidButton(
     navController: NavController,
-    itemId: String
+    item: ItemDetail,
+    userID: String,
+    highestBidder: AuctionItemDetailState
 ) {
 
-    Log.d("ITEMID", itemId)
+    var enabled by remember { mutableStateOf(true) }
+    var buttonTextState by remember { mutableStateOf("") }
+    var currentUtcTime = System.currentTimeMillis().toString()
+    var highestBidAmount = highestBidder.bidAmount ?: 0.0
+
+    if (item.userId == userID) {
+        if (item.endTime <= currentUtcTime) {
+            buttonTextState = "Contact Winner"
+        } else if (item.endTime <= currentUtcTime && highestBidAmount == 0) {
+            buttonTextState = "Item not sold"
+            enabled = false
+        } else {
+            buttonTextState = "Place a bid"
+            enabled = false
+        }
+    } else if (highestBidder.highestBid?.userId ?: "" == userID) {
+        if (item.endTime <= currentUtcTime) {
+            buttonTextState = "Contact Seller"
+        } else if (item.endTime > currentUtcTime) {
+            buttonTextState = "You're highest bidder"
+            enabled = false
+        }
+    }
+
+    Log.d("ITEMID", item.toString())
     Button(
         onClick = {
             navController.navigate(
-                Screen.PlaceBidAmountScreen.route + "/${itemId}"
+                Screen.PlaceBidAmountScreen.route + "/${item.id}"
             )
         }, modifier = Modifier
             .fillMaxWidth()
@@ -488,12 +505,14 @@ fun StickyPlaceBidButton(
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Color.Black,
             contentColor = Color.White
-        )
+        ),
+        enabled = enabled
     ) {
         Text(
-            text = "Place a Bid", fontSize = dpToSp(20.dp),
+            text = buttonTextState, fontSize = dpToSp(20.dp),
         )
     }
+
 }
 
 @ExperimentalMaterialApi

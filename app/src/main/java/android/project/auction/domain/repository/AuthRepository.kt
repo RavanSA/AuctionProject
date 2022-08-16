@@ -13,5 +13,7 @@ interface AuthRepository {
 
     suspend fun logout(): Unit
 
+    suspend fun getUserIDFromPreferences(): String
+
 
 }

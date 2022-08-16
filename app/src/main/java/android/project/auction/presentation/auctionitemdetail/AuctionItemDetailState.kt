@@ -17,5 +17,7 @@ data class AuctionItemDetailState(
 
     val highestBid: HighestBid? = null,
     val highestBidLoading: Boolean = false,
-    val highestError: String = ""
+    val highestError: String = "",
+
+    val userId: String = ""
 )
