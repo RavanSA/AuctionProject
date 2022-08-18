@@ -8,10 +8,15 @@ import android.project.auction.data.local.AppDatabase
 import android.project.auction.data.remote.AuctionAPI
 import android.project.auction.data.remote.AuthAPI
 import android.project.auction.data.repository.AuctionRepositoryImpl
+import android.project.auction.data.repository.AuctionRoomRepositoryImpl
 import android.project.auction.data.repository.AuthRepositoryImpl
 import android.project.auction.domain.repository.AuctionRepository
+import android.project.auction.domain.repository.AuctionRoomRepository
 import android.project.auction.domain.repository.AuthRepository
 import android.project.auction.domain.use_case.AuctionProjectUseCase
+import android.project.auction.domain.use_case.adddeletefavorites.AddFavoriteItem
+import android.project.auction.domain.use_case.adddeletefavorites.DeleteFavoriteItem
+import android.project.auction.domain.use_case.adddeletefavorites.GetFavoriteItems
 import android.project.auction.domain.use_case.authentication.AuctionAuthUseCase
 import android.project.auction.domain.use_case.authentication.auth.Authentication
 import android.project.auction.domain.use_case.authentication.auth.GetUserId
@@ -107,8 +112,15 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideAuctionRoomRepository(db: AppDatabase): AuctionRoomRepository {
+        return AuctionRoomRepositoryImpl(db.favDao, db.bidDao)
+    }
+
+    @Provides
+    @Singleton
     fun provideAuctionAPIUseCases(
         repository: AuctionRepository,
+        roomRepository: AuctionRoomRepository,
         db: AppDatabase,
         preferences: SharedPreferences
     ): AuctionProjectUseCase {
@@ -120,7 +132,10 @@ object AppModule {
             placeBidAmount = PlaceBidAmount(repository = repository, preferences = preferences),
             getSubCategories = GetSubCategories(repository = repository),
             createItem = CreateItem(repository = repository, preferences = preferences),
-            getHighestBid = GetHighestBid(repository = repository)
+            getHighestBid = GetHighestBid(repository = repository),
+            addFavoriteItem = AddFavoriteItem(repository = roomRepository),
+            deleteFavoriteItem = DeleteFavoriteItem(repository = roomRepository),
+            getFavoriteItems = GetFavoriteItems(repository = roomRepository)
         )
     }
 

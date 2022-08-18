@@ -33,7 +33,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -42,7 +41,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.skydoves.landscapist.glide.GlideImage
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 //@Preview
@@ -69,7 +71,26 @@ fun AuctionItemDetailScreen(
 
     val bidHistoryState = auctionItemDetailViewModel.stateBidHistory
 
-    val context = LocalContext.current
+    val scaffoldState = rememberScaffoldState()
+
+//    val itemAddToFavorite = mutableStateOf(false)
+
+    LaunchedEffect(key1 = true) {
+        auctionItemDetailViewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is AuctionItemDetailViewModel.ItemDetailUiEvent.ShowSnackbar -> {
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        message = event.message
+                    )
+                }
+                is AuctionItemDetailViewModel.ItemDetailUiEvent.AddFavoriteItem -> {
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        message = "Item Added to Favorites"
+                    )
+                }
+            }
+        }
+    }
 
 
 
@@ -142,16 +163,27 @@ fun AuctionItemDetailScreen(
                                 Screen.AuctionListScreen.route
                             )
                         }) {
+
                             Icon(Icons.Default.ArrowBack, "Menu")
                         }
                     },
                     actions = {
-                        IconButton(onClick = {}) {
-                            Icon(Icons.Default.Favorite, "Menu")
+                        IconButton(onClick = {
+                            auctionItemDetailViewModel.onEvent(
+                                AuctionItemDetailEvent.AddItemToFavorites
+                            )
+//                            itemAddToFavorite.value = true
+                        }) {
+
+                            Icon(
+                                Icons.Filled.Favorite,
+                                contentDescription = ""
+                            )
                         }
                     }
                 )
             },
+            scaffoldState = scaffoldState,
             content = {
 
                 AuctionDetailContent(
@@ -301,7 +333,7 @@ fun AuctionStatusCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = itemDetails.startTime,
+                    text = itemDetails.endTime,
                     modifier = Modifier
 
                         .padding(15.dp),
@@ -471,24 +503,60 @@ fun StickyPlaceBidButton(
 
     var enabled by remember { mutableStateOf(true) }
     var buttonTextState by remember { mutableStateOf("") }
-    var currentUtcTime = System.currentTimeMillis().toString()
-    var highestBidAmount = highestBidder.bidAmount ?: 0.0
+    var currentUtcTime = getCurrentDate().split("T").toTypedArray()
+    var endTime = item.endTime.split("T").toTypedArray()
+    var highestBidAmount = highestBidder.highestBid?.amount
+    Log.d("CURRENTUTC", currentUtcTime.toString())
+    Log.d("ENDTIME", endTime.toString())
 
-    if (item.userId == userID) {
-        if (item.endTime <= currentUtcTime) {
-            buttonTextState = "Contact Winner"
-        } else if (item.endTime <= currentUtcTime && highestBidAmount == 0) {
-            buttonTextState = "Item not sold"
-            enabled = false
-        } else {
-            buttonTextState = "Place a bid"
-            enabled = false
+    //	2022-08-20 07:00:00.0000000
+    val sdf = SimpleDateFormat("yyyy-MM-dd")
+    val endTimeParsed: Date = sdf?.parse(endTime[0])
+    val utcTimeParsed: Date = sdf?.parse(currentUtcTime[0])
+    Log.d("HİGHESTBIDAMOUBT", highestBidAmount.toString())
+
+
+    when {
+        item.userId == userID -> {
+            when {
+                //+
+                utcTimeParsed.after(endTimeParsed) && highestBidAmount != 0.0 -> {
+                    //+
+                    buttonTextState = "Contact Winner"
+                    Log.d("OWNERID", "CONTACT WINNER")
+                }
+
+                utcTimeParsed.after(endTimeParsed) && highestBidAmount == 0.0 -> {
+                    //+
+                    buttonTextState = "Item not sold"
+                    enabled = false
+                    Log.d("OWNERID", "ITEM NOT SOLD")
+                }
+                else -> {
+                    //+
+                    buttonTextState = "Place a bid"
+                    enabled = false
+                    Log.d("OWNERID", "PLACE A BID")
+                }
+            }
         }
-    } else if (highestBidder.highestBid?.userId ?: "" == userID) {
-        if (item.endTime <= currentUtcTime) {
-            buttonTextState = "Contact Seller"
-        } else if (item.endTime > currentUtcTime) {
-            buttonTextState = "You're highest bidder"
+        highestBidder.highestBid?.userId ?: "" == userID -> {
+            when {
+                //+
+                utcTimeParsed.after(endTimeParsed) -> {
+                    buttonTextState = "Contact Seller"
+                    Log.d("HIGHESTBIDDER", "CONTACT SELLER")
+                }
+                endTimeParsed.after(utcTimeParsed) -> {
+                    //+
+                    buttonTextState = "You're highest bidder"
+                    enabled = false
+                    Log.d("HIGHESTBIDDER", "YOUREHIGHESRBIDDR")
+                }
+            }
+        }
+        utcTimeParsed.after(endTimeParsed) -> {
+            buttonTextState = "Auction Ended"
             enabled = false
         }
     }
@@ -608,3 +676,7 @@ fun BidHistoryUserDetails(
     }
 }
 
+fun getCurrentDate(): String {
+    val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
+    return sdf.format(Date())
+}

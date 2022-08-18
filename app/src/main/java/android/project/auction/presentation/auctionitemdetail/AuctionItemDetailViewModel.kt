@@ -1,7 +1,9 @@
 package android.project.auction.presentation.auctionitemdetail
 
 import android.project.auction.common.Resource
+import android.project.auction.data.local.entity.Favorites
 import android.project.auction.data.remote.dto.bids.HighestBid
+import android.project.auction.domain.model.exceptions.InvalidFavoriteItemException
 import android.project.auction.domain.use_case.AuctionProjectUseCase
 import android.project.auction.domain.use_case.authentication.AuctionAuthUseCase
 import android.util.Log
@@ -13,11 +15,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,8 +29,6 @@ class AuctionItemDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    var itemID: String = ""
-
     private val _state = mutableStateOf(AuctionItemDetailState())
     val state: State<AuctionItemDetailState> = _state
 
@@ -39,8 +38,10 @@ class AuctionItemDetailViewModel @Inject constructor(
 
     var stateHighestBid by mutableStateOf(AuctionItemDetailState())
 
-    private val resultChannel = Channel<Flow<Resource<Unit>>>()
-    val bidResult = resultChannel.receiveAsFlow()
+    private val _eventFlow = MutableSharedFlow<ItemDetailUiEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
+
+    var itemID: String = ""
 
     init {
         savedStateHandle.get<String>("itemId")?.let { itemId ->
@@ -66,6 +67,44 @@ class AuctionItemDetailViewModel @Inject constructor(
             }
             is AuctionItemDetailEvent.OnBidAmountPlaced -> {
                 placeBidAmount()
+            }
+            is AuctionItemDetailEvent.AddItemToFavorites -> {
+                viewModelScope.launch {
+                    try {
+                        state.value.itemDetails?.let {
+                            Favorites(
+                                description = it.description,
+                                endTime = it.endTime,
+                                id = it.id,
+                                minIncrease = it.minIncrease,
+                                pictures = it.pictures,
+                                startTime = it.startTime,
+                                startingPrice = it.startingPrice,
+                                subCategoryId = it.subCategoryId,
+                                categoryId = it.categoryId,
+                                title = it.title,
+                                userFullName = it.userFullName,
+                                userId = it.userId
+                            )
+                        }?.let {
+                            useCase.addFavoriteItem.invoke(
+                                it
+                            )
+                        }
+                        _eventFlow.emit(ItemDetailUiEvent.AddFavoriteItem)
+                        _eventFlow.emit(
+                            ItemDetailUiEvent.ShowSnackbar(
+                                message = "Item added to favorites"
+                            )
+                        )
+                    } catch (e: InvalidFavoriteItemException) {
+                        _eventFlow.emit(
+                            ItemDetailUiEvent.ShowSnackbar(
+                                message = e.message ?: "Couldn't save note"
+                            )
+                        )
+                    }
+                }
             }
         }
     }
@@ -176,6 +215,11 @@ class AuctionItemDetailViewModel @Inject constructor(
             )
 
         }
+    }
+
+    sealed class ItemDetailUiEvent {
+        data class ShowSnackbar(val message: String) : ItemDetailUiEvent()
+        object AddFavoriteItem : ItemDetailUiEvent()
     }
 
 }
