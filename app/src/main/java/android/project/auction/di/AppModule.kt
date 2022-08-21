@@ -14,9 +14,7 @@ import android.project.auction.domain.repository.AuctionRepository
 import android.project.auction.domain.repository.AuctionRoomRepository
 import android.project.auction.domain.repository.AuthRepository
 import android.project.auction.domain.use_case.AuctionProjectUseCase
-import android.project.auction.domain.use_case.adddeletefavorites.AddFavoriteItem
-import android.project.auction.domain.use_case.adddeletefavorites.DeleteFavoriteItem
-import android.project.auction.domain.use_case.adddeletefavorites.GetFavoriteItems
+import android.project.auction.domain.use_case.adddeletefavorites.*
 import android.project.auction.domain.use_case.authentication.AuctionAuthUseCase
 import android.project.auction.domain.use_case.authentication.auth.Authentication
 import android.project.auction.domain.use_case.authentication.auth.GetUserId
@@ -135,7 +133,10 @@ object AppModule {
             getHighestBid = GetHighestBid(repository = repository),
             addFavoriteItem = AddFavoriteItem(repository = roomRepository),
             deleteFavoriteItem = DeleteFavoriteItem(repository = roomRepository),
-            getFavoriteItems = GetFavoriteItems(repository = roomRepository)
+            getFavoriteItems = GetFavoriteItems(repository = roomRepository),
+            addItemBids = AddItemBids(repository = roomRepository),
+            getHighestBidLocal = GetHighestBidLocal(repository = roomRepository),
+            getFavoriteItemById = GetFavoriteItemById(repository = roomRepository)
         )
     }
 

@@ -1,8 +1,6 @@
 package android.project.auction.domain.use_case
 
-import android.project.auction.domain.use_case.adddeletefavorites.AddFavoriteItem
-import android.project.auction.domain.use_case.adddeletefavorites.DeleteFavoriteItem
-import android.project.auction.domain.use_case.adddeletefavorites.GetFavoriteItems
+import android.project.auction.domain.use_case.adddeletefavorites.*
 import android.project.auction.domain.use_case.createitem.CreateItem
 import android.project.auction.domain.use_case.getbidhistory.GetBidHistory
 import android.project.auction.domain.use_case.getcategories.GetCategories
@@ -23,5 +21,8 @@ data class AuctionProjectUseCase(
     val getHighestBid: GetHighestBid,
     val addFavoriteItem: AddFavoriteItem,
     val deleteFavoriteItem: DeleteFavoriteItem,
-    val getFavoriteItems: GetFavoriteItems
+    val getFavoriteItems: GetFavoriteItems,
+    val getFavoriteItemById: GetFavoriteItemById,
+    val addItemBids: AddItemBids,
+    val getHighestBidLocal: GetHighestBidLocal
 )

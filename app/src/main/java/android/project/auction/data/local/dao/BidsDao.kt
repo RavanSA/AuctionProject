@@ -13,7 +13,7 @@ interface BidsDao {
     @Delete
     suspend fun deleteItemBidLocal(bid: Bids)
 
-    @Query("SELECT itemId, MAX(amount), userId FROM Bids WHERE itemId = :id GROUP BY itemId")
+    @Query("SELECT * FROM Bids WHERE itemId = :id")
     suspend fun getHighestBidLocal(id: String): Bids
 
 }

@@ -16,18 +16,21 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 
 @Composable
 fun BottomNav(navController: NavController) {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination
+    val isSelected = remember { mutableStateOf(true) }
+
+    val color = remember { mutableStateOf("") }
+
 
     val items = listOf(
         BottomNavItem(
@@ -61,6 +64,9 @@ fun BottomNav(navController: NavController) {
         elevation = 0.dp,
         backgroundColor = White
     ) {
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+
+        val currentRoute = navBackStackEntry?.destination?.route
         items.forEach { it ->
             val route = it.route
 
@@ -81,25 +87,32 @@ fun BottomNav(navController: NavController) {
                         color = Color.Gray
                     )
                 },
-                selected = currentRoute?.hierarchy?.any {
-                    route == it.route
-                } == true,
+                selected = currentRoute == it.route,
 
                 selectedContentColor = Color.Black,
-                unselectedContentColor = Color.White,
+                unselectedContentColor = Color.Gray,
+                alwaysShowLabel = true,
                 onClick = {
                     when (it.title) {
                         "Home" -> {
                             navController.navigate(
                                 Screen.AuctionListScreen.route
                             )
+                            color.value = "Home"
                         }
                         "Categories" -> {}
-                        "Favorites" -> {}
+                        "Favorites" -> {
+                            navController.navigate(
+                                Screen.FavoritesScreen.route
+                            )
+                            color.value = "Favorites"
+                        }
                         "Profile" -> {}
                     }
-                }
-            )
+
+                },
+
+                )
         }
     }
 }

@@ -1,6 +1,7 @@
 package android.project.auction.presentation.auctionitemdetail
 
 import android.project.auction.common.Resource
+import android.project.auction.data.local.entity.Bids
 import android.project.auction.data.local.entity.Favorites
 import android.project.auction.data.remote.dto.bids.HighestBid
 import android.project.auction.domain.model.exceptions.InvalidFavoriteItemException
@@ -72,6 +73,7 @@ class AuctionItemDetailViewModel @Inject constructor(
                 viewModelScope.launch {
                     try {
                         state.value.itemDetails?.let {
+
                             Favorites(
                                 description = it.description,
                                 endTime = it.endTime,
@@ -84,13 +86,34 @@ class AuctionItemDetailViewModel @Inject constructor(
                                 categoryId = it.categoryId,
                                 title = it.title,
                                 userFullName = it.userFullName,
-                                userId = it.userId
+                                userId = it.userId,
+                                isAdded = true
                             )
+
                         }?.let {
                             useCase.addFavoriteItem.invoke(
                                 it
                             )
                         }
+
+                        val highestBid = state.value.highestBid
+
+                        if (highestBid != null) {
+                            state.value.highestBid?.let {
+                                Bids(
+                                    id = highestBid.id,
+                                    itemId = highestBid.itemId,
+                                    userId = highestBid.userId,
+                                    amount = highestBid.amount,
+                                    created = ""
+                                )
+                            }?.let {
+                                useCase.addItemBids.invoke(
+                                    it
+                                )
+                            }
+                        }
+
                         _eventFlow.emit(ItemDetailUiEvent.AddFavoriteItem)
                         _eventFlow.emit(
                             ItemDetailUiEvent.ShowSnackbar(
@@ -197,6 +220,8 @@ class AuctionItemDetailViewModel @Inject constructor(
                             "", "", "", ""
                         )
                     )
+
+
                 }
                 is Resource.Error -> {
                     stateHighestBid = stateHighestBid.copy(

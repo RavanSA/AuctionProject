@@ -9,11 +9,13 @@ import android.project.auction.presentation.auctionitemdetail.components.PlaceBi
 import android.project.auction.presentation.auctionlist.AuctionListScreen
 import android.project.auction.presentation.auth.sign_in.LoginPage
 import android.project.auction.presentation.auth.signup.SignUpPage
+import android.project.auction.presentation.favorites.FavoritesScreen
 import android.project.auction.presentation.postitem.PostItem
 import android.project.auction.presentation.postitem.components.CreateItem
 import android.project.auction.presentation.postitem.components.SubCategegoriesList
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.compose.NavHost
@@ -24,6 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @ExperimentalFoundationApi
     @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +68,12 @@ class MainActivity : ComponentActivity() {
                         .previousBackStackEntry?.savedStateHandle?.get<SubAndCategory>("itemCategory")
 
                     subAndCategory?.let { it -> CreateItem(navController = navController, it) }
+                }
+                composable(route = Screen.FavoritesScreen.route) {
+                    FavoritesScreen(navController = navController)
+                }
+                composable(route = Screen.AuctionItemDetailScreen.route + "/{itemId}") {
+                    AuctionItemDetailScreen(navController = navController)
                 }
             }
         }

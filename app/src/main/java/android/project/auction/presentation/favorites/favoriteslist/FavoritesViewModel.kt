@@ -1,4 +1,4 @@
-package android.project.auction.presentation.favorites
+package android.project.auction.presentation.favorites.favoriteslist
 
 import android.project.auction.data.local.entity.Favorites
 import android.project.auction.domain.use_case.AuctionProjectUseCase
