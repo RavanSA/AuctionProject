@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -25,6 +27,9 @@ class FavoritesViewModel @Inject constructor(
 
     private var recentlyDeletedItem: Favorites? = null
 
+    private val _eventFlow = MutableSharedFlow<FavoriteItemUiEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
+
     init {
         getItemFavorites()
     }
@@ -37,12 +42,16 @@ class FavoritesViewModel @Inject constructor(
                         recentlyDeletedItem ?: return@launch
                     )
                     recentlyDeletedItem = null
+
                 }
             }
             is FavoritesEvent.DeleteItem -> {
                 viewModelScope.launch {
                     useCase.deleteFavoriteItem.invoke(event.fav)
                     recentlyDeletedItem = event.fav
+                    _eventFlow.emit(
+                        FavoriteItemUiEvent.ShowSnackbar
+                    )
                 }
             }
         }
@@ -58,5 +67,8 @@ class FavoritesViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+    sealed class FavoriteItemUiEvent {
+        object ShowSnackbar : FavoriteItemUiEvent()
+    }
 
 }

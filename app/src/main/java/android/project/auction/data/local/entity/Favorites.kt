@@ -31,6 +31,4 @@ data class Favorites(
     val userFullName: String = "",
     @ColumnInfo(name = "seller_user_id")
     val userId: String,
-    @ColumnInfo(name = "is_added")
-    val isAdded: Boolean,
 )

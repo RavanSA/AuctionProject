@@ -25,6 +25,7 @@ class PostItemViewModel @Inject constructor(
 
     var stateSubCategories by mutableStateOf(PostItemState())
 
+
     init {
         getSubCategories()
     }
@@ -176,5 +177,6 @@ class PostItemViewModel @Inject constructor(
 
         }
     }
+
 
 }

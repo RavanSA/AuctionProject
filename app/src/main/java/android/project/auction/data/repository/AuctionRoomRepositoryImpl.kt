@@ -41,4 +41,9 @@ class AuctionRoomRepositoryImpl @Inject constructor(
     override suspend fun getHighestBidLocal(id: String): Bids {
         return bidDao.getHighestBidLocal(id)
     }
+
+    override suspend fun isItemAddedToFavorites(id: String): Int? {
+        return favDao.isItemAddedtoFavorites(id)
+    }
+
 }

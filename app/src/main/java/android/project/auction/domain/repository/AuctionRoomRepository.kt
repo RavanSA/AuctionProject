@@ -20,4 +20,6 @@ interface AuctionRoomRepository {
 
     suspend fun getHighestBidLocal(id: String): Bids
 
+    suspend fun isItemAddedToFavorites(id: String): Int?
+
 }

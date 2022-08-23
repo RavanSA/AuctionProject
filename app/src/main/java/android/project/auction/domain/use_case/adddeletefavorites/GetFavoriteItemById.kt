@@ -12,4 +12,9 @@ class GetFavoriteItemById @Inject constructor(
         return repository.getFavoriteItemById(itemId)
     }
 
+    suspend fun isItemAddedToFavorites(id: String): Int? {
+
+        return repository.isItemAddedToFavorites(id)
+    }
+
 }

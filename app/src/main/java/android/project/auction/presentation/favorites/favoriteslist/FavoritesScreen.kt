@@ -4,6 +4,7 @@ import android.project.auction.R
 import android.project.auction.data.local.entity.Favorites
 import android.project.auction.presentation.Screen
 import android.project.auction.presentation.favorites.favoriteslist.FavoritesEvent
+import android.project.auction.presentation.favorites.favoriteslist.FavoritesState
 import android.project.auction.presentation.favorites.favoriteslist.FavoritesViewModel
 import android.project.auction.presentation.ui.common.bottomNav.BottomNav
 import android.project.auction.presentation.ui.common.topBar.TopBar
@@ -20,7 +21,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.skydoves.landscapist.glide.GlideImage
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collectLatest
 
 @ExperimentalFoundationApi
 @Composable
@@ -46,6 +46,24 @@ fun FavoritesScreen(
 ) {
 
     val scaffoldState = rememberScaffoldState()
+
+    LaunchedEffect(key1 = true) {
+        favoritesViewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is FavoritesViewModel.FavoriteItemUiEvent.ShowSnackbar -> {
+                    val result = scaffoldState.snackbarHostState.showSnackbar(
+                        message = "Item deleted from favorites",
+                        actionLabel = "Undo"
+                    )
+                    if (result == SnackbarResult.ActionPerformed) {
+                        favoritesViewModel.onEvent(FavoritesEvent.RestoreItem)
+                    }
+                }
+
+            }
+        }
+    }
+
 
     Scaffold(
         topBar = {
@@ -77,6 +95,7 @@ fun FavoritesScreen(
         },
         floatingActionButtonPosition = FabPosition.Center,
         isFloatingActionButtonDocked = true,
+        scaffoldState = scaffoldState,
         floatingActionButton = {
             FloatingActionButton(
                 shape = CircleShape,
@@ -122,7 +141,8 @@ fun FavoritesScreenBody(
             FavoritesScreenItem(
                 fav = fav,
                 scaffoldState = scaffoldState,
-                navController = navController
+                navController = navController,
+                state = state
             )
 
         }
@@ -135,11 +155,11 @@ fun FavoritesScreenBody(
 fun FavoritesScreenItem(
     fav: Favorites,
     scaffoldState: ScaffoldState,
-    navController: NavController
+    navController: NavController,
+    state: FavoritesState
 ) {
     Card(
         modifier = Modifier
-
             .padding(15.dp)
             .clip(RoundedCornerShape(10.dp, 10.dp, 10.dp, 10.dp))
             .background(Color.Gray)
@@ -168,10 +188,10 @@ fun FavoritesScreenItem(
 
                 FavoriteButton(
                     modifier = Modifier.padding(12.dp),
-                    state = fav.isAdded,
                     scaffoldState = scaffoldState,
                     fav = fav
                 )
+
             }
 
             Column(
@@ -211,7 +231,6 @@ fun FavoritesScreenItem(
 
 @Composable
 fun FavoriteButton(
-    state: Boolean,
     modifier: Modifier = Modifier,
     color: Color = Color.White,
     scaffoldState: ScaffoldState,
@@ -219,7 +238,7 @@ fun FavoriteButton(
     fav: Favorites
 ) {
 
-    var isFavorite by remember { mutableStateOf(state) }
+    var isFavorite by remember { mutableStateOf(true) }
 
     val scope = rememberCoroutineScope()
 
@@ -237,21 +256,8 @@ fun FavoriteButton(
                 favoritesScreenViewModel.onEvent(
                     FavoritesEvent.DeleteItem(fav = fav)
                 )
-                scope.launch {
-                    val result = scaffoldState.snackbarHostState.showSnackbar(
-                        message = "Item deleted from favorites",
-                        actionLabel = "Undo"
-                    )
-                    if (result == SnackbarResult.ActionPerformed) {
-                        favoritesScreenViewModel.onEvent(FavoritesEvent.RestoreItem)
-                    }
-                }
             },
-            imageVector = if (isFavorite) {
-                Icons.Filled.Favorite
-            } else {
-                Icons.Default.FavoriteBorder
-            },
+            imageVector = Icons.Filled.Favorite,
             contentDescription = null
         )
     }

@@ -16,11 +16,14 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -41,6 +44,10 @@ class AuctionItemDetailViewModel @Inject constructor(
 
     private val _eventFlow = MutableSharedFlow<ItemDetailUiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
+
+    private var currentItem: Favorites? = null
+
+    private var itemFavoritesJob: Job? = null
 
     var itemID: String = ""
 
@@ -86,8 +93,7 @@ class AuctionItemDetailViewModel @Inject constructor(
                                 categoryId = it.categoryId,
                                 title = it.title,
                                 userFullName = it.userFullName,
-                                userId = it.userId,
-                                isAdded = true
+                                userId = it.userId
                             )
 
                         }?.let {
@@ -120,6 +126,8 @@ class AuctionItemDetailViewModel @Inject constructor(
                                 message = "Item added to favorites"
                             )
                         )
+                        getFavoriteItemById(itemID)
+
                     } catch (e: InvalidFavoriteItemException) {
                         _eventFlow.emit(
                             ItemDetailUiEvent.ShowSnackbar(
@@ -127,6 +135,22 @@ class AuctionItemDetailViewModel @Inject constructor(
                             )
                         )
                     }
+                }
+            }
+            is AuctionItemDetailEvent.RestoreItem -> {
+                viewModelScope.launch {
+                    useCase.addFavoriteItem.invoke(
+                        currentItem ?: return@launch
+                    )
+                    getFavoriteItemById(itemID)
+
+                }
+            }
+            is AuctionItemDetailEvent.DeleteItem -> {
+                viewModelScope.launch {
+                    currentItem?.let { useCase.deleteFavoriteItem.invoke(it) }
+                    getFavoriteItemById(itemID)
+
                 }
             }
         }
@@ -167,12 +191,30 @@ class AuctionItemDetailViewModel @Inject constructor(
             when (result) {
                 is Resource.Success -> {
                     Log.d("TSTHİHESGTBID", result.data.toString())
+                    val data = result.data
+                    getFavoriteItemById(itemId)
+
+                    currentItem = data?.let {
+                        Favorites(
+                            description = data.description,
+                            endTime = data.endTime,
+                            id = data.id,
+                            minIncrease = data.minIncrease,
+                            pictures = data.pictures,
+                            startTime = data.startTime,
+                            startingPrice = data.startingPrice,
+                            subCategoryId = data.subCategoryId,
+                            categoryId = data.categoryId,
+                            title = data.title,
+                            userFullName = data.userFullName,
+                            userId = it.userId
+                        )
+                    }
 
                     _state.value = AuctionItemDetailState(
                         itemDetails = result.data
                     )
                     getUserId()
-
                 }
                 is Resource.Loading -> {
                     _state.value = AuctionItemDetailState(
@@ -238,6 +280,22 @@ class AuctionItemDetailViewModel @Inject constructor(
             _state.value = state.value.copy(
                 userId = authUseCase.userId.invoke()
             )
+
+        }
+    }
+
+    private fun getFavoriteItemById(id: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+
+            val isAdded = useCase.getFavoriteItemById.invoke(id)
+            Log.d("VIEWMODELTEST", isAdded.toString())
+            withContext(Dispatchers.Main) {
+
+                _state.value = state.value.copy(
+                    itemAddedFavorite = isAdded
+                )
+
+            }
 
         }
     }

@@ -1,5 +1,6 @@
 package android.project.auction.presentation.auctionitemdetail
 
+import android.project.auction.data.local.entity.Favorites
 import android.project.auction.data.remote.dto.bids.HighestBid
 import android.project.auction.domain.model.bids.Bids
 import android.project.auction.domain.model.item.ItemDetail
@@ -19,5 +20,7 @@ data class AuctionItemDetailState(
     val highestBidLoading: Boolean = false,
     val highestError: String = "",
 
-    val userId: String = ""
+    val userId: String = "",
+
+    val itemAddedFavorite: Favorites? = null
 )

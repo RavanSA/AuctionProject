@@ -28,6 +28,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
@@ -71,6 +72,9 @@ fun AuctionItemDetailScreen(
 
     val bidHistoryState = auctionItemDetailViewModel.stateBidHistory
 
+    Log.d("topıtemfav", state.value.itemAddedFavorite.toString())
+
+
     val scaffoldState = rememberScaffoldState()
 
 //    val itemAddToFavorite = mutableStateOf(false)
@@ -88,6 +92,7 @@ fun AuctionItemDetailScreen(
                         message = "Item Added to Favorites"
                     )
                 }
+
             }
         }
     }
@@ -168,18 +173,22 @@ fun AuctionItemDetailScreen(
                         }
                     },
                     actions = {
-                        IconButton(onClick = {
-                            auctionItemDetailViewModel.onEvent(
-                                AuctionItemDetailEvent.AddItemToFavorites
-                            )
-//                            itemAddToFavorite.value = true
-                        }) {
+                        FavoriteButton(
+                            scaffoldState = scaffoldState
+                        )
+//                        IconButton(onClick = {
+//                            auctionItemDetailViewModel.onEvent(
+//                                AuctionItemDetailEvent.AddItemToFavorites
+//                            )
+////                            itemAddToFavorite.value = true
+//                        }) {
+//
+//                            Icon(
+//                                Icons.Filled.Favorite,
+//                                contentDescription = ""
+//                            )
+//                        }
 
-                            Icon(
-                                Icons.Filled.Favorite,
-                                contentDescription = ""
-                            )
-                        }
                     }
                 )
             },
@@ -672,6 +681,84 @@ fun BidHistoryUserDetails(
                 overflow = TextOverflow.Ellipsis
             )
 
+        }
+    }
+}
+
+@Composable
+fun FavoriteButton(
+    color: Color = Color.White,
+    scaffoldState: ScaffoldState,
+    auctionItemDetailViewModel: AuctionItemDetailViewModel = hiltViewModel()
+) {
+    val isAddedToFavorites = auctionItemDetailViewModel.state.value.itemAddedFavorite
+
+    var isFavorite by remember { mutableStateOf(false) }
+    var changeColor by remember { mutableStateOf(false) }
+    Log.d("FIRSTISFAVORUTE", isAddedToFavorites.toString())
+    val scope = rememberCoroutineScope()
+
+    Log.d("TEST2222", isAddedToFavorites.toString())
+    isFavorite = isAddedToFavorites != null
+
+    Column(
+        modifier = Modifier
+            .padding(5.dp)
+            .drawBehind {
+                drawCircle(
+                    color = if (isFavorite || changeColor) Color.Black else Color.White,
+                    radius = 60f
+                )
+            },
+    ) {
+        IconToggleButton(
+            checked = isFavorite,
+            onCheckedChange = {
+                isFavorite = !isFavorite
+            },
+
+            ) {
+            Icon(
+                tint = if (isFavorite || changeColor) Color.White else Color.Black,
+                modifier = Modifier.clickable {
+                    if (isFavorite) {
+                        Log.d("SECONDISFAVORUTE", isFavorite.toString())
+
+                        auctionItemDetailViewModel.onEvent(
+                            AuctionItemDetailEvent.DeleteItem
+                        )
+                        isFavorite = false
+                        changeColor = false
+                        scope.launch {
+                            val result = scaffoldState.snackbarHostState.showSnackbar(
+                                message = "Item deleted from favorites",
+                                actionLabel = "Undo"
+                            )
+                            if (result == SnackbarResult.ActionPerformed) {
+                                auctionItemDetailViewModel.onEvent(
+                                    AuctionItemDetailEvent.RestoreItem
+                                )
+                            }
+                        }
+                    } else if (!isFavorite) {
+                        Log.d("THIRSFAVORITE", isFavorite.toString())
+
+                        auctionItemDetailViewModel.onEvent(
+                            AuctionItemDetailEvent.AddItemToFavorites
+                        )
+                        isFavorite = true
+                        changeColor = true
+                    }
+
+                },
+                imageVector = if (isFavorite || changeColor) {
+                    Icons.Filled.Favorite
+                } else {
+                    Icons.Default.Favorite
+
+                },
+                contentDescription = null
+            )
         }
     }
 }

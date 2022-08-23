@@ -19,4 +19,7 @@ interface FavoritesDao {
     @Query("SELECT * FROM Favorites WHERE item_id=:id")
     suspend fun getItemFromFavoritesById(id: String): Favorites?
 
+    @Query("SELECT EXISTS (SELECT 1 FROM Favorites WHERE item_id=:id)")
+    suspend fun isItemAddedtoFavorites(id: String): Int?
+
 }
