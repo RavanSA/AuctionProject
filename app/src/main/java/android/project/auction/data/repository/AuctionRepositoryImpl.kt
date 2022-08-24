@@ -8,10 +8,10 @@ import android.project.auction.data.remote.dto.categories.Categories
 import android.project.auction.data.remote.dto.categories.subcategories.SubCategoriesDto
 import android.project.auction.data.remote.dto.items.createitem.CreateItemRequest
 import android.project.auction.data.remote.dto.items.createitem.CreateItemResponse
+import android.project.auction.data.remote.dto.items.createitem.CreatePictureItemId
 import android.project.auction.data.remote.dto.items.getitems.ItemDto
 import android.project.auction.data.remote.dto.items.itemdetail.ItemDetailDto
 import android.project.auction.domain.repository.AuctionRepository
-import android.util.Log
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -41,9 +41,6 @@ class AuctionRepositoryImpl @Inject constructor(
         itemId: String,
         userId: String
     ): Response<Unit> {
-        Log.d("RESPONSEBIDTEST2", amount.toString())
-        Log.d("RESPONSEITEMID", itemId)
-        Log.d("RESPONSEUSERID", userId)
 
         return api.placeBidAmount(
             PlaceBidRequest(
@@ -54,12 +51,17 @@ class AuctionRepositoryImpl @Inject constructor(
         )
     }
 
+    override suspend fun addImageForItemToRemoteDatabase(
+        createPictureForItem: CreatePictureItemId
+    ): Response<Unit> {
+        return api.addImageForItemToRemoteDatabase(createPictureForItem = createPictureForItem)
+    }
+
     override suspend fun getCategoriesWithSubcategories(): SubCategoriesDto {
         return api.getCategoriesWithSubCategories()
     }
 
     override suspend fun createItem(createItemRequest: CreateItemRequest): CreateItemResponse {
-        Log.d("CREATEREPOREQUES", createItemRequest.toString())
         return api.createItem(
             createItemRequest.title,
             createItemRequest.description,

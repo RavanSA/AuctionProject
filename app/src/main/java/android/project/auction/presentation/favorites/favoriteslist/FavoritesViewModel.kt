@@ -1,7 +1,7 @@
 package android.project.auction.presentation.favorites.favoriteslist
 
 import android.project.auction.data.local.entity.Favorites
-import android.project.auction.domain.use_case.AuctionProjectUseCase
+import android.project.auction.domain.use_case.usecases.AuctionProjectUseCase
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel

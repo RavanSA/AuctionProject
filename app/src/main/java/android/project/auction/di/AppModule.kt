@@ -10,10 +10,11 @@ import android.project.auction.data.remote.AuthAPI
 import android.project.auction.data.repository.AuctionRepositoryImpl
 import android.project.auction.data.repository.AuctionRoomRepositoryImpl
 import android.project.auction.data.repository.AuthRepositoryImpl
+import android.project.auction.data.repository.FirebaseStorageRepositoryImpl
 import android.project.auction.domain.repository.AuctionRepository
 import android.project.auction.domain.repository.AuctionRoomRepository
 import android.project.auction.domain.repository.AuthRepository
-import android.project.auction.domain.use_case.AuctionProjectUseCase
+import android.project.auction.domain.repository.FirebaseStorageRepository
 import android.project.auction.domain.use_case.adddeletefavorites.*
 import android.project.auction.domain.use_case.authentication.AuctionAuthUseCase
 import android.project.auction.domain.use_case.authentication.auth.Authentication
@@ -29,7 +30,12 @@ import android.project.auction.domain.use_case.gethighestbid.GetHighestBid
 import android.project.auction.domain.use_case.getitemdetail.GetItemDetail
 import android.project.auction.domain.use_case.getitems.GetItems
 import android.project.auction.domain.use_case.placebidamount.PlaceBidAmount
-import android.project.auction.domain.use_case.validateform.*
+import android.project.auction.domain.use_case.usecases.AuctionProjectUseCase
+import android.project.auction.domain.use_case.usecases.ValidationUseCase
+import android.project.auction.domain.use_case.validateform.ValidateEmail
+import android.project.auction.domain.use_case.validateform.ValidatePassword
+import android.project.auction.domain.use_case.validateform.ValidateRepeatedPassword
+import android.project.auction.domain.use_case.validateform.ValidateTerms
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
@@ -120,7 +126,8 @@ object AppModule {
         repository: AuctionRepository,
         roomRepository: AuctionRoomRepository,
         db: AppDatabase,
-        preferences: SharedPreferences
+        preferences: SharedPreferences,
+        cloudRepository: FirebaseStorageRepository
     ): AuctionProjectUseCase {
         return AuctionProjectUseCase(
             getCategories = GetCategories(repository = repository),
@@ -129,7 +136,11 @@ object AppModule {
             getBidHistory = GetBidHistory(repository = repository),
             placeBidAmount = PlaceBidAmount(repository = repository, preferences = preferences),
             getSubCategories = GetSubCategories(repository = repository),
-            createItem = CreateItem(repository = repository, preferences = preferences),
+            createItem = CreateItem(
+                repository = repository,
+                preferences = preferences,
+                cloudRepository = cloudRepository
+            ),
             getHighestBid = GetHighestBid(repository = repository),
             addFavoriteItem = AddFavoriteItem(repository = roomRepository),
             deleteFavoriteItem = DeleteFavoriteItem(repository = roomRepository),
@@ -175,5 +186,17 @@ object AppModule {
             "auctiondb.db"
         ).build()
     }
+
+    @Provides
+    fun provideFirebaseStorageRepository(repository: AuctionRepositoryImpl): FirebaseStorageRepository =
+        FirebaseStorageRepositoryImpl(repository = repository)
+
+//    @Provides
+//    fun provideUseCases(
+//        repository: AuctionRepositoryImpl
+//    ) = FirebaseStorageRepositoryImpl(
+//        repository
+//    )
+
 
 }

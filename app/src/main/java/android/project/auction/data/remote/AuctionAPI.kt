@@ -6,6 +6,7 @@ import android.project.auction.data.remote.dto.bids.PlaceBidRequest
 import android.project.auction.data.remote.dto.categories.Categories
 import android.project.auction.data.remote.dto.categories.subcategories.SubCategoriesDto
 import android.project.auction.data.remote.dto.items.createitem.CreateItemResponse
+import android.project.auction.data.remote.dto.items.createitem.CreatePictureItemId
 import android.project.auction.data.remote.dto.items.getitems.ItemDto
 import android.project.auction.data.remote.dto.items.itemdetail.ItemDetailDto
 import retrofit2.Response
@@ -28,6 +29,11 @@ interface AuctionAPI {
     @POST("Bids")
     suspend fun placeBidAmount(
         @Body bidAmount: PlaceBidRequest
+    ): Response<Unit>
+
+    @POST("Pictures")
+    suspend fun addImageForItemToRemoteDatabase(
+        @Body createPictureForItem: CreatePictureItemId
     ): Response<Unit>
 
     @GET("Categories")

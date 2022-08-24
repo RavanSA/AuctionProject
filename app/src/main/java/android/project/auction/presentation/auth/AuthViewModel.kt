@@ -2,7 +2,7 @@ package android.project.auction.presentation.auth
 
 import android.project.auction.common.AuthResult
 import android.project.auction.domain.use_case.authentication.AuctionAuthUseCase
-import android.project.auction.domain.use_case.validateform.ValidationUseCase
+import android.project.auction.domain.use_case.usecases.ValidationUseCase
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel

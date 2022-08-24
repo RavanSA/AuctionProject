@@ -1,4 +1,4 @@
-package android.project.auction.domain.use_case
+package android.project.auction.domain.use_case.usecases
 
 import android.project.auction.domain.use_case.adddeletefavorites.*
 import android.project.auction.domain.use_case.createitem.CreateItem

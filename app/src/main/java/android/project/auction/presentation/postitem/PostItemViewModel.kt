@@ -1,8 +1,10 @@
 package android.project.auction.presentation.postitem
 
+import android.net.Uri
 import android.project.auction.common.Resource
 import android.project.auction.data.remote.dto.items.createitem.CreateItemRequest
-import android.project.auction.domain.use_case.AuctionProjectUseCase
+import android.project.auction.domain.use_case.usecases.AuctionProjectUseCase
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,11 +21,14 @@ import javax.inject.Inject
 class PostItemViewModel @Inject constructor(
     private val useCase: AuctionProjectUseCase
 ) : ViewModel() {
-    //
+
     private val _state = mutableStateOf(PostItemState())
     val state: State<PostItemState> = _state
 
     var stateSubCategories by mutableStateOf(PostItemState())
+
+    private val _stateSelectedImages = mutableStateOf(PostItemState())
+    val stateSelectedImages: State<PostItemState> = _stateSelectedImages
 
 
     init {
@@ -72,6 +77,11 @@ class PostItemViewModel @Inject constructor(
                     endTime = event.value
                 )
             }
+            is PostItemEvent.SelectImagesChanged -> {
+                _stateSelectedImages.value = stateSelectedImages.value.copy(
+                    imagesList = event.value
+                )
+            }
             is PostItemEvent.CreateItemClicked -> {
                 createItem()
             }
@@ -100,56 +110,6 @@ class PostItemViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-//    private fun createItem() {
-//        Log.d("CREAITEMCALLED","TEST")
-//        viewModelScope.launch {
-//            Log.d("RESPONSEUSECASE5", "TEST")
-//            useCase.createItem.invoke(
-//            createItemRequest = CreateItemRequest(
-//                categoryId = state.value.categoriesInput,
-//                subCategoryId = state.value.subCategoriesInput,
-//                title = state.value.title,
-//                description = state.value.description,
-//                startingPrice = state.value.startingPrice.toDouble(),
-//                minIncrease = state.value.minIncrease.toDouble(),
-//                startTime = state.value.startTime,
-//                endTime = state.value.endTime,
-//                userId = ""
-//            )
-//        ).onEach { result ->
-//            when (result) {
-//                        is Resource.Loading -> {
-//                    Log.d("LOADING","CREATEITEM")
-//
-//                    _state.value = state.value.copy(
-//                        creatingItem = true
-//                    )
-//                }
-//
-//                is Resource.Error -> {
-//                    Log.d("ERROR","CREATEITEM")
-//
-//                    _state.value = state.value.copy(
-//                        creatingItemError = result.message ?: "ERROR OCCURED"
-//                    )
-//                }
-//
-//                is Resource.Success -> {
-//                    Log.d("SUCCESS","CREATEITEM")
-//
-//                    createItemFunc()
-//                    _state.value = result.data?.let {
-//                        state.value.copy(
-//                            itemCreated = it
-//                        )
-//                    } ?: PostItemState()
-//                }
-//
-//            }
-//        }
-//      }
-//    }
-
     private fun createItem() {
         viewModelScope.launch {
 
@@ -168,9 +128,13 @@ class PostItemViewModel @Inject constructor(
                     startTime = state.value.startTime,
                     endTime = state.value.endTime,
                     userId = ""
-                )
+                ),
+                imagesList = stateSelectedImages.value.imagesList
             )
 
+            Log.d("ENDTIMEVIEW", state.value.endTime)
+            Log.d("STARTTIME", state.value.startTime)
+            Log.d("IMAGESLIST", stateSelectedImages.value.imagesList.toString())
             _state.value = state.value.copy(
                 creatingItem = false
             )
@@ -178,5 +142,8 @@ class PostItemViewModel @Inject constructor(
         }
     }
 
+    private fun addItemImages(itemId: String, images: List<Uri>) {
+
+    }
 
 }

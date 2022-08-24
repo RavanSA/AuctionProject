@@ -99,8 +99,12 @@ fun CreateItemInputsForms(
     val galleryLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetMultipleContents()) {
             selectImages = it
+            postItemViewModel.onEvent(
+                PostItemEvent.SelectImagesChanged(it)
+            )
         }
 
+//    postItemViewModel.stateSelectedImages.value.imagesList = selectImages
 
     val state = postItemViewModel.state
 
@@ -344,32 +348,27 @@ fun CreateItemInputsForms(
                     Spacer(modifier = Modifier.padding(10.dp))
 
                     Spacer(modifier = Modifier.padding(20.dp))
-                }
-            }
 
-            Column(
-                Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Button(
-                    onClick = { galleryLauncher.launch("image/*") },
-                    modifier = Modifier
-                        .padding(10.dp)
-                ) {
-                    Text(text = "Pick Image From Gallery")
-                }
+                    Button(
+                        onClick = { galleryLauncher.launch("image/*") },
+                        modifier = Modifier
+                            .padding(10.dp)
+                    ) {
+                        Text(text = "Pick Image From Gallery")
+                    }
 
+                }
             }
         }
 
         items(selectImages) { uri ->
             Image(
                 painter = rememberImagePainter(uri),
-                contentScale = ContentScale.FillWidth,
+                contentScale = ContentScale.Fit,
                 contentDescription = null,
                 modifier = Modifier
                     .padding(16.dp, 8.dp)
-                    .size(100.dp)
+                    .size(70.dp)
                     .clickable {
 
                     }

@@ -1,7 +1,7 @@
 package android.project.auction.presentation.auctionlist
 
 import android.project.auction.common.Resource
-import android.project.auction.domain.use_case.AuctionProjectUseCase
+import android.project.auction.domain.use_case.usecases.AuctionProjectUseCase
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

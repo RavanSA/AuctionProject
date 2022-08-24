@@ -1,5 +1,6 @@
 package android.project.auction.presentation.postitem
 
+import android.net.Uri
 import android.project.auction.data.remote.dto.items.createitem.CreateItemResponse
 import android.project.auction.data.remote.dto.items.createitem.Data
 import android.project.auction.domain.model.category.SubCategories
@@ -24,5 +25,7 @@ data class PostItemState(
 
     val creatingItem: Boolean = false,
     val creatingItemError: String = "",
-    val itemCreated: CreateItemResponse = CreateItemResponse(Data(""), "")
+    val itemCreated: CreateItemResponse = CreateItemResponse(Data(""), ""),
+
+    var imagesList: List<Uri> = emptyList()
 )

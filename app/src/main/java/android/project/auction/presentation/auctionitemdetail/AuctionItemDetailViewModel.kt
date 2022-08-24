@@ -5,8 +5,8 @@ import android.project.auction.data.local.entity.Bids
 import android.project.auction.data.local.entity.Favorites
 import android.project.auction.data.remote.dto.bids.HighestBid
 import android.project.auction.domain.model.exceptions.InvalidFavoriteItemException
-import android.project.auction.domain.use_case.AuctionProjectUseCase
 import android.project.auction.domain.use_case.authentication.AuctionAuthUseCase
+import android.project.auction.domain.use_case.usecases.AuctionProjectUseCase
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
