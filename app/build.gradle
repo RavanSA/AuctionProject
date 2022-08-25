@@ -113,4 +113,8 @@ dependencies {
     //Firebase Cloud Storage
     implementation "com.google.firebase:firebase-storage:20.0.1"
 
+    //Accompanist
+    implementation "com.google.accompanist:accompanist-pager:0.22.0-rc"
+
+
 }

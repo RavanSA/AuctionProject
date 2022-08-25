@@ -7,6 +7,7 @@ import android.project.auction.domain.use_case.getcategories.GetCategories
 import android.project.auction.domain.use_case.getcategories.GetSubCategories
 import android.project.auction.domain.use_case.gethighestbid.GetHighestBid
 import android.project.auction.domain.use_case.getitemdetail.GetItemDetail
+import android.project.auction.domain.use_case.getitemdetail.GetItemPicture
 import android.project.auction.domain.use_case.getitems.GetItems
 import android.project.auction.domain.use_case.placebidamount.PlaceBidAmount
 
@@ -24,5 +25,6 @@ data class AuctionProjectUseCase(
     val getFavoriteItems: GetFavoriteItems,
     val getFavoriteItemById: GetFavoriteItemById,
     val addItemBids: AddItemBids,
-    val getHighestBidLocal: GetHighestBidLocal
+    val getHighestBidLocal: GetHighestBidLocal,
+    val getItemPictures: GetItemPicture
 )

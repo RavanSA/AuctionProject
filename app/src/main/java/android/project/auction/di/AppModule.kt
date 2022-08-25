@@ -28,6 +28,7 @@ import android.project.auction.domain.use_case.getcategories.GetCategories
 import android.project.auction.domain.use_case.getcategories.GetSubCategories
 import android.project.auction.domain.use_case.gethighestbid.GetHighestBid
 import android.project.auction.domain.use_case.getitemdetail.GetItemDetail
+import android.project.auction.domain.use_case.getitemdetail.GetItemPicture
 import android.project.auction.domain.use_case.getitems.GetItems
 import android.project.auction.domain.use_case.placebidamount.PlaceBidAmount
 import android.project.auction.domain.use_case.usecases.AuctionProjectUseCase
@@ -147,7 +148,8 @@ object AppModule {
             getFavoriteItems = GetFavoriteItems(repository = roomRepository),
             addItemBids = AddItemBids(repository = roomRepository),
             getHighestBidLocal = GetHighestBidLocal(repository = roomRepository),
-            getFavoriteItemById = GetFavoriteItemById(repository = roomRepository)
+            getFavoriteItemById = GetFavoriteItemById(repository = roomRepository),
+            getItemPictures = GetItemPicture(repository = repository)
         )
     }
 

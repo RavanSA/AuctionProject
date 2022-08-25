@@ -1,13 +1,14 @@
 package android.project.auction.presentation.auctionitemdetail
 
-import android.project.auction.R
 import android.project.auction.domain.model.bids.Bids
 import android.project.auction.domain.model.item.ItemDetail
+import android.project.auction.domain.model.item.ItemImages
 import android.project.auction.presentation.Screen
+import android.project.auction.presentation.auctionitemdetail.components.DotsIndicator
+import android.project.auction.presentation.auctionitemdetail.components.ImageSlider
 import android.project.auction.presentation.auctionlist.components.ProfileImage
 import android.project.auction.presentation.auth.sign_in.dpToSp
 import android.util.Log
-import androidx.annotation.DrawableRes
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -32,16 +33,14 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.skydoves.landscapist.glide.GlideImage
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -55,6 +54,7 @@ import java.util.*
 //}
 
 
+@ExperimentalPagerApi
 @ExperimentalMaterialApi
 @Composable
 fun AuctionItemDetailScreen(
@@ -71,6 +71,8 @@ fun AuctionItemDetailScreen(
     val highestBidState = auctionItemDetailViewModel.stateHighestBid
 
     val bidHistoryState = auctionItemDetailViewModel.stateBidHistory
+
+    val itemPictureState = auctionItemDetailViewModel.stateItemPictures
 
     Log.d("topıtemfav", state.value.itemAddedFavorite.toString())
 
@@ -200,7 +202,8 @@ fun AuctionItemDetailScreen(
                     bidHistoryState,
                     bottomState,
                     navController,
-                    highestBidState
+                    highestBidState,
+                    itemPictureState
                 )
 
             }
@@ -208,6 +211,7 @@ fun AuctionItemDetailScreen(
     }
 }
 
+@ExperimentalPagerApi
 @ExperimentalMaterialApi
 @Composable
 fun AuctionDetailContent(
@@ -215,9 +219,12 @@ fun AuctionDetailContent(
     bidhistoryState: AuctionItemDetailState,
     bottomState: ModalBottomSheetState,
     navController: NavController,
-    highestBidState: AuctionItemDetailState
+    highestBidState: AuctionItemDetailState,
+    itemPictureState: AuctionItemDetailState
 ) {
 
+
+    Log.d("STATESSCREEN", highestBidState.toString())
 
     Column(
         modifier = Modifier
@@ -234,7 +241,7 @@ fun AuctionDetailContent(
             item {
                 Spacer(modifier = Modifier.size(30.dp))
 
-                NetworkImage(imageUrl = "")
+                NetworkImage(itemPictureState.itemPictures)
                 Spacer(modifier = Modifier.size(30.dp))
 
                 Text(
@@ -295,27 +302,34 @@ fun AuctionDetailContent(
 }
 
 
+@OptIn(ExperimentalPagerApi::class)
+@ExperimentalPagerApi
 @Composable
 fun NetworkImage(
-    imageUrl: String,
-    modifier: Modifier = Modifier
-        .size(375.dp)
-        .clip(RoundedCornerShape(15.dp, 15.dp, 15.dp, 15.dp)),
-    contentScale: ContentScale = ContentScale.Fit,
-    fadeIn: Boolean = true,
-    @DrawableRes previewPlaceholder: Int = 0
+    pictures: List<ItemImages>
 ) {
-    Column(
-        modifier = modifier,
-    ) {
 
-        GlideImage(
-            imageModel = "https://developers.google.com/static/maps/documentation/streetview/images/error-image-generic.png",
-            contentScale = ContentScale.Fit,
-            placeHolder = ImageBitmap.imageResource(R.drawable.login_image),
-            error = ImageBitmap.imageResource(R.drawable.register_page)
-        )
-    }
+    Log.d("ITEMIMAGESnee", pictures.toString())
+
+
+    val state = rememberPagerState()
+    ImageSlider(state = state)
+    Spacer(modifier = Modifier.padding(4.dp))
+    DotsIndicator(
+        totalDots = pictures.size,
+        selectedIndex = state.currentPage
+    )
+//    Column(
+//        modifier = modifier,
+//    ) {
+//
+//        GlideImage(
+//            imageModel = "https://developers.google.com/static/maps/documentation/streetview/images/error-image-generic.png",
+//            contentScale = ContentScale.Fit,
+//            placeHolder = ImageBitmap.imageResource(R.drawable.login_image),
+//            error = ImageBitmap.imageResource(R.drawable.register_page)
+//        )
+//    }
 }
 
 
@@ -692,6 +706,7 @@ fun FavoriteButton(
     auctionItemDetailViewModel: AuctionItemDetailViewModel = hiltViewModel()
 ) {
     val isAddedToFavorites = auctionItemDetailViewModel.state.value.itemAddedFavorite
+
 
     var isFavorite by remember { mutableStateOf(false) }
     var changeColor by remember { mutableStateOf(false) }

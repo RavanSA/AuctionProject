@@ -4,6 +4,7 @@ import android.project.auction.data.local.entity.Favorites
 import android.project.auction.data.remote.dto.bids.HighestBid
 import android.project.auction.domain.model.bids.Bids
 import android.project.auction.domain.model.item.ItemDetail
+import android.project.auction.domain.model.item.ItemImages
 
 data class AuctionItemDetailState(
     val isItemDetailLoading: Boolean = false,
@@ -22,5 +23,9 @@ data class AuctionItemDetailState(
 
     val userId: String = "",
 
-    val itemAddedFavorite: Favorites? = null
+    val itemAddedFavorite: Favorites? = null,
+
+    var itemPictures: List<ItemImages> = emptyList(),
+    val itemPicturesError: String = "",
+    val itemPictureLoading: Boolean = false
 )

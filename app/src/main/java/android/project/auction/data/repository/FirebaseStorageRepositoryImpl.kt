@@ -38,12 +38,10 @@ class FirebaseStorageRepositoryImpl @Inject constructor(
                             Log.d("IMAGELIST", imageList.toString())
                             if (imageList.size == size) {
                                 addImageForItemToRemoteDatabase()
+                                //TODO UPDATEIMAGE
                             }
                         }
-                        //TODO CALL ADD IMAGE
-
                     }
-
                 }
             }
 

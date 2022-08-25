@@ -42,6 +42,8 @@ class AuctionItemDetailViewModel @Inject constructor(
 
     var stateHighestBid by mutableStateOf(AuctionItemDetailState())
 
+    var stateItemPictures by mutableStateOf(AuctionItemDetailState())
+
     private val _eventFlow = MutableSharedFlow<ItemDetailUiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
@@ -53,6 +55,7 @@ class AuctionItemDetailViewModel @Inject constructor(
 
     init {
         savedStateHandle.get<String>("itemId")?.let { itemId ->
+            getItemPicture(itemId)
             getItemDetail(itemId)
             getBidHistory(itemId)
             getItemId(itemId)
@@ -298,6 +301,32 @@ class AuctionItemDetailViewModel @Inject constructor(
             }
 
         }
+    }
+
+    private fun getItemPicture(id: String) {
+        useCase.getItemPictures.invoke(id).onEach { result ->
+            when (result) {
+                is Resource.Loading -> {
+                    stateItemPictures = stateItemPictures.copy(
+                        itemPictureLoading = true
+                    )
+                }
+                is Resource.Success -> {
+                    Log.d("ITEMIMAGES", result.data.toString())
+                    stateItemPictures = stateItemPictures.copy(
+                        itemPictures = result.data ?: emptyList()
+                    )
+                    _state.value = state.value.copy(
+                        itemPictures = result.data ?: emptyList()
+                    )
+                }
+                is Resource.Error -> {
+                    stateItemPictures = stateItemPictures.copy(
+                        itemPicturesError = "Error Occured"
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     sealed class ItemDetailUiEvent {

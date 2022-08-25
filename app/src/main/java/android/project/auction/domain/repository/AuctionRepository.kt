@@ -8,6 +8,7 @@ import android.project.auction.data.remote.dto.items.createitem.CreateItemReques
 import android.project.auction.data.remote.dto.items.createitem.CreateItemResponse
 import android.project.auction.data.remote.dto.items.createitem.CreatePictureItemId
 import android.project.auction.data.remote.dto.items.getitems.ItemDto
+import android.project.auction.data.remote.dto.items.getpictures.GetItemPicturesDto
 import android.project.auction.data.remote.dto.items.itemdetail.ItemDetailDto
 import retrofit2.Response
 
@@ -31,4 +32,5 @@ interface AuctionRepository {
 
     suspend fun getHighestBidByItemId(itemId: String): HighestBidDto
 
+    suspend fun getItemPictures(id: String): GetItemPicturesDto
 }

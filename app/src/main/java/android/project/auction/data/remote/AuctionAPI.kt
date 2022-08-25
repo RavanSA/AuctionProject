@@ -8,6 +8,7 @@ import android.project.auction.data.remote.dto.categories.subcategories.SubCateg
 import android.project.auction.data.remote.dto.items.createitem.CreateItemResponse
 import android.project.auction.data.remote.dto.items.createitem.CreatePictureItemId
 import android.project.auction.data.remote.dto.items.getitems.ItemDto
+import android.project.auction.data.remote.dto.items.getpictures.GetItemPicturesDto
 import android.project.auction.data.remote.dto.items.itemdetail.ItemDetailDto
 import retrofit2.Response
 import retrofit2.http.*
@@ -56,5 +57,8 @@ interface AuctionAPI {
 
     @GET("Bids/getHighestBid/{itemId}")
     suspend fun getHighestByItemId(@Path("itemId") itemId: String): HighestBidDto
+
+    @GET("Pictures/{id}")
+    suspend fun getItemPicture(@Path("id") id: String): GetItemPicturesDto
 
 }
