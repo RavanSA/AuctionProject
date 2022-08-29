@@ -10,10 +10,10 @@ import android.project.auction.data.remote.dto.items.createitem.CreateItemReques
 import android.project.auction.data.remote.dto.items.createitem.CreateItemResponse
 import android.project.auction.data.remote.dto.items.createitem.CreatePictureItemId
 import android.project.auction.data.remote.dto.items.getitems.ItemDto
+import android.project.auction.data.remote.dto.items.getpictures.AddItemPictureRequest
 import android.project.auction.data.remote.dto.items.getpictures.GetItemPicturesDto
 import android.project.auction.data.remote.dto.items.itemdetail.ItemDetailDto
 import android.project.auction.domain.repository.AuctionRepository
-import android.util.Log
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -84,9 +84,11 @@ class AuctionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getItemPictures(id: String): GetItemPicturesDto {
-        Log.d("ITEMIMAGESUSECASE", id)
-
         return api.getItemPicture(id = id)
+    }
+
+    override suspend fun addItemMainPicture(addItemPictureRequest: AddItemPictureRequest): Response<Unit> {
+        return api.addImageMainPicture(addItemPictureRequest)
     }
 
 }

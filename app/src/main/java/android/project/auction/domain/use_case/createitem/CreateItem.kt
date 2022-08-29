@@ -24,30 +24,6 @@ class CreateItem @Inject constructor(
 
             val userID = preferences.getString("USERID", null) ?: "NOT REGISTERED USER"
 
-//            repository.createItem(
-//                createItemRequest = CreateItemRequest(
-//                    title = createItemRequest.title,
-//                    description = createItemRequest.description,
-//                    startingPrice = createItemRequest.startingPrice,
-//                    minIncrease = createItemRequest.minIncrease,
-//                    startTime = createItemRequest.startTime,
-//                    endTime = createItemRequest.endTime,
-//                    categoryId = createItemRequest.categoryId,
-//                    subCategoryId = createItemRequest.subCategoryId,
-//                    userId = userID
-//                )
-//            )
-            Log.d("CREAITEMREQUS", createItemRequest.toString())
-            Log.d("TITLE", createItemRequest.title)
-            Log.d("DESCRIPTION", createItemRequest.description)
-            Log.d("STARTINGPRCI", createItemRequest.startingPrice.toString())
-            Log.d("MININCREASE", createItemRequest.minIncrease.toString())
-            Log.d("STATRTIME", createItemRequest.startTime)
-            Log.d("ENDTIME", createItemRequest.endTime)
-            Log.d("Category", createItemRequest.categoryId)
-            Log.d("SUBCATEGIRYUF", createItemRequest.subCategoryId)
-            Log.d("USERID", userID)
-
             val test = repository.createItem(
                 createItemRequest = CreateItemRequest(
                     title = createItemRequest.title,
@@ -62,19 +38,12 @@ class CreateItem @Inject constructor(
                 )
             )
 
-            Log.d("IMAGELIST URI", imagesList.toString())
-
-            Log.d("ITEMIDCREATE", test.data.id)
-
             addImagesToCloud(test.data.id, imagesList)
-
-
 
             Resource.Loading<Unit>(false)
 
         } catch (e: IOException) {
             Resource.Error<Unit>("Couldn't reach server. Check your internet connection.")
-            Log.d("ERRORIO", "REPOTEST")
         } catch (e: HttpException) {
 
             if (e.code() == 401) {
@@ -83,7 +52,6 @@ class CreateItem @Inject constructor(
                 Log.d("ERROR", e.toString())
             }
             Resource.Error<Unit>(e.localizedMessage ?: "An unexpected error ocured")
-            Log.d("ERRORHTTP", "REPOTEST")
         }
     }
 

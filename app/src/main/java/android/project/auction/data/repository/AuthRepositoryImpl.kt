@@ -6,7 +6,6 @@ import android.project.auction.data.remote.dto.auth.authsignin.AuthSignInRequest
 import android.project.auction.data.remote.dto.auth.authsignin.LoginResponse
 import android.project.auction.data.remote.dto.auth.authsignup.AuthRequest
 import android.project.auction.domain.repository.AuthRepository
-import android.util.Log
 import javax.inject.Inject
 
 
@@ -17,8 +16,6 @@ class AuthRepositoryImpl @Inject constructor(
 
 
     override suspend fun signUp(email: String, fullName: String, password: String): Unit {
-        Log.d("APITEST", api.toString())
-
         return api.signUp(
             AuthRequest(
                 email,
@@ -29,8 +26,6 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun signIn(email: String, password: String): LoginResponse {
-        Log.d("SIGNERRORMAIL",email)
-        Log.d("SIGNERRORPASSWORD",password)
         return api.signIn(
             AuthSignInRequest(
                 email,

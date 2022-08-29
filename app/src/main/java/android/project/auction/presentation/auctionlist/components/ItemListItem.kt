@@ -3,7 +3,6 @@ package android.project.auction.presentation.auctionlist.components
 import android.project.auction.R
 import android.project.auction.domain.model.item.Item
 import android.project.auction.presentation.auth.sign_in.dpToSp
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,11 +17,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -50,9 +51,49 @@ fun ItemList(
             verticalAlignment = Alignment.Top,
             horizontalArrangement = Arrangement.Start
         ) {
-            NetworkImage(
-                ""
-            )
+            Column(
+                modifier = Modifier
+                    .size(250.dp)
+                    .clip(RoundedCornerShape(15.dp, 15.dp, 15.dp, 15.dp)),
+            ) {
+                Box(
+
+                ) {
+                    NetworkImage(
+                        item.mainItemPicture
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.Transparent,
+                                        Color.Black
+                                    ),
+                                    startY = 400f
+                                )
+                            )
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .align(Alignment.BottomStart)
+                    ) {
+                        Text(item.title, style = TextStyle(color = Color.White, fontSize = 16.sp))
+                    }
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight(0.13f)
+                            .fillMaxWidth(0.5f)
+                            .align(Alignment.TopStart)
+                    ) {
+//                        Text(item.title, style = TextStyle(color = Color.White, fontSize = 16.sp))
+                    }
+                }
+            }
+
             Column(
                 horizontalAlignment = Alignment.Start,
                 modifier = Modifier
@@ -130,25 +171,18 @@ fun ItemList(
 
 @Composable
 fun NetworkImage(
-    imageUrl: String,
-    modifier: Modifier = Modifier
-        .size(250.dp)
-        .clip(RoundedCornerShape(15.dp, 15.dp, 15.dp, 15.dp)),
-    contentScale: ContentScale = ContentScale.Fit,
-    fadeIn: Boolean = true,
-    @DrawableRes previewPlaceholder: Int = 0
+    imageUrl: String
 ) {
     Row(
-        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End
     ) {
 
         GlideImage(
-            imageModel = "https://developers.google.com/static/maps/documentation/streetview/images/error-image-generic.png",
-            contentScale = ContentScale.Fit,
-            placeHolder = ImageBitmap.imageResource(R.drawable.login_image),
-            error = ImageBitmap.imageResource(R.drawable.register_page)
+            imageModel = imageUrl,
+            contentScale = ContentScale.Crop,
+            placeHolder = ImageBitmap.imageResource(R.drawable.image_placeholder),
+            error = ImageBitmap.imageResource(R.drawable.image_placeholder)
         )
     }
 }

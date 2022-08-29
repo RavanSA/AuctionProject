@@ -4,7 +4,6 @@ import android.project.auction.common.Resource
 import android.project.auction.data.remote.dto.items.getpictures.toItemImages
 import android.project.auction.domain.model.item.ItemImages
 import android.project.auction.domain.repository.AuctionRepository
-import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
@@ -19,12 +18,8 @@ class GetItemPicture @Inject constructor(
         try {
             emit(Resource.Loading<List<ItemImages>>(true))
 
-            Log.d("ITEMIMAGESUSECASE", "TEST")
-
 
             val pictures = repository.getItemPictures(id)
-
-            Log.d("ITEMIMAGESUSECASE", pictures.toString())
 
             emit(Resource.Loading<List<ItemImages>>(false))
 
@@ -34,7 +29,6 @@ class GetItemPicture @Inject constructor(
 
         } catch (e: IOException) {
             emit(Resource.Error<List<ItemImages>>("Couldn't reach server. Check your internet connection."))
-            Log.d("ERRORIMAGE", e.toString())
 
         } catch (e: HttpException) {
             emit(
@@ -42,7 +36,6 @@ class GetItemPicture @Inject constructor(
                     e.localizedMessage ?: "An unexpected error ocured"
                 )
             )
-            Log.d("ERRORIMAGE", e.toString())
 
         }
     }

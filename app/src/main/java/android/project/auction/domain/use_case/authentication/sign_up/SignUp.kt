@@ -2,7 +2,6 @@ package android.project.auction.domain.use_case.authentication.sign_up
 
 import android.project.auction.common.AuthResult
 import android.project.auction.domain.repository.AuthRepository
-import android.util.Log
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -32,14 +31,10 @@ class SignUp @Inject constructor(
                 AuthResult.UnAuthorized()
 
             } else {
-                Log.d("ERROR", e.toString())
-
                 AuthResult.UnknownError()
 
             }
         } catch (e: Exception) {
-            Log.d("ERROR", e.toString())
-
             AuthResult.UnknownError()
 
         }

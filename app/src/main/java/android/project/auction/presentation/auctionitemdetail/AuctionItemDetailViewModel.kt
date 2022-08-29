@@ -7,7 +7,6 @@ import android.project.auction.data.remote.dto.bids.HighestBid
 import android.project.auction.domain.model.exceptions.InvalidFavoriteItemException
 import android.project.auction.domain.use_case.authentication.AuctionAuthUseCase
 import android.project.auction.domain.use_case.usecases.AuctionProjectUseCase
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -64,7 +63,6 @@ class AuctionItemDetailViewModel @Inject constructor(
     }
 
     private fun getItemId(itemId: String) {
-        Log.d("GETTINGITEMID", itemId)
         itemID = itemId
     }
 
@@ -163,14 +161,12 @@ class AuctionItemDetailViewModel @Inject constructor(
         useCase.getBidHistory.invoke(itemId = itemId).onEach { result ->
             when (result) {
                 is Resource.Loading -> {
-                    Log.d("RESOURCELOADING", result.data.toString())
 
                     stateBidHistory = stateBidHistory.copy(
                         isBidHistoryLoading = true
                     )
                 }
                 is Resource.Success -> {
-                    Log.d("RESOURCESUCCES", result.data.toString())
                     result.data?.let { listings ->
                         stateBidHistory = stateBidHistory.copy(
                             bidHistory = listings
@@ -178,7 +174,6 @@ class AuctionItemDetailViewModel @Inject constructor(
                     }
                 }
                 is Resource.Error -> {
-                    Log.d("RESORCE ERROR", result.data.toString())
 
                     stateBidHistory = stateBidHistory.copy(
                         bidError = "Error Occured"
@@ -193,7 +188,6 @@ class AuctionItemDetailViewModel @Inject constructor(
         useCase.getItemDetail.invoke(itemId).onEach { result ->
             when (result) {
                 is Resource.Success -> {
-                    Log.d("TSTHİHESGTBID", result.data.toString())
                     val data = result.data
                     getFavoriteItemById(itemId)
 
@@ -279,7 +273,6 @@ class AuctionItemDetailViewModel @Inject constructor(
 
     private fun getUserId() {
         viewModelScope.launch {
-            Log.d("LOGUSERID", authUseCase.userId.invoke())
             _state.value = state.value.copy(
                 userId = authUseCase.userId.invoke()
             )
@@ -291,7 +284,6 @@ class AuctionItemDetailViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
 
             val isAdded = useCase.getFavoriteItemById.invoke(id)
-            Log.d("VIEWMODELTEST", isAdded.toString())
             withContext(Dispatchers.Main) {
 
                 _state.value = state.value.copy(
@@ -312,7 +304,6 @@ class AuctionItemDetailViewModel @Inject constructor(
                     )
                 }
                 is Resource.Success -> {
-                    Log.d("ITEMIMAGES", result.data.toString())
                     stateItemPictures = stateItemPictures.copy(
                         itemPictures = result.data ?: emptyList()
                     )

@@ -2,6 +2,7 @@ package android.project.auction.data.repository
 
 import android.net.Uri
 import android.project.auction.data.remote.dto.items.createitem.CreatePictureItemId
+import android.project.auction.data.remote.dto.items.getpictures.AddItemPictureRequest
 import android.project.auction.domain.repository.FirebaseStorageRepository
 import android.util.Log
 import com.google.firebase.storage.FirebaseStorage
@@ -38,7 +39,7 @@ class FirebaseStorageRepositoryImpl @Inject constructor(
                             Log.d("IMAGELIST", imageList.toString())
                             if (imageList.size == size) {
                                 addImageForItemToRemoteDatabase()
-                                //TODO UPDATEIMAGE
+                                addMainItemPicture(itemId, imageList[0])
                             }
                         }
                     }
@@ -93,6 +94,16 @@ class FirebaseStorageRepositoryImpl @Inject constructor(
                 pictures = imageList
             )
         )
+    }
+
+    private suspend fun addMainItemPicture(itemId: String, mainItemPicture: String) {
+        repository.addItemMainPicture(
+            AddItemPictureRequest(
+                id = itemId,
+                mainItemPicture = mainItemPicture
+            )
+        )
+
     }
 
 }

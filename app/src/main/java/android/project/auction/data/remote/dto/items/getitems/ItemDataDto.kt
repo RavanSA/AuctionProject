@@ -1,7 +1,6 @@
 package android.project.auction.data.remote.dto.items.getitems
 
 import android.project.auction.data.local.entity.Items
-import android.project.auction.domain.model.item.Item
 
 data class ItemDataDto(
     val description: String,
@@ -15,25 +14,26 @@ data class ItemDataDto(
     val categoryId: String,
     val title: String,
     val userFullName: String,
-    val userId: String
+    val userId: String,
+    val mainItemPicture: String? = null
 )
 
-fun ItemDataDto.toItem(): Item {
-    return Item(
-        description = description,
-        endTime = endTime,
-        id = id,
-        minIncrease = minIncrease,
-        pictures = "",
-        startTime = startTime,
-        startingPrice = startingPrice,
-        subCategoryId = subCategoryId,
-        categoryId = categoryId,
-        title = title,
-        userFullName = "userFullName",
-        userId = userId
-    )
-}
+//fun ItemDataDto.toItem(): Item {
+//    return Item(
+//        description = description,
+//        endTime = endTime,
+//        id = id,
+//        minIncrease = minIncrease,
+//        pictures = "",
+//        startTime = startTime,
+//        startingPrice = startingPrice,
+//        subCategoryId = subCategoryId,
+//        categoryId = categoryId,
+//        title = title,
+//        userFullName = "userFullName",
+//        userId = userId
+//    )
+//}
 
 fun ItemDataDto.toItems(): Items {
     return Items(
@@ -48,6 +48,7 @@ fun ItemDataDto.toItems(): Items {
         categoryId = categoryId,
         title = title,
         userFullName = "userFullName",
-        userId = userId
+        userId = userId,
+        mainItemPicture = mainItemPicture ?: ""
     )
 }

@@ -8,6 +8,7 @@ import android.project.auction.data.remote.dto.categories.subcategories.SubCateg
 import android.project.auction.data.remote.dto.items.createitem.CreateItemResponse
 import android.project.auction.data.remote.dto.items.createitem.CreatePictureItemId
 import android.project.auction.data.remote.dto.items.getitems.ItemDto
+import android.project.auction.data.remote.dto.items.getpictures.AddItemPictureRequest
 import android.project.auction.data.remote.dto.items.getpictures.GetItemPicturesDto
 import android.project.auction.data.remote.dto.items.itemdetail.ItemDetailDto
 import retrofit2.Response
@@ -60,5 +61,8 @@ interface AuctionAPI {
 
     @GET("Pictures/{id}")
     suspend fun getItemPicture(@Path("id") id: String): GetItemPicturesDto
+
+    @PUT("Items")
+    suspend fun addImageMainPicture(@Body addItemPictureRequest: AddItemPictureRequest): Response<Unit>
 
 }

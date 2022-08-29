@@ -12,5 +12,6 @@ data class Item(
     val categoryId: String,
     val title: String,
     val userFullName: String,
-    val userId: String
+    val userId: String,
+    val mainItemPicture: String
 )

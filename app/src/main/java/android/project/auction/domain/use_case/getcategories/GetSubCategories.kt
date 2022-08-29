@@ -4,7 +4,6 @@ import android.project.auction.common.Resource
 import android.project.auction.data.remote.dto.categories.subcategories.toSubCategories
 import android.project.auction.domain.model.category.SubCategories
 import android.project.auction.domain.repository.AuctionRepository
-import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
@@ -24,9 +23,6 @@ class GetSubCategories @Inject constructor(
             emit(Resource.Success<List<SubCategories>>(
                 data = response.map { it.toSubCategories() }
             ))
-
-            val repsonsetestdata = response.map { it.toSubCategories() }
-            Log.d("RESPONSESUBCATEGR", repsonsetestdata.toString())
 
             emit(Resource.Loading<List<SubCategories>>(false))
         } catch (e: HttpException) {

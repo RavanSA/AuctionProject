@@ -31,7 +31,9 @@ data class Items(
     @ColumnInfo(name = "seller_username")
     val userFullName: String = "",
     @ColumnInfo(name = "seller_user_id")
-    val userId: String
+    val userId: String,
+    @ColumnInfo(name = "main_item_picture")
+    val mainItemPicture: String = ""
 )
 
 
@@ -48,7 +50,8 @@ fun Items.toItem(): Item {
         categoryId = categoryId,
         title = title,
         userFullName = "userFullName",
-        userId = userId
+        userId = userId,
+        mainItemPicture = mainItemPicture
     )
 }
 
