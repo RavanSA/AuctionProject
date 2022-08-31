@@ -1,6 +1,7 @@
 package android.project.auction.presentation.postitem.components
 
 import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.net.Uri
 import android.project.auction.domain.model.category.SubAndCategory
 import android.project.auction.presentation.Screen
@@ -11,6 +12,7 @@ import android.project.auction.presentation.ui.common.LoadingScreen
 import android.project.auction.presentation.ui.common.topBar.TopBar
 import android.util.Log
 import android.widget.DatePicker
+import android.widget.TimePicker
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
@@ -94,7 +96,9 @@ fun CreateItemInputsForms(
     navController: NavController
 ) {
 
+
     var selectImages by remember { mutableStateOf(listOf<Uri>()) }
+
 
     val galleryLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetMultipleContents()) {
@@ -104,48 +108,24 @@ fun CreateItemInputsForms(
             )
         }
 
-//    postItemViewModel.stateSelectedImages.value.imagesList = selectImages
-
     val state = postItemViewModel.state
+    val startDate = remember { mutableStateOf("") }
+    state.value.startTime = startDate.value
+
+    val endDate = remember { mutableStateOf("") }
+    state.value.endTime = endDate.value
 
     var loadingItem by remember { mutableStateOf("Create Item") }
     var scope = rememberCoroutineScope()
 
     state.value.categoriesInput = subAndCategory.categoryID
     state.value.subCategoriesInput = subAndCategory.subCategoryID
+
     val mContext = LocalContext.current
     var delayJob: Job? = null
 
-    val mYear: Int
-    val mMonth: Int
-    val mDay: Int
-
-    val mCalendar = Calendar.getInstance()
-
-    mYear = mCalendar.get(Calendar.YEAR)
-    mMonth = mCalendar.get(Calendar.MONTH)
-    mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
-
-    mCalendar.time = Date()
-
-    val mDate = remember { mutableStateOf("") }
-    val mDate2 = remember { mutableStateOf("") }
-    state.value.startTime = mDate2.value
-    state.value.endTime = mDate.value
-
-    val mDatePickerDialog = DatePickerDialog(
-        mContext,
-        { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
-            mDate.value = "$mYear-${mMonth + 1}-$mDayOfMonth"
-        }, mYear, mMonth, mDay
-    )
-
-    val mDatePickerDialog2 = DatePickerDialog(
-        mContext,
-        { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
-            mDate2.value = "$mYear-${mMonth + 1}-$mDayOfMonth"
-        }, mYear, mMonth, mDay
-    )
+    Log.d("STATEVALUE", state.value.startTime)
+    Log.d("ENDTIME", state.value.endTime)
 
     LazyColumn(
         modifier = Modifier
@@ -272,6 +252,7 @@ fun CreateItemInputsForms(
 
                     Spacer(modifier = Modifier.padding(15.dp))
 
+
                     OutlinedTextField(
                         value = state.value.minIncrease,
                         onValueChange = {
@@ -289,12 +270,6 @@ fun CreateItemInputsForms(
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(0.8f),
                     )
-                    Button(onClick = {
-                        mDatePickerDialog2.show()
-                    }, colors = ButtonDefaults.buttonColors(backgroundColor = Color(0XFF0F9D58))) {
-                        Text(text = "Open Date Picker", color = Color.White)
-                    }
-
 
                     OutlinedTextField(
                         value = state.value.startTime,
@@ -309,16 +284,53 @@ fun CreateItemInputsForms(
                             keyboardType = KeyboardType.Password
                         ),
                         label = { Text(text = "Start Time", color = Color.Black) },
-                        placeholder = { Text(text = "Strat Time", color = Color.Black) },
+                        placeholder = { Text(text = "Start Time", color = Color.Black) },
                         singleLine = true,
-                        modifier = Modifier.fillMaxWidth(0.8f),
+                        enabled = false,
+                        modifier = Modifier
+                            .fillMaxWidth(0.8f)
+                            .clickable {
+
+                                val mYear: Int
+                                val mMonth: Int
+                                val mDay: Int
+                                val mHours: Int
+                                val mMinutes: Int
+
+                                val mCalendar = Calendar.getInstance()
+
+                                mCalendar.time = Date()
+
+                                mYear = mCalendar.get(Calendar.YEAR)
+                                mMonth = mCalendar.get(Calendar.MONTH)
+                                mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
+                                mHours = mCalendar.get(Calendar.HOUR_OF_DAY)
+                                mMinutes = mCalendar.get(Calendar.MINUTE)
+
+                                DatePickerDialog(
+                                    mContext,
+                                    { _: DatePicker, year: Int, month: Int, mDayOfMonth: Int ->
+                                        TimePickerDialog(
+                                            mContext,
+                                            { _: TimePicker, hour: Int, minute: Int ->
+
+                                                startDate.value =
+                                                    "$year-${month + 1}-$mDayOfMonth $hour:$minute"
+
+                                            },
+                                            mHours,
+                                            mMinutes,
+                                            false
+                                        ).show()
+                                    },
+                                    mYear,
+                                    mMonth,
+                                    mDay
+                                ).show()
+                            },
                     )
 
-                    Button(onClick = {
-                        mDatePickerDialog.show()
-                    }, colors = ButtonDefaults.buttonColors(backgroundColor = Color(0XFF0F9D58))) {
-                        Text(text = "Open Date Picker", color = Color.White)
-                    }
+                    Log.d("STARTDATEMETHOD", startDate.value)
 
                     OutlinedTextField(
                         value = state.value.endTime,
@@ -335,15 +347,59 @@ fun CreateItemInputsForms(
                         label = { Text(text = "End Time", color = Color.Black) },
                         placeholder = { Text(text = "End Time", color = Color.Black) },
                         singleLine = true,
+                        enabled = false,
+
                         modifier = Modifier
                             .fillMaxWidth(0.8f)
                             .clickable {
-                                mDatePickerDialog.show()
+                                var endTime: String = ""
+                                val mYear: Int
+                                val mMonth: Int
+                                val mDay: Int
+                                val mHours: Int
+                                val mMinutes: Int
+
+                                val mCalendar = Calendar.getInstance()
+
+                                mYear = mCalendar.get(Calendar.YEAR)
+                                mMonth = mCalendar.get(Calendar.MONTH)
+                                mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
+                                mHours = mCalendar.get(Calendar.HOUR_OF_DAY)
+                                mMinutes = mCalendar.get(Calendar.MINUTE)
+
+                                mCalendar.time = Date()
+
+
+                                DatePickerDialog(
+                                    mContext,
+                                    { _: DatePicker, year: Int, month: Int, mDayOfMonth: Int ->
+                                        TimePickerDialog(
+                                            mContext,
+                                            { _: TimePicker, hour: Int, minute: Int ->
+
+                                                endDate.value =
+                                                    "$year-${month + 1}-$mDayOfMonth $hour:$minute"
+                                                Log.d("ENDTIME", endTime)
+
+                                                postItemViewModel.onEvent(
+                                                    PostItemEvent.EndTimeChanged(
+                                                        postItemViewModel.state.value.endTime
+                                                    )
+                                                )
+                                            },
+                                            mHours,
+                                            mMinutes,
+                                            false
+                                        ).show()
+                                    },
+                                    mYear,
+                                    mMonth,
+                                    mDay
+                                ).show()
                             },
                     )
 
                     Spacer(modifier = Modifier.padding(15.dp))
-
 
                     Spacer(modifier = Modifier.padding(10.dp))
 
@@ -356,7 +412,6 @@ fun CreateItemInputsForms(
                     ) {
                         Text(text = "Pick Image From Gallery")
                     }
-
                 }
             }
         }
@@ -403,49 +458,6 @@ fun CreateItemInputsForms(
             )
         }
     }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@ExperimentalFoundationApi
-@Composable
-fun SelectImages(
-
-) {
-
-    var selectImages by remember { mutableStateOf(listOf<Uri>()) }
-
-    val galleryLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.GetMultipleContents()) {
-            selectImages = it
-        }
-
-    Column(
-        Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Button(
-            onClick = { galleryLauncher.launch("image/*") },
-            modifier = Modifier
-                .padding(10.dp)
-        ) {
-            Text(text = "Pick Image From Gallery")
-        }
-
-//                Image(
-//                    painter = rememberImagePainter(uri),
-//                    contentScale = ContentScale.FillWidth,
-//                    contentDescription = null,
-//                    modifier = Modifier
-//                        .padding(16.dp, 8.dp)
-//                        .size(100.dp)
-//                        .clickable {
-//
-//                        }
-//                )
-
-
-    }
-
 }
 
 @Composable

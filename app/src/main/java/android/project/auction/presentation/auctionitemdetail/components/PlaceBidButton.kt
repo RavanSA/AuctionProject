@@ -35,7 +35,7 @@ fun StickyPlaceBidButton(
     Log.d("CURRENTUTC", currentUtcTime.toString())
     Log.d("ENDTIME", endTime.toString())
 
-    //	2022-08-20 07:00:00.0000000
+    //	2022-08-20T07:00:00.0000000
     val sdf = SimpleDateFormat("yyyy-MM-dd")
     val endTimeParsed: Date = sdf?.parse(endTime[0])
     val utcTimeParsed: Date = sdf?.parse(currentUtcTime[0])

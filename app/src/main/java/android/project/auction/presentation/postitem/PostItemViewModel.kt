@@ -1,6 +1,5 @@
 package android.project.auction.presentation.postitem
 
-import android.net.Uri
 import android.project.auction.common.Resource
 import android.project.auction.data.remote.dto.items.createitem.CreateItemRequest
 import android.project.auction.domain.use_case.usecases.AuctionProjectUseCase
@@ -29,7 +28,6 @@ class PostItemViewModel @Inject constructor(
 
     private val _stateSelectedImages = mutableStateOf(PostItemState())
     val stateSelectedImages: State<PostItemState> = _stateSelectedImages
-
 
     init {
         getSubCategories()
@@ -138,12 +136,7 @@ class PostItemViewModel @Inject constructor(
             _state.value = state.value.copy(
                 creatingItem = false
             )
-
         }
-    }
-
-    private fun addItemImages(itemId: String, images: List<Uri>) {
-
     }
 
 }

@@ -1,5 +1,6 @@
 package android.project.auction.presentation.auctionitemdetail.components
 
+import android.project.auction.presentation.Screen
 import android.project.auction.presentation.auctionitemdetail.AuctionItemDetailEvent
 import android.project.auction.presentation.auctionitemdetail.AuctionItemDetailViewModel
 import android.project.auction.presentation.auth.sign_in.dpToSp
@@ -64,7 +65,7 @@ fun PlaceBid(
             )
         },
         content = {
-            PlaceBidContent(itemID)
+            PlaceBidContent(itemID, navController)
         }
     )
 }
@@ -73,6 +74,7 @@ fun PlaceBid(
 @Composable
 fun PlaceBidContent(
     itemID: String,
+    navController: NavController,
     auctionItemDetailViewModel: AuctionItemDetailViewModel = hiltViewModel()
 ) {
 
@@ -129,9 +131,12 @@ fun PlaceBidContent(
 
             Button(
                 onClick = {
+
                     auctionItemDetailViewModel.onEvent(
                         AuctionItemDetailEvent.OnBidAmountPlaced
                     )
+                    navController.navigate(Screen.AuctionItemDetailScreen.route + "/${itemID}")
+
                 }, modifier = Modifier
                     .fillMaxWidth(0.9f)
                     .height(50.dp),
