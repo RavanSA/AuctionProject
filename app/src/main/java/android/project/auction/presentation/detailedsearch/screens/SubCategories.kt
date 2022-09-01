@@ -1,4 +1,4 @@
-package android.project.auction.presentation.postitem.components
+package android.project.auction.presentation.detailedsearch.screens
 
 import android.project.auction.domain.model.category.SubAndCategory
 import android.project.auction.domain.model.category.SubCategories
@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @Composable
-fun SubCategegoriesList(
+fun DetailedSearchSubCategoriesScreen(
     navController: NavController,
     category: SubCategories
 ) {
@@ -37,7 +37,7 @@ fun SubCategegoriesList(
     Scaffold(
         topBar = {
             Column(
-                modifier = androidx.compose.ui.Modifier.background(Color.White)
+                modifier = Modifier.background(Color.White)
             ) {
                 TopBar(
                     title = category.name,
@@ -92,9 +92,11 @@ fun SubCategoriesItems(
                     key = "itemCategory",
                     value = categories
                 )
+
                 navController.navigate(
-                    Screen.CreateItemScreen.route
+                    Screen.DetailedSearchScreen.route
                 )
+
             },
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally

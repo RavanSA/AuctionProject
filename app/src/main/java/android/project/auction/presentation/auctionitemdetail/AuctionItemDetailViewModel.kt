@@ -11,6 +11,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -52,8 +53,13 @@ class AuctionItemDetailViewModel @Inject constructor(
 
     var itemID: String = ""
 
+    private var _itemIDTest = "test"
+
+    val test: MutableLiveData<String> = MutableLiveData<String>("")
+
     init {
         savedStateHandle.get<String>("itemId")?.let { itemId ->
+            setItemId(itemId)
             getItemPicture(itemId)
             getItemDetail(itemId)
             getBidHistory(itemId)
@@ -76,6 +82,7 @@ class AuctionItemDetailViewModel @Inject constructor(
             }
             is AuctionItemDetailEvent.OnBidAmountPlaced -> {
                 placeBidAmount()
+                test.value?.let { getBidHistory(it) }
             }
             is AuctionItemDetailEvent.AddItemToFavorites -> {
                 viewModelScope.launch {
@@ -318,6 +325,14 @@ class AuctionItemDetailViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    fun setItemId(itemId: String) {
+        test.value = itemId
+    }
+
+    fun getItemId(): String? {
+        return test.value
     }
 
     sealed class ItemDetailUiEvent {

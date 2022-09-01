@@ -9,6 +9,9 @@ import android.project.auction.presentation.auctionitemdetail.components.PlaceBi
 import android.project.auction.presentation.auctionlist.AuctionListScreen
 import android.project.auction.presentation.auth.sign_in.LoginPage
 import android.project.auction.presentation.auth.signup.SignUpPage
+import android.project.auction.presentation.detailedsearch.DetailedSearchScreen
+import android.project.auction.presentation.detailedsearch.screens.DetailedSearchCategoriesScreen
+import android.project.auction.presentation.detailedsearch.screens.DetailedSearchSubCategoriesScreen
 import android.project.auction.presentation.favorites.FavoritesScreen
 import android.project.auction.presentation.postitem.PostItem
 import android.project.auction.presentation.postitem.components.CreateItem
@@ -74,8 +77,31 @@ class MainActivity : ComponentActivity() {
                 composable(route = Screen.FavoritesScreen.route) {
                     FavoritesScreen(navController = navController)
                 }
-                composable(route = Screen.AuctionItemDetailScreen.route + "/{itemId}") {
-                    AuctionItemDetailScreen(navController = navController)
+                composable(route = Screen.DetailedSearchCategoriesScreen.route) {
+                    DetailedSearchCategoriesScreen(navController = navController)
+                }
+                composable(route = Screen.DetailedSearchSubCategoriesScreen.route) {
+                    val detailedSubCategory = navController
+                        .previousBackStackEntry?.savedStateHandle?.get<SubCategories>("detailedSubcategory")
+
+                    detailedSubCategory?.let { it ->
+                        DetailedSearchSubCategoriesScreen(
+                            navController = navController,
+                            category = it
+                        )
+                    }
+
+                }
+                composable(route = Screen.DetailedSearchScreen.route) {
+                    val detailedSubAndCategory = navController
+                        .previousBackStackEntry?.savedStateHandle?.get<SubAndCategory>("itemCategory")
+
+                    detailedSubAndCategory?.let { it ->
+                        DetailedSearchScreen(
+                            navController = navController,
+                            subAndCategory = it
+                        )
+                    }
                 }
             }
         }

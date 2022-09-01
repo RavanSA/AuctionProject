@@ -3,7 +3,6 @@ package android.project.auction.presentation.postitem
 import android.project.auction.common.Resource
 import android.project.auction.data.remote.dto.items.createitem.CreateItemRequest
 import android.project.auction.domain.use_case.usecases.AuctionProjectUseCase
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -130,9 +129,6 @@ class PostItemViewModel @Inject constructor(
                 imagesList = stateSelectedImages.value.imagesList
             )
 
-            Log.d("ENDTIMEVIEW", state.value.endTime)
-            Log.d("STARTTIME", state.value.startTime)
-            Log.d("IMAGESLIST", stateSelectedImages.value.imagesList.toString())
             _state.value = state.value.copy(
                 creatingItem = false
             )

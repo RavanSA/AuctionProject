@@ -100,7 +100,11 @@ fun BottomNav(navController: NavController) {
                             )
                             color.value = "Home"
                         }
-                        "Categories" -> {}
+                        "Categories" -> {
+                            navController.navigate(
+                                Screen.DetailedSearchCategoriesScreen.route
+                            )
+                        }
                         "Favorites" -> {
                             navController.navigate(
                                 Screen.FavoritesScreen.route

@@ -27,5 +27,7 @@ data class AuctionItemDetailState(
 
     var itemPictures: List<ItemImages> = emptyList(),
     val itemPicturesError: String = "",
-    val itemPictureLoading: Boolean = false
+    val itemPictureLoading: Boolean = false,
+
+    var itemIDTest: String = ""
 )

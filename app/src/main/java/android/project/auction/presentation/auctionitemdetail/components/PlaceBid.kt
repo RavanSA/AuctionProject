@@ -1,6 +1,5 @@
 package android.project.auction.presentation.auctionitemdetail.components
 
-import android.project.auction.presentation.Screen
 import android.project.auction.presentation.auctionitemdetail.AuctionItemDetailEvent
 import android.project.auction.presentation.auctionitemdetail.AuctionItemDetailViewModel
 import android.project.auction.presentation.auth.sign_in.dpToSp
@@ -80,6 +79,9 @@ fun PlaceBidContent(
 
     val state = auctionItemDetailViewModel.statePlaceBid
 
+    val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+
+
     Log.d("ITEMIDPLACEBID", itemID)
 
     Box(
@@ -135,7 +137,10 @@ fun PlaceBidContent(
                     auctionItemDetailViewModel.onEvent(
                         AuctionItemDetailEvent.OnBidAmountPlaced
                     )
-                    navController.navigate(Screen.AuctionItemDetailScreen.route + "/${itemID}")
+                    Log.d("ITEMIDTEST", "test$itemID")
+
+                    onBackPressedDispatcher?.onBackPressed()
+
 
                 }, modifier = Modifier
                     .fillMaxWidth(0.9f)
