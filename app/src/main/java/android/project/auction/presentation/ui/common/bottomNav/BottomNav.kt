@@ -57,7 +57,7 @@ fun BottomNav(navController: NavController) {
 
     BottomNavigation(
         modifier = Modifier
-            .padding(12.dp, 0.dp, 12.dp, 0.dp)
+            .padding(8.dp, 0.dp, 8.dp, 0.dp)
             .height(100.dp)
             .background(White),
         //backgroundColor = Color.White,

@@ -2,6 +2,7 @@ package android.project.auction.domain.repository
 
 import android.project.auction.data.local.entity.Bids
 import android.project.auction.data.local.entity.Favorites
+import android.project.auction.data.local.entity.Items
 import kotlinx.coroutines.flow.Flow
 
 interface AuctionRoomRepository {
@@ -22,4 +23,13 @@ interface AuctionRoomRepository {
 
     suspend fun isItemAddedToFavorites(id: String): Int?
 
+    fun getItemWithFilteredCategories(
+        subCategoryId: String,
+        categoryId: String,
+        searchQuery: String,
+        firstRange: String,
+        secondRange: String,
+        firstDate: String,
+        secondDate: String
+    ): Flow<List<Items>>
 }

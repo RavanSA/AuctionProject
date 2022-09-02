@@ -23,6 +23,7 @@ import android.project.auction.domain.use_case.authentication.logout.Logout
 import android.project.auction.domain.use_case.authentication.sign_in.SignIn
 import android.project.auction.domain.use_case.authentication.sign_up.SignUp
 import android.project.auction.domain.use_case.createitem.CreateItem
+import android.project.auction.domain.use_case.detailedsearch.ItemsSearch
 import android.project.auction.domain.use_case.getbidhistory.GetBidHistory
 import android.project.auction.domain.use_case.getcategories.GetCategories
 import android.project.auction.domain.use_case.getcategories.GetSubCategories
@@ -118,7 +119,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideAuctionRoomRepository(db: AppDatabase): AuctionRoomRepository {
-        return AuctionRoomRepositoryImpl(db.favDao, db.bidDao)
+        return AuctionRoomRepositoryImpl(db.favDao, db.bidDao, db.itemDao)
     }
 
     @Provides
@@ -149,7 +150,8 @@ object AppModule {
             addItemBids = AddItemBids(repository = roomRepository),
             getHighestBidLocal = GetHighestBidLocal(repository = roomRepository),
             getFavoriteItemById = GetFavoriteItemById(repository = roomRepository),
-            getItemPictures = GetItemPicture(repository = repository)
+            getItemPictures = GetItemPicture(repository = repository),
+            getItemWithFilterCategories = ItemsSearch(repository = roomRepository)
         )
     }
 

@@ -2,15 +2,18 @@ package android.project.auction.data.repository
 
 import android.project.auction.data.local.dao.BidsDao
 import android.project.auction.data.local.dao.FavoritesDao
+import android.project.auction.data.local.dao.ItemsDao
 import android.project.auction.data.local.entity.Bids
 import android.project.auction.data.local.entity.Favorites
+import android.project.auction.data.local.entity.Items
 import android.project.auction.domain.repository.AuctionRoomRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class AuctionRoomRepositoryImpl @Inject constructor(
     private val favDao: FavoritesDao,
-    private val bidDao: BidsDao
+    private val bidDao: BidsDao,
+    private val itemDao: ItemsDao
 ) : AuctionRoomRepository {
 
 
@@ -45,5 +48,26 @@ class AuctionRoomRepositoryImpl @Inject constructor(
     override suspend fun isItemAddedToFavorites(id: String): Int? {
         return favDao.isItemAddedtoFavorites(id)
     }
+
+    override fun getItemWithFilteredCategories(
+        subCategoryId: String,
+        categoryId: String,
+        searchQuery: String,
+        firstRange: String,
+        secondRange: String,
+        firstDate: String,
+        secondDate: String
+    ): Flow<List<Items>> {
+        return itemDao.getItemWithFilteredCategories(
+            subCategoryId = subCategoryId,
+            categoryId = categoryId,
+            searchQuery = searchQuery,
+            firstRange = firstRange,
+            secondRange = secondRange,
+            firstDate = firstDate,
+            secondDate = secondDate
+        )
+    }
+
 
 }
