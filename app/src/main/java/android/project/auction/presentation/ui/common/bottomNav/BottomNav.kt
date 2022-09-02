@@ -27,7 +27,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 
 @Composable
 fun BottomNav(navController: NavController) {
-    val isSelected = remember { mutableStateOf(true) }
 
     val color = remember { mutableStateOf("") }
 
@@ -68,8 +67,6 @@ fun BottomNav(navController: NavController) {
 
         val currentRoute = navBackStackEntry?.destination?.route
         items.forEach { it ->
-            val route = it.route
-
             BottomNavigationItem(
                 icon = {
                     it.icon.let {

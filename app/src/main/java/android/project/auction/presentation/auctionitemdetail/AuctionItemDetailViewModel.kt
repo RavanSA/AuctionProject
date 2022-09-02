@@ -59,8 +59,8 @@ class AuctionItemDetailViewModel @Inject constructor(
 
     init {
         savedStateHandle.get<String>("itemId")?.let { itemId ->
-            setItemId(itemId)
             getItemPicture(itemId)
+            setItemId(itemId)
             getItemDetail(itemId)
             getBidHistory(itemId)
             getItemId(itemId)
@@ -87,6 +87,12 @@ class AuctionItemDetailViewModel @Inject constructor(
             is AuctionItemDetailEvent.AddItemToFavorites -> {
                 viewModelScope.launch {
                     try {
+                        val pictures = if (stateItemPictures.itemPictures.isNotEmpty()) {
+                            stateItemPictures.itemPictures[0].url
+                        } else {
+                            "https://developers.google.com/static/maps/documentation/streetview/images/error-image-generic.png"
+                        }
+
                         state.value.itemDetails?.let {
 
                             Favorites(
@@ -94,7 +100,7 @@ class AuctionItemDetailViewModel @Inject constructor(
                                 endTime = it.endTime,
                                 id = it.id,
                                 minIncrease = it.minIncrease,
-                                pictures = it.pictures,
+                                pictures = pictures,
                                 startTime = it.startTime,
                                 startingPrice = it.startingPrice,
                                 subCategoryId = it.subCategoryId,

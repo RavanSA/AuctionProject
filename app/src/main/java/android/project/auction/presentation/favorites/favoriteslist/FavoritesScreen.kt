@@ -1,20 +1,15 @@
-package android.project.auction.presentation.favorites
+package android.project.auction.presentation.favorites.favoriteslist
 
 import android.project.auction.R
 import android.project.auction.data.local.entity.Favorites
 import android.project.auction.presentation.Screen
-import android.project.auction.presentation.favorites.favoriteslist.FavoritesEvent
-import android.project.auction.presentation.favorites.favoriteslist.FavoritesState
-import android.project.auction.presentation.favorites.favoriteslist.FavoritesViewModel
 import android.project.auction.presentation.ui.common.bottomNav.BottomNav
 import android.project.auction.presentation.ui.common.topBar.TopBar
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -26,15 +21,20 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.google.accompanist.flowlayout.FlowMainAxisAlignment
+import com.google.accompanist.flowlayout.FlowRow
 import com.skydoves.landscapist.glide.GlideImage
 import kotlinx.coroutines.flow.collectLatest
 
@@ -59,7 +59,6 @@ fun FavoritesScreen(
                         favoritesViewModel.onEvent(FavoritesEvent.RestoreItem)
                     }
                 }
-
             }
         }
     }
@@ -133,21 +132,47 @@ fun FavoritesScreenBody(
 
     val state = favoritesViewModel.state.value
 
-    LazyVerticalGrid(
-        cells = GridCells.Fixed(2)
+    var count = 0
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
     ) {
-        items(state.favoritesItems) { fav ->
 
-            FavoritesScreenItem(
-                fav = fav,
-                scaffoldState = scaffoldState,
-                navController = navController,
-                state = state
-            )
+        item {
 
         }
-    }
 
+        items(0) {
+
+        }
+
+        item {
+            val itemSize: Dp = LocalConfiguration.current.screenWidthDp.dp / 2
+
+
+            FlowRow(
+                mainAxisAlignment = FlowMainAxisAlignment.SpaceEvenly
+            ) {
+                for (fav in state.favoritesItems) {
+                    count++
+                    Column(
+                        modifier = Modifier
+
+                    ) {
+                        FavoritesScreenItem(
+                            fav = fav,
+                            scaffoldState = scaffoldState,
+                            navController = navController,
+                            state = state
+                        )
+                    }
+                    if (count == state.favoritesItems.size) {
+                        Spacer(modifier = Modifier.size(100.dp))
+                    }
+                }
+            }
+        }
+    }
 }
 
 
@@ -166,6 +191,10 @@ fun FavoritesScreenItem(
     ) {
         Column(
             modifier = Modifier
+                .shadow(
+                    elevation = 5.dp,
+                    shape = RoundedCornerShape(5.dp)
+                )
                 .clickable {
                     navController.navigate(
                         Screen.AuctionItemDetailScreen.route + "/${fav.id}"
@@ -178,10 +207,14 @@ fun FavoritesScreenItem(
             ) {
                 GlideImage(
                     modifier = Modifier
-                        .height(130.dp),
+                        .height(130.dp)
+                        .shadow(
+                            elevation = 3.dp,
+                            shape = RoundedCornerShape(0.dp)
+                        ),
                     contentScale = ContentScale.Crop,
                     alignment = Alignment.TopCenter,
-                    imageModel = "https://developers.google.com/static/maps/documentation/streetview/images/error-image-generic.png",
+                    imageModel = fav.pictures,
                     placeHolder = ImageBitmap.imageResource(R.drawable.login_image),
                     error = ImageBitmap.imageResource(R.drawable.register_page)
                 )
@@ -232,7 +265,7 @@ fun FavoritesScreenItem(
 @Composable
 fun FavoriteButton(
     modifier: Modifier = Modifier,
-    color: Color = Color.White,
+    color: Color = Color.Black,
     scaffoldState: ScaffoldState,
     favoritesScreenViewModel: FavoritesViewModel = hiltViewModel(),
     fav: Favorites
@@ -263,3 +296,5 @@ fun FavoriteButton(
     }
 
 }
+
+

@@ -116,5 +116,8 @@ dependencies {
     //Accompanist
     implementation "com.google.accompanist:accompanist-pager:0.22.0-rc"
 
+    //Flow Row
+    implementation "com.google.accompanist:accompanist-flowlayout:0.20.0"
+
 
 }

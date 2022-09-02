@@ -12,7 +12,7 @@ import android.project.auction.presentation.auth.signup.SignUpPage
 import android.project.auction.presentation.detailedsearch.DetailedSearchScreen
 import android.project.auction.presentation.detailedsearch.screens.DetailedSearchCategoriesScreen
 import android.project.auction.presentation.detailedsearch.screens.DetailedSearchSubCategoriesScreen
-import android.project.auction.presentation.favorites.FavoritesScreen
+import android.project.auction.presentation.favorites.favoriteslist.FavoritesScreen
 import android.project.auction.presentation.postitem.PostItem
 import android.project.auction.presentation.postitem.components.CreateItem
 import android.project.auction.presentation.postitem.components.SubCategegoriesList

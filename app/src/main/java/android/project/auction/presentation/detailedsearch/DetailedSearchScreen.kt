@@ -1,5 +1,6 @@
 package android.project.auction.presentation.detailedsearch
 
+import android.project.auction.data.local.entity.Items
 import android.project.auction.data.local.entity.toItem
 import android.project.auction.domain.model.category.SubAndCategory
 import android.project.auction.presentation.Screen
@@ -21,8 +22,8 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Filter1
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Sort
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,6 +54,8 @@ fun DetailedSearchScreen(
         initialValue = ModalBottomSheetValue.Hidden
     )
 
+    val items = detailedSearchViewModel.state.value.filteredItemList
+
 
     ModalBottomSheetLayout(
         sheetState = bottomState,
@@ -71,8 +74,8 @@ fun DetailedSearchScreen(
                     modifier = Modifier.background(Color.White)
                 ) {
                     TopBar(
-                        title = "${subAndCategory.categoryName}, ${subAndCategory.subCategoryName}",
-                        icon = Icons.Default.Menu,
+                        title = subAndCategory.subCategoryName,
+                        icon = Icons.Default.VisibilityOff,
                         onNavigationIconClick = {
 
                         },
@@ -112,10 +115,11 @@ fun DetailedSearchScreen(
                 }
             },
             content = {
-                DetailedSearchScreenContent(
+
+                DetailedSearchItems(
+                    subAndCategory,
+                    items,
                     navController,
-                    subAndCategory.categoryID,
-                    subAndCategory.subCategoryID,
                     bottomState
                 )
             }
@@ -253,28 +257,12 @@ fun FilterContent(
 }
 
 
-@ExperimentalMaterialApi
-@Composable
-fun DetailedSearchScreenContent(
-    navController: NavController,
-    categoryId: String,
-    subCategoryId: String,
-    bottomState: ModalBottomSheetState
-) {
-    SearchAndFilter(
-        navController = navController,
-        categoryId = categoryId,
-        subCategoryId = subCategoryId,
-        bottomState = bottomState
-    )
-}
 
 @ExperimentalMaterialApi
 @Composable
 fun SearchAndFilter(
     navController: NavController,
-    categoryId: String,
-    subCategoryId: String,
+    subAndCategory: SubAndCategory,
     detailedSearchViewModel: DetailedSearchViewModel = hiltViewModel(),
     bottomState: ModalBottomSheetState
 ) {
@@ -286,8 +274,8 @@ fun SearchAndFilter(
     if (firstOrder.value) {
         detailedSearchViewModel.onEvent(
             DetailedSearchEvent.OnSubCategoryItemClicked(
-                categoryId = categoryId,
-                subCubCategoryId = subCategoryId
+                categoryId = subAndCategory.categoryID,
+                subCubCategoryId = subAndCategory.subCategoryID
             )
         )
         firstOrder.value = false
@@ -295,12 +283,13 @@ fun SearchAndFilter(
 
 
     Log.d("SEARCHITEM", detailedSearchViewModel.stateFilteredItemList.toString())
-    val items = detailedSearchViewModel.stateFilteredItemList.filteredItemList
+
+
     Column(
         modifier = Modifier
-            .padding(16.dp)
-            .width(IntrinsicSize.Max)
+            .padding(0.dp)
     ) {
+
         OutlinedTextField(
             value = state.searchQuery,
             onValueChange = {
@@ -315,7 +304,7 @@ fun SearchAndFilter(
                 .fillMaxWidth()
                 .background(Color.White),
             placeholder = {
-//                Text(text = "Search...")
+                Text(text = "Search...")
             },
             maxLines = 1,
             singleLine = true
@@ -329,18 +318,19 @@ fun SearchAndFilter(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            Row(modifier = Modifier
-                .drawBehind {
-                    drawRect(
-                        Color.White
-                    )
-                }
-                .padding(start = 50.dp)
-                .clickable {
-                    detailedSearchViewModel.onEvent(
-                        DetailedSearchEvent.ToggleOrderSection
-                    )
-                },
+            Row(
+                modifier = Modifier
+                    .drawBehind {
+                        drawRect(
+                            Color.White
+                        )
+                    }
+                    .padding(start = 50.dp)
+                    .clickable {
+                        detailedSearchViewModel.onEvent(
+                            DetailedSearchEvent.ToggleOrderSection
+                        )
+                    },
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -354,7 +344,7 @@ fun SearchAndFilter(
                 Text(
                     modifier = Modifier.padding(start = 8.dp),
                     text = "Sort",
-                    fontSize = 20.sp
+                    fontSize = 18.sp
                 )
 
             }
@@ -413,11 +403,55 @@ fun SearchAndFilter(
             )
         }
 
-        LazyColumn(
+    }
 
-            contentPadding = PaddingValues(8.dp),
+}
+
+
+@ExperimentalMaterialApi
+@Composable
+fun DetailedSearchItems(
+    subAndCategory: SubAndCategory,
+    items: List<Items>,
+    navController: NavController,
+    bottomState: ModalBottomSheetState
+) {
+
+    Column(
+        modifier = Modifier.padding(10.dp)
+    ) {
+
+
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(0.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            item {
+
+                SearchAndFilter(
+                    navController = navController,
+                    subAndCategory = subAndCategory,
+                    bottomState = bottomState
+                )
+
+                Spacer(modifier = Modifier.size(15.dp))
+
+                Text(
+                    text = "${subAndCategory.categoryName},${subAndCategory.subCategoryName}",
+                    color = Color.Black,
+                    fontSize = 18.sp
+                )
+                Spacer(modifier = Modifier.size(5.dp))
+
+                Text(
+                    text = "${items.size} item found",
+                    color = Color.Gray,
+                    fontSize = 14.sp
+                )
+
+            }
+
             items(items) { item ->
                 ItemList(item = item.toItem(),
                     onItemClick = {
@@ -426,7 +460,5 @@ fun SearchAndFilter(
                 )
             }
         }
-
     }
-
 }

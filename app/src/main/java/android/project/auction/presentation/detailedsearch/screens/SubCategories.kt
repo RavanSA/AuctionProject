@@ -4,7 +4,6 @@ import android.project.auction.domain.model.category.SubAndCategory
 import android.project.auction.domain.model.category.SubCategories
 import android.project.auction.domain.model.category.SubCategory
 import android.project.auction.presentation.Screen
-import android.project.auction.presentation.detailedsearch.DetailedSearchViewModel
 import android.project.auction.presentation.ui.common.topBar.TopBar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 
 @Composable
@@ -75,8 +73,7 @@ fun SubCategoriesItems(
     subCategory: SubCategory,
     categoryId: String,
     categoryName: String,
-    navController: NavController,
-    detailedSearchViewModel: DetailedSearchViewModel = hiltViewModel()
+    navController: NavController
 ) {
     val categories = SubAndCategory(
         subCategory.id,
