@@ -1,5 +1,10 @@
 package android.project.auction.domain.model.item
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+
+@Parcelize
 data class ItemDetail(
     val description: String,
     val endTime: String,
@@ -14,4 +19,4 @@ data class ItemDetail(
     val userFullName: String,
     val userId: String,
     val subCategoryName: String
-)
+) : Parcelable

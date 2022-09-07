@@ -3,9 +3,11 @@ package android.project.auction.data.repository
 import android.project.auction.data.local.dao.BidsDao
 import android.project.auction.data.local.dao.FavoritesDao
 import android.project.auction.data.local.dao.ItemsDao
+import android.project.auction.data.local.dao.SellerOrBidderDao
 import android.project.auction.data.local.entity.Bids
 import android.project.auction.data.local.entity.Favorites
 import android.project.auction.data.local.entity.Items
+import android.project.auction.data.local.entity.SellerOrBidder
 import android.project.auction.domain.repository.AuctionRoomRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -13,7 +15,8 @@ import javax.inject.Inject
 class AuctionRoomRepositoryImpl @Inject constructor(
     private val favDao: FavoritesDao,
     private val bidDao: BidsDao,
-    private val itemDao: ItemsDao
+    private val itemDao: ItemsDao,
+    private val sellerOrBidderDao: SellerOrBidderDao
 ) : AuctionRoomRepository {
 
 
@@ -69,5 +72,10 @@ class AuctionRoomRepositoryImpl @Inject constructor(
         )
     }
 
+    override suspend fun setSellerOrBidder(items: SellerOrBidder) {
+        return sellerOrBidderDao.setSellerBidderInfo(
+            items = items
+        )
+    }
 
 }

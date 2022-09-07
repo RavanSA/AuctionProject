@@ -3,6 +3,7 @@ package android.project.auction
 import android.os.Bundle
 import android.project.auction.domain.model.category.SubAndCategory
 import android.project.auction.domain.model.category.SubCategories
+import android.project.auction.domain.model.item.ItemDetail
 import android.project.auction.presentation.Screen
 import android.project.auction.presentation.auctionitemdetail.AuctionItemDetailScreen
 import android.project.auction.presentation.auctionitemdetail.components.PlaceBid
@@ -16,6 +17,8 @@ import android.project.auction.presentation.favorites.favoriteslist.FavoritesScr
 import android.project.auction.presentation.postitem.PostItem
 import android.project.auction.presentation.postitem.components.CreateItem
 import android.project.auction.presentation.postitem.components.SubCategegoriesList
+import android.project.auction.presentation.userprofile.UserProfileScreen
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -50,8 +53,19 @@ class MainActivity : ComponentActivity() {
                 composable(route = Screen.AuctionItemDetailScreen.route + "/{itemId}") {
                     AuctionItemDetailScreen(navController = navController)
                 }
-                composable(route = Screen.PlaceBidAmountScreen.route + "/{itemId}") {
-                    PlaceBid(navController = navController, savedStateHandle = SavedStateHandle())
+                composable(route = Screen.PlaceBidAmountScreen.route) {
+                    val itemDetailForPlaceBid = navController
+                        .previousBackStackEntry?.savedStateHandle?.get<ItemDetail>("itemDetails")
+
+                    Log.d("ITEMDETAIŞTEST", itemDetailForPlaceBid.toString())
+                    if (itemDetailForPlaceBid != null) {
+                        PlaceBid(
+                            navController = navController,
+                            savedStateHandle = SavedStateHandle(),
+                            itemDetail = itemDetailForPlaceBid
+                        )
+                    }
+
                 }
                 composable(route = Screen.PostItemScreen.route) {
                     PostItem(navController = navController)
@@ -102,6 +116,9 @@ class MainActivity : ComponentActivity() {
                             subAndCategory = it
                         )
                     }
+                }
+                composable(route = Screen.UserProfileScreen.route) {
+                    UserProfileScreen(navController = navController)
                 }
             }
         }

@@ -1,5 +1,8 @@
 package android.project.auction.presentation.auctionitemdetail.components
 
+import android.project.auction.data.local.entity.SellerOrBidder
+import android.project.auction.domain.model.item.ItemDetail
+import android.project.auction.presentation.Screen
 import android.project.auction.presentation.auctionitemdetail.AuctionItemDetailEvent
 import android.project.auction.presentation.auctionitemdetail.AuctionItemDetailViewModel
 import android.project.auction.presentation.auth.sign_in.dpToSp
@@ -26,14 +29,10 @@ import androidx.navigation.NavController
 @Composable
 fun PlaceBid(
     savedStateHandle: SavedStateHandle,
-    navController: NavController
+    navController: NavController,
+    itemDetail: ItemDetail
 ) {
 
-    var itemID = ""
-    savedStateHandle.get<String>("itemId")?.let { itemId ->
-        Log.d("ITEMIDPLACE", itemId)
-        itemID = itemId
-    }
 
     val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
@@ -64,7 +63,7 @@ fun PlaceBid(
             )
         },
         content = {
-            PlaceBidContent(itemID, navController)
+            PlaceBidContent(itemDetail, navController)
         }
     )
 }
@@ -72,7 +71,7 @@ fun PlaceBid(
 
 @Composable
 fun PlaceBidContent(
-    itemID: String,
+    item: ItemDetail,
     navController: NavController,
     auctionItemDetailViewModel: AuctionItemDetailViewModel = hiltViewModel()
 ) {
@@ -82,7 +81,6 @@ fun PlaceBidContent(
     val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
 
-    Log.d("ITEMIDPLACEBID", itemID)
 
     Box(
         modifier = Modifier
@@ -111,9 +109,8 @@ fun PlaceBidContent(
             OutlinedTextField(
                 value = state.bidAmount,
                 onValueChange = {
-                    Log.d("ITEMEVENT", itemID)
                     auctionItemDetailViewModel.onEvent(
-                        AuctionItemDetailEvent.BidAmountChanged(amount = it, itemId = itemID)
+                        AuctionItemDetailEvent.BidAmountChanged(amount = it, itemId = item.id)
                     )
                 },
                 label = { Text(text = "Amount", color = Color.Black) },
@@ -135,11 +132,34 @@ fun PlaceBidContent(
                 onClick = {
 
                     auctionItemDetailViewModel.onEvent(
-                        AuctionItemDetailEvent.OnBidAmountPlaced
+                        AuctionItemDetailEvent.OnBidAmountPlaced(
+                            item.id
+                        )
                     )
-                    Log.d("ITEMIDTEST", "test$itemID")
 
-                    onBackPressedDispatcher?.onBackPressed()
+                    auctionItemDetailViewModel.setSellerOrBidder(
+                        SellerOrBidder(
+                            item.description,
+                            item.endTime,
+                            0,
+                            item.id,
+                            item.minIncrease,
+                            item.pictures,
+                            item.startTime,
+                            item.startingPrice,
+                            item.subCategoryId,
+                            item.categoryId,
+                            item.title,
+                            item.userFullName,
+                            item.userId,
+                            "item.m",
+                            "bidder",
+                        )
+                    )
+
+                    navController.navigate(
+                        Screen.AuctionItemDetailScreen.route + "/${item.id}"
+                    )
 
 
                 }, modifier = Modifier

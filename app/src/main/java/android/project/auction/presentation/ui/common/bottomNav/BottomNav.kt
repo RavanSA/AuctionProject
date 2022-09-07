@@ -108,7 +108,11 @@ fun BottomNav(navController: NavController) {
                             )
                             color.value = "Favorites"
                         }
-                        "Profile" -> {}
+                        "Profile" -> {
+                            navController.navigate(
+                                Screen.UserProfileScreen.route
+                            )
+                        }
                     }
 
                 },

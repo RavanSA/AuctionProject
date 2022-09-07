@@ -1,8 +1,11 @@
 package android.project.auction.presentation.auctionitemdetail.components
 
+import android.project.auction.data.local.entity.SellerOrBidder
 import android.project.auction.domain.model.item.ItemDetail
 import android.project.auction.presentation.Screen
+import android.project.auction.presentation.auctionitemdetail.AuctionItemDetailEvent
 import android.project.auction.presentation.auctionitemdetail.AuctionItemDetailState
+import android.project.auction.presentation.auctionitemdetail.AuctionItemDetailViewModel
 import android.project.auction.presentation.auctionitemdetail.getCurrentDate
 import android.project.auction.presentation.auth.sign_in.dpToSp
 import android.util.Log
@@ -15,6 +18,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import java.text.SimpleDateFormat
 import java.util.*
@@ -24,7 +28,8 @@ fun StickyPlaceBidButton(
     navController: NavController,
     item: ItemDetail,
     userID: String,
-    highestBidder: AuctionItemDetailState
+    highestBidder: AuctionItemDetailState,
+    auctionItemDetailViewModel: AuctionItemDetailViewModel = hiltViewModel()
 ) {
 
     var enabled by remember { mutableStateOf(true) }
@@ -62,6 +67,28 @@ fun StickyPlaceBidButton(
                     //+
                     buttonTextState = "Place a bid"
                     enabled = false
+                    val sellerOrBider = item
+                    auctionItemDetailViewModel.onEvent(
+                        AuctionItemDetailEvent.SellerOrBidderEvent(
+                            SellerOrBidder(
+                                item.description,
+                                item.endTime,
+                                0,
+                                item.id,
+                                item.minIncrease,
+                                item.pictures,
+                                item.startTime,
+                                item.startingPrice,
+                                item.subCategoryId,
+                                item.categoryId,
+                                item.title,
+                                item.userFullName,
+                                item.userId,
+                                "item.m",
+                                "owner",
+                            )
+                        )
+                    )
                     Log.d("OWNERID", "PLACE A BID")
                 }
             }
@@ -77,6 +104,7 @@ fun StickyPlaceBidButton(
                     //+
                     buttonTextState = "You're highest bidder"
                     enabled = false
+
                     Log.d("HIGHESTBIDDER", "YOUREHIGHESRBIDDR")
                 }
             }
@@ -90,8 +118,14 @@ fun StickyPlaceBidButton(
     Log.d("ITEMID", item.toString())
     Button(
         onClick = {
+
+            navController.currentBackStackEntry?.savedStateHandle?.set(
+                key = "itemDetails",
+                value = item
+            )
+
             navController.navigate(
-                Screen.PlaceBidAmountScreen.route + "/${item.id}"
+                Screen.PlaceBidAmountScreen.route
             )
         }, modifier = Modifier
             .fillMaxWidth()

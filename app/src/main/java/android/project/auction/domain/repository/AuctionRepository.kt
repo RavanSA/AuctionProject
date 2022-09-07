@@ -36,4 +36,5 @@ interface AuctionRepository {
     suspend fun getItemPictures(id: String): GetItemPicturesDto
 
     suspend fun addItemMainPicture(addItemPictureRequest: AddItemPictureRequest): Response<Unit>
+
 }

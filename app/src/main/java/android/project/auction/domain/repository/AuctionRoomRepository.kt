@@ -3,6 +3,7 @@ package android.project.auction.domain.repository
 import android.project.auction.data.local.entity.Bids
 import android.project.auction.data.local.entity.Favorites
 import android.project.auction.data.local.entity.Items
+import android.project.auction.data.local.entity.SellerOrBidder
 import kotlinx.coroutines.flow.Flow
 
 interface AuctionRoomRepository {
@@ -32,4 +33,7 @@ interface AuctionRoomRepository {
         firstDate: String,
         secondDate: String
     ): Flow<List<Items>>
+
+    suspend fun setSellerOrBidder(items: SellerOrBidder)
+
 }

@@ -4,6 +4,7 @@ import android.project.auction.common.AuthResult
 import android.project.auction.presentation.Screen
 import android.project.auction.presentation.auctionlist.components.CategoriesListItem
 import android.project.auction.presentation.auctionlist.components.ItemList
+import android.project.auction.presentation.auctionlist.components.SearchBar
 import android.project.auction.presentation.auth.AuthUiEvent
 import android.project.auction.presentation.auth.AuthViewModel
 import android.project.auction.presentation.ui.common.LoadingScreen
@@ -12,7 +13,6 @@ import android.project.auction.presentation.ui.common.navDrawer.DrawerBody
 import android.project.auction.presentation.ui.common.navDrawer.DrawerHeader
 import android.project.auction.presentation.ui.common.navDrawer.NavDrawerItem
 import android.project.auction.presentation.ui.common.topBar.TopBar
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -56,9 +56,7 @@ fun AuctionListScreen(
     val context = LocalContext.current
     val scaffoldState: ScaffoldState = rememberScaffoldState()
     val scope: CoroutineScope = rememberCoroutineScope()
-    val auctionItemState = auctionViewModel.stateItem
-
-    val auctionListState = auctionViewModel.state
+    auctionViewModel.stateItem
 
     LaunchedEffect(viewModel, context) {
         viewModel.authResults.collect { authResult ->
@@ -142,7 +140,6 @@ fun AuctionListScreen(
                     .clip(RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp))
                     .background(Color.White),
                 cutoutShape = CircleShape,
-                //backgroundColor = Color.White,
                 elevation = 22.dp,
                 backgroundColor = Color.White
             ) {
@@ -190,33 +187,6 @@ fun AuctionListScreen(
 
 
 @Composable
-fun SearchBar(
-    auctionViewModel: AuctionListViewModel = hiltViewModel()
-) {
-    val auctionItemState = auctionViewModel.stateItem
-
-    Column(modifier = Modifier.background(White)) {
-        OutlinedTextField(
-            value = auctionItemState.searchQuery,
-            onValueChange = {
-                auctionViewModel.onEvent(
-                    AuctionListEvent.OnSearchQueryChange(it)
-                )
-            },
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
-                .background(White),
-            placeholder = {
-                Text(text = "Search...")
-            },
-            maxLines = 1,
-            singleLine = true
-        )
-    }
-}
-
-@Composable
 fun MainScreenBody(
     auctionViewModel: AuctionListViewModel = hiltViewModel(),
     navController: NavController
@@ -233,9 +203,7 @@ fun MainScreenBody(
             .fillMaxSize()
             .background(White)
     ) {
-        CategoriesLazyRow(
-            auctionViewModel = auctionViewModel
-        )
+
 
 
         Column(
@@ -282,7 +250,6 @@ fun CategoriesLazyRow(
         ) {
             items(auctionCategoriesState.value.categories) { categories ->
                 CategoriesListItem(auctionViewModel = auctionViewModel, category = categories)
-                Log.d("CATEFORYITEMS", categories.toString())
             }
         }
     }
@@ -291,25 +258,33 @@ fun CategoriesLazyRow(
 @Composable
 fun ItemLazyColumn(
     auctionListState: AuctionListState,
-    navController: NavController
+    navController: NavController,
+    auctionViewModel: AuctionListViewModel = hiltViewModel()
 ) {
 
     Column(modifier = Modifier) {
 
 
-        Text(
-            text = "Items",
-            color = Color.Black,
-            maxLines = 1,
-            modifier = Modifier.padding(start = 16.dp),
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp
-        )
-
         LazyColumn(
             contentPadding = PaddingValues(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+
+            item {
+                CategoriesLazyRow(
+                    auctionViewModel = auctionViewModel
+                )
+
+                Text(
+                    text = "Items",
+                    color = Color.Black,
+                    maxLines = 1,
+                    modifier = Modifier.padding(start = 16.dp),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
+            }
+
             items(auctionListState.item) { item ->
                 ItemList(item = item,
                     onItemClick = {

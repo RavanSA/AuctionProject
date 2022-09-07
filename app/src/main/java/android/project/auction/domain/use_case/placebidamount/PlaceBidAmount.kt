@@ -17,6 +17,10 @@ class PlaceBidAmount @Inject constructor(
 
             val userID = preferences.getString("USERID", null) ?: "NOT REGISTERED USER"
 
+            Log.d("testBID", amount.toString())
+            Log.d("testBID", itemId)
+
+
             repository.placeBidAmount(
                 amount = amount,
                 itemId = itemId,

@@ -48,5 +48,8 @@ interface ItemsDao {
         secondDate: String
     ): Flow<List<Items>>
 
+    @Query("UPDATE Items SET seller_or_bidder = :status WHERE item_id = :itemId")
+    suspend fun setSellerBidderInfo(status: String, itemId: String)
+
 
 }
