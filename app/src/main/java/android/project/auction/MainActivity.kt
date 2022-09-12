@@ -17,6 +17,7 @@ import android.project.auction.presentation.favorites.favoriteslist.FavoritesScr
 import android.project.auction.presentation.postitem.PostItem
 import android.project.auction.presentation.postitem.components.CreateItem
 import android.project.auction.presentation.postitem.components.SubCategegoriesList
+import android.project.auction.presentation.updateprofile.UpdateProfileScreen
 import android.project.auction.presentation.userprofile.UserProfileScreen
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -119,6 +120,9 @@ class MainActivity : ComponentActivity() {
                 }
                 composable(route = Screen.UserProfileScreen.route) {
                     UserProfileScreen(navController = navController)
+                }
+                composable(route = Screen.UpdateProfileScreen.route) {
+                    UpdateProfileScreen(navController = navController)
                 }
             }
         }

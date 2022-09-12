@@ -10,7 +10,9 @@ import android.project.auction.domain.use_case.getcategories.GetSubCategories
 import android.project.auction.domain.use_case.gethighestbid.GetHighestBid
 import android.project.auction.domain.use_case.getitemdetail.GetItemDetail
 import android.project.auction.domain.use_case.getitemdetail.GetItemPicture
+import android.project.auction.domain.use_case.getitems.GetAuctionsForSellerOrBidder
 import android.project.auction.domain.use_case.getitems.GetItems
+import android.project.auction.domain.use_case.getuserinfobyid.GetUserInfoById
 import android.project.auction.domain.use_case.placebidamount.PlaceBidAmount
 
 data class AuctionProjectUseCase(
@@ -30,5 +32,7 @@ data class AuctionProjectUseCase(
     val getHighestBidLocal: GetHighestBidLocal,
     val getItemPictures: GetItemPicture,
     val getItemWithFilterCategories: ItemsSearch,
-    val sellerOrBidder: SellerOrBidder
+    val sellerOrBidder: SellerOrBidder,
+    val getSellerOrBidderList: GetAuctionsForSellerOrBidder,
+    val getUserInfoById: GetUserInfoById
 )

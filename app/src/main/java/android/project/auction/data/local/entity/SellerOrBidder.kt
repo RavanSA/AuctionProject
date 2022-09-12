@@ -11,7 +11,6 @@ data class SellerOrBidder(
     @ColumnInfo(name = "end_time")
     val endTime: String,
     @PrimaryKey
-    val tempId: Int = 0,
     @ColumnInfo(name = "item_id")
     val id: String,
     @ColumnInfo(name = "minimum_increase")

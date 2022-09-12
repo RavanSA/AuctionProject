@@ -78,4 +78,8 @@ class AuctionRoomRepositoryImpl @Inject constructor(
         )
     }
 
+    override fun getSellerOrBidderAuctions(sellerOrBidder: String): Flow<List<SellerOrBidder>> {
+        return sellerOrBidderDao.getSellerOrBidderAuctions(sellerOrBidder)
+    }
+
 }

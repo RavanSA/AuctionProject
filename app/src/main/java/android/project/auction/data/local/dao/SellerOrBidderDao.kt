@@ -4,6 +4,8 @@ import android.project.auction.data.local.entity.SellerOrBidder
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SellerOrBidderDao {
@@ -11,8 +13,7 @@ interface SellerOrBidderDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun setSellerBidderInfo(items: SellerOrBidder)
 
-//    @Query("UPDATE SellerOrBidder SET seller_or_bidder = :status WHERE item_id = :itemId")
-//    suspend fun setSellerBidderInfo(status: String, itemId: String)
-
+    @Query("SELECT * FROM SellerOrBidder WHERE seller_or_bidder = :sellerOrBidder")
+    fun getSellerOrBidderAuctions(sellerOrBidder: String): Flow<List<SellerOrBidder>>
 
 }

@@ -15,7 +15,8 @@ data class ItemDetailDataDto(
     val subCategoryName: String,
     val title: String,
     val userFullName: String,
-    val userId: String
+    val userId: String,
+    val mainItemPicture: String
 )
 
 fun ItemDetailDataDto.toItemDetail(): ItemDetail {
@@ -32,6 +33,7 @@ fun ItemDetailDataDto.toItemDetail(): ItemDetail {
         title = title,
         userFullName = "userFullName",
         userId = userId,
-        subCategoryName = subCategoryName
+        subCategoryName = subCategoryName,
+        mainItemPicture = mainItemPicture
     )
 }

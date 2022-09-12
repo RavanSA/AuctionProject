@@ -1,43 +1,51 @@
 package android.project.auction.presentation.userprofile.components
 
+import android.project.auction.data.local.entity.SellerOrBidder
+import android.project.auction.presentation.userprofile.UserProfileEvent
+import android.project.auction.presentation.userprofile.UserProfileViewModel
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Tab
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 
+
 @OptIn(ExperimentalUnitApi::class)
 @ExperimentalPagerApi
 @Composable
-fun TabLayout() {
+fun TabLayout(
+    navController: NavController,
+    userProfileViewModel: UserProfileViewModel = hiltViewModel()
+) {
 
-    val pagerState = rememberPagerState()
+    val itemList = userProfileViewModel.state.value.auctionList
+
+    val pagerState = rememberPagerState(0)
 
     val list = listOf(
         "My Auctions",
-        "Participated Auctions",
-        "My Last Auctions",
-        "Ended Participated Auctions"
+        "Participated Auctions"
     )
 
     Column(
@@ -46,7 +54,12 @@ fun TabLayout() {
             .padding(10.dp)
     ) {
         Tabs(pagerState = pagerState, list = list)
-        TabsContent(pagerState = pagerState, list = list)
+        TabsContent(
+            pagerState = pagerState,
+            list = list,
+            itemList = itemList,
+            navController = navController
+        )
     }
 
 }
@@ -115,42 +128,82 @@ fun Tabs(
 @Composable
 fun TabsContent(
     pagerState: PagerState,
-    list: List<String>
+    list: List<String>,
+    itemList: List<SellerOrBidder>,
+    navController: NavController,
+    userProfileViewModel: UserProfileViewModel = hiltViewModel()
 ) {
 
     HorizontalPager(
         state = pagerState,
         count = list.size
-    ) { page ->
-        when (page) {
+    ) {
+//        Log.d("PAGE1212", page.toString())
 
-            0 -> TabContentScreen(data = "Welcome to Home Screen")
+        when (pagerState.currentPage) {
+            0 -> {
+                Log.d("TESDSDF", "owner")
+                userProfileViewModel.onEvent(
+                    UserProfileEvent.OnTabChanged(
+                        "owner"
+                    )
+                )
+                TabContentScreen(
+                    data = itemList,
+                    navController = navController
+                )
+            }
 
-            1 -> TabContentScreen(data = "Welcome to Shopping Screen")
-
-            2 -> TabContentScreen(data = "Welcome to Settings Screen")
+            1 -> {
+                Log.d("TEST", "bidder")
+                userProfileViewModel.onEvent(
+                    UserProfileEvent.OnTabChanged(
+                        "bidder"
+                    )
+                )
+                TabContentScreen(
+                    data = itemList,
+                    navController = navController
+                )
+            }
         }
     }
 }
 
 
 @Composable
-fun TabContentScreen(data: String) {
-    Column(
+fun TabContentScreen(
+    data: List<SellerOrBidder>,
+    navController: NavController
+) {
 
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+//    Text(
+//        text = data.toString(),
+//        color = Color.Black,
+//        fontWeight = FontWeight.Bold,
+//        textAlign = TextAlign.Center,
+//        fontSize = 12.sp
+//    )
+
+    LazyColumn(
+        contentPadding = PaddingValues(2.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text(
-            text = data,
 
-            style = MaterialTheme.typography.h5,
-            color = Color.Black,
 
-            fontWeight = FontWeight.Bold,
+        items(data) { item ->
 
-            textAlign = TextAlign.Center
-        )
+            SellerOrBidderItem(
+                items = item,
+                navController = navController
+            )
+
+        }
+
+        item {
+            ProfileSettings()
+        }
+
     }
+
 }

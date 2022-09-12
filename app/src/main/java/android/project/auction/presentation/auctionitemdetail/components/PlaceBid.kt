@@ -141,7 +141,6 @@ fun PlaceBidContent(
                         SellerOrBidder(
                             item.description,
                             item.endTime,
-                            0,
                             item.id,
                             item.minIncrease,
                             item.pictures,
@@ -152,7 +151,7 @@ fun PlaceBidContent(
                             item.title,
                             item.userFullName,
                             item.userId,
-                            "item.m",
+                            item.mainItemPicture,
                             "bidder",
                         )
                     )

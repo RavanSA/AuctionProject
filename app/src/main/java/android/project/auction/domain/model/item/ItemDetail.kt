@@ -18,5 +18,6 @@ data class ItemDetail(
     val title: String,
     val userFullName: String,
     val userId: String,
-    val subCategoryName: String
+    val subCategoryName: String,
+    val mainItemPicture: String
 ) : Parcelable

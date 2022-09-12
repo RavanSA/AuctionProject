@@ -1,51 +1,54 @@
 package android.project.auction.presentation.userprofile
 
+import android.project.auction.data.local.entity.SellerOrBidder
+import android.project.auction.domain.model.userinfo.UserInfo
 import android.project.auction.presentation.Screen
 import android.project.auction.presentation.postitem.components.CategoryImage
 import android.project.auction.presentation.ui.common.bottomNav.BottomNav
 import android.project.auction.presentation.userprofile.components.TabLayout
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 
 @ExperimentalPagerApi
 @Composable
 fun UserProfileScreen(
-    navController: NavController
+    navController: NavController,
+    userProfileViewModel: UserProfileViewModel = hiltViewModel()
 ) {
 
+    val itemLists = userProfileViewModel.state.value.auctionList
+    val userInfo = userProfileViewModel.state.value.userInfo
 
     Scaffold(
         topBar = {
             TopAppBar(
-                backgroundColor = Color.Black,
+                backgroundColor = Color.White,
                 title = {
-                    Row(
-                        modifier = Modifier.padding(25.dp),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(text = "Profile", color = Color.White)
-
-                    }
+                    Text(text = "Profile", color = Color.Black)
                 },
                 navigationIcon = {
                     IconButton(onClick = {
@@ -54,7 +57,7 @@ fun UserProfileScreen(
                         )
                     }) {
 
-                        Icon(Icons.Default.ArrowBack, "Menu")
+                        Icon(Icons.Default.Menu, "Menu")
                     }
                 },
 
@@ -91,7 +94,9 @@ fun UserProfileScreen(
         },
         content = {
             UserProfileContent(
-
+                itemLists,
+                navController,
+                userInfo
             )
         }
     )
@@ -99,30 +104,40 @@ fun UserProfileScreen(
 
 @ExperimentalPagerApi
 @Composable
-fun UserProfileContent() {
-
+fun UserProfileContent(
+    itemLists: List<SellerOrBidder>,
+    navController: NavController,
+    userInfo: UserInfo?
+) {
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.Gray)
+                .background(Color.White)
                 .height(maxHeight / 3)
                 .align(Alignment.TopStart)
-                .padding(15.dp),
+                .padding(15.dp)
+                .clip(RoundedCornerShape(10.dp, 10.dp, 10.dp, 10.dp))
+                .shadow(2.dp),
             contentAlignment = Alignment.TopStart
         ) {
 
             Column(
-                modifier = Modifier,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(10.dp, 10.dp, 10.dp, 10.dp))
+                    .shadow(2.dp),
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(
                     modifier = Modifier
                         .padding(15.dp)
+                        .clip(RoundedCornerShape(10.dp, 10.dp, 10.dp, 10.dp))
                         .clickable {
-
+                            navController.navigate(
+                                Screen.UpdateProfileScreen.route
+                            )
                         },
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.Top
@@ -140,8 +155,8 @@ fun UserProfileContent() {
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Text(
-                                "Test Name",
-                                color = Color.White,
+                                userInfo?.fullName ?: "Error",
+                                color = Color.Black,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                                 fontSize = 20.sp,
@@ -152,7 +167,7 @@ fun UserProfileContent() {
                             Icon(
                                 Icons.Default.Edit,
                                 contentDescription = "...",
-                                tint = Color.White,
+                                tint = Color.Black,
                                 modifier = Modifier.padding(top = 25.dp)
                             )
                         }
@@ -163,21 +178,27 @@ fun UserProfileContent() {
 
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.80f)
+                        .fillMaxWidth(0.8f)
                         .clip(RoundedCornerShape(10.dp, 10.dp, 10.dp, 10.dp))
                         .background(Color.White)
+                        .shadow(0.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Row(
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .fillMaxWidth(1f)
                             .background(Color.White)
+                            .clip(RoundedCornerShape(10.dp, 10.dp, 10.dp, 10.dp))
+                            .shadow(0.dp),
+                        horizontalArrangement = Arrangement.Center
                     ) {
                         Column(
-                            modifier = Modifier.padding(10.dp)
+                            modifier = Modifier.padding(10.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+
                         ) {
                             Text(
-                                "example@gmail.com",
+                                userInfo?.email ?: "Error",
                                 color = Color.Black,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
@@ -186,7 +207,7 @@ fun UserProfileContent() {
                             )
 
                             Text(
-                                "+9011111111",
+                                userInfo?.phoneNumber ?: "Phone Number not defined",
                                 color = Color.Gray,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
@@ -199,11 +220,14 @@ fun UserProfileContent() {
 
                         Button(
                             modifier = Modifier
-                                .padding(10.dp)
-                                .background(Color.Black),
-                            onClick = {}
+                                .padding(10.dp),
+                            onClick = {},
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = Color.Black,
+                                contentColor = Color.White
+                            )
                         ) {
-                            Text(text = "UPDATE", color = Color.White)
+                            Text(text = "UPDATE")
                         }
                     }
                 }
@@ -217,121 +241,14 @@ fun UserProfileContent() {
                 .align(Alignment.BottomStart)
                 .height(maxHeight - maxHeight / 3)
         ) {
-            Column(
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.Top,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
-                    .background(Color.White)
-            ) {
 
-                Column(
-                    modifier = Modifier
-                        .background(Color.White)
-                        .clip(shape = RoundedCornerShape(20.dp))
-
-                ) {
-                    Spacer(modifier = Modifier.size(20.dp))
-
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(shape = RoundedCornerShape(20.dp))
-                            .padding(10.dp)
-                            .background(Color.Gray)
-                            .clickable { }
-                    ) {
-
-                        Text(
-                            "Notifications",
-                            color = Color.White,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            fontSize = 15.sp,
-                            modifier = Modifier.padding(10.dp)
-                        )
-
-                        Spacer(modifier = Modifier.weight(1f))
-
-                        IconButton(modifier = Modifier,
-                            onClick = { }) {
-                            Icon(
-                                Icons.Filled.ArrowForward,
-                                "contentDescription",
-                                tint = Color.White
-                            )
-                        }
-
-                    }
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(shape = RoundedCornerShape(20.dp))
-                            .padding(10.dp)
-                            .background(Color.Gray)
-                            .clickable { }
-                    ) {
-
-                        Text(
-                            "Privacy Policy",
-                            color = Color.White,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            fontSize = 15.sp,
-                            modifier = Modifier.padding(10.dp)
-
-                        )
-
-                        Spacer(modifier = Modifier.weight(1f))
-
-                        IconButton(modifier = Modifier,
-                            onClick = { }) {
-                            Icon(
-                                Icons.Filled.ArrowForward,
-                                "contentDescription",
-                                tint = Color.White
-                            )
-                        }
-                    }
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(shape = RoundedCornerShape(20.dp))
-                            .padding(10.dp)
-                            .background(Color.Gray)
-                            .clickable { }
-                    ) {
-
-                        Text(
-                            "Auction Rules",
-                            color = Color.White,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            fontSize = 15.sp,
-                            modifier = Modifier.padding(10.dp)
-
-                        )
-
-                        Spacer(modifier = Modifier.weight(1f))
-
-                        IconButton(modifier = Modifier,
-                            onClick = { }) {
-                            Icon(
-                                Icons.Filled.ArrowForward,
-                                "contentDescription",
-                                tint = Color.White
-                            )
-                        }
-                    }
-                }
-                TabLayout()
-            }
+            TabLayout(navController)
         }
     }
 }
 
+//    }
+//}
 
 @Composable
 fun ProfileImage(
@@ -340,6 +257,7 @@ fun ProfileImage(
         .clip(CircleShape)
         .border(2.dp, Color.Gray, CircleShape)
 ) {
+
     Image(
         painter = painterResource(android.project.auction.R.drawable.sample_avatar),
         contentDescription = "avatar",

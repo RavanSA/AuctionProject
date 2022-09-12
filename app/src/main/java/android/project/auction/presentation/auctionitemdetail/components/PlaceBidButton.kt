@@ -49,6 +49,28 @@ fun StickyPlaceBidButton(
 
     when {
         item.userId == userID -> {
+
+            auctionItemDetailViewModel.onEvent(
+                AuctionItemDetailEvent.SellerOrBidderEvent(
+                    SellerOrBidder(
+                        item.description,
+                        item.endTime,
+                        item.id,
+                        item.minIncrease,
+                        item.pictures,
+                        item.startTime,
+                        item.startingPrice,
+                        item.subCategoryId,
+                        item.categoryId,
+                        item.title,
+                        item.userFullName,
+                        item.userId,
+                        item.mainItemPicture,
+                        "owner",
+                    )
+                )
+            )
+
             when {
                 //+
                 utcTimeParsed.after(endTimeParsed) && highestBidAmount != 0.0 -> {
@@ -68,27 +90,6 @@ fun StickyPlaceBidButton(
                     buttonTextState = "Place a bid"
                     enabled = false
                     val sellerOrBider = item
-                    auctionItemDetailViewModel.onEvent(
-                        AuctionItemDetailEvent.SellerOrBidderEvent(
-                            SellerOrBidder(
-                                item.description,
-                                item.endTime,
-                                0,
-                                item.id,
-                                item.minIncrease,
-                                item.pictures,
-                                item.startTime,
-                                item.startingPrice,
-                                item.subCategoryId,
-                                item.categoryId,
-                                item.title,
-                                item.userFullName,
-                                item.userId,
-                                "item.m",
-                                "owner",
-                            )
-                        )
-                    )
                     Log.d("OWNERID", "PLACE A BID")
                 }
             }

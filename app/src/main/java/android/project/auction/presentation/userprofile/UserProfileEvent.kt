@@ -1,4 +1,5 @@
 package android.project.auction.presentation.userprofile
 
-class UserProfileEvent {
+sealed class UserProfileEvent {
+    data class OnTabChanged(val sellerOrBidder: String) : UserProfileEvent()
 }

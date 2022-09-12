@@ -36,4 +36,6 @@ interface AuctionRoomRepository {
 
     suspend fun setSellerOrBidder(items: SellerOrBidder)
 
+    fun getSellerOrBidderAuctions(sellerOrBidder: String): Flow<List<SellerOrBidder>>
+
 }

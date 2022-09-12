@@ -249,7 +249,8 @@ fun SignUpPage(
                     Button(
                         onClick = {
                             viewModel.onEvent(AuthUiEvent.SignUp)
-                        }, modifier = Modifier
+                        },
+                        modifier = Modifier
                             .fillMaxWidth(0.8f)
                             .height(50.dp),
                         colors = ButtonDefaults.buttonColors(

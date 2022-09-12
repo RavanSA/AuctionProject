@@ -31,7 +31,9 @@ import android.project.auction.domain.use_case.getcategories.GetSubCategories
 import android.project.auction.domain.use_case.gethighestbid.GetHighestBid
 import android.project.auction.domain.use_case.getitemdetail.GetItemDetail
 import android.project.auction.domain.use_case.getitemdetail.GetItemPicture
+import android.project.auction.domain.use_case.getitems.GetAuctionsForSellerOrBidder
 import android.project.auction.domain.use_case.getitems.GetItems
+import android.project.auction.domain.use_case.getuserinfobyid.GetUserInfoById
 import android.project.auction.domain.use_case.placebidamount.PlaceBidAmount
 import android.project.auction.domain.use_case.usecases.AuctionProjectUseCase
 import android.project.auction.domain.use_case.usecases.ValidationUseCase
@@ -153,7 +155,9 @@ object AppModule {
             getFavoriteItemById = GetFavoriteItemById(repository = roomRepository),
             getItemPictures = GetItemPicture(repository = repository),
             getItemWithFilterCategories = ItemsSearch(repository = roomRepository),
-            sellerOrBidder = SellerOrBidder(repository = roomRepository)
+            sellerOrBidder = SellerOrBidder(repository = roomRepository),
+            getSellerOrBidderList = GetAuctionsForSellerOrBidder(repository = roomRepository),
+            getUserInfoById = GetUserInfoById(repository = repository, preferences = preferences)
         )
     }
 

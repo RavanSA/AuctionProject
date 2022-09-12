@@ -13,7 +13,9 @@ import android.project.auction.data.remote.dto.items.getitems.ItemDto
 import android.project.auction.data.remote.dto.items.getpictures.AddItemPictureRequest
 import android.project.auction.data.remote.dto.items.getpictures.GetItemPicturesDto
 import android.project.auction.data.remote.dto.items.itemdetail.ItemDetailDto
+import android.project.auction.data.remote.dto.userinfo.GetUserInfo
 import android.project.auction.domain.repository.AuctionRepository
+import android.util.Log
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -89,6 +91,13 @@ class AuctionRepositoryImpl @Inject constructor(
 
     override suspend fun addItemMainPicture(addItemPictureRequest: AddItemPictureRequest): Response<Unit> {
         return api.addImageMainPicture(addItemPictureRequest)
+    }
+
+
+    override suspend fun getUserInfoById(id: String): GetUserInfo {
+        Log.d("DATAPROFİLE", id)
+
+        return api.getUserInfoById(id)
     }
 
 }

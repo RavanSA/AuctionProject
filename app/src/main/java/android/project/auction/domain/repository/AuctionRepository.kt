@@ -11,6 +11,7 @@ import android.project.auction.data.remote.dto.items.getitems.ItemDto
 import android.project.auction.data.remote.dto.items.getpictures.AddItemPictureRequest
 import android.project.auction.data.remote.dto.items.getpictures.GetItemPicturesDto
 import android.project.auction.data.remote.dto.items.itemdetail.ItemDetailDto
+import android.project.auction.data.remote.dto.userinfo.GetUserInfo
 import retrofit2.Response
 
 interface AuctionRepository {
@@ -36,5 +37,7 @@ interface AuctionRepository {
     suspend fun getItemPictures(id: String): GetItemPicturesDto
 
     suspend fun addItemMainPicture(addItemPictureRequest: AddItemPictureRequest): Response<Unit>
+
+    suspend fun getUserInfoById(id: String): GetUserInfo
 
 }
