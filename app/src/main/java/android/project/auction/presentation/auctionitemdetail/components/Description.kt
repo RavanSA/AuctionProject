@@ -55,26 +55,28 @@ fun ItemDetailDescription(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
             ) { showMore = !showMore }) {
-            if (showMore) {
-                Text(
-                    text = itemDetailDescription,
-                    modifier = Modifier.padding(16.dp),
-                    overflow = TextOverflow.Clip,
-                    maxLines = 15,
-                    color = Color.Black,
-                    fontSize = 15.sp
-                )
-            } else {
-                if (itemDetailDescription.length > 20) {
+            when {
+                showMore -> {
                     Text(
-                        text = "$itemDetailDescription....more",
+                        text = itemDetailDescription,
+                        modifier = Modifier.padding(16.dp),
+                        overflow = TextOverflow.Clip,
+                        maxLines = 20,
+                        color = Color.Black,
+                        fontSize = 15.sp
+                    )
+                }
+                itemDetailDescription.length > 30 && !showMore -> {
+                    Text(
+                        text = "${itemDetailDescription.subSequence(0, 30)}....more",
                         modifier = Modifier.padding(16.dp),
                         overflow = TextOverflow.Clip,
                         maxLines = 1,
                         color = Color.Black,
                         fontSize = 15.sp
                     )
-                } else {
+                }
+                else -> {
                     Text(
                         text = itemDetailDescription,
                         modifier = Modifier.padding(16.dp),

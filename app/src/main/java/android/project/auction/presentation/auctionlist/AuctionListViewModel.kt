@@ -46,6 +46,9 @@ class AuctionListViewModel @Inject constructor(
                     getItems()
                 }
             }
+            is AuctionListEvent.OnMoreItemClicked -> {
+                getItems()
+            }
         }
     }
 

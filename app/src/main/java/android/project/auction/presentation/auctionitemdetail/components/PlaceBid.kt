@@ -182,6 +182,7 @@ fun PlaceBidContent(
 
             Text(
                 text = bidError,
+                modifier = Modifier.padding(10.dp),
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
                     letterSpacing = dpToSp(2.dp)
@@ -239,3 +240,4 @@ fun PlaceBidContent(
         }
     }
 }
+

@@ -75,8 +75,9 @@ fun AuctionItemDetailScreen(
         sheetState = bottomState,
         sheetContent = {
             Column(
-                modifier = Modifier,
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.padding(10.dp),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.Top
             ) {
                 Text(
                     text = "Bid History",
@@ -85,6 +86,8 @@ fun AuctionItemDetailScreen(
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp
                 )
+                Spacer(modifier = Modifier.size(5.dp))
+
                 Divider(
                     modifier = Modifier.padding(5.dp),
                     color = Color.Black
@@ -94,8 +97,8 @@ fun AuctionItemDetailScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .defaultMinSize(minHeight = 1.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.Start
                 ) {
 
                     items(bidHistoryState.bidHistory) { bidHistory ->
@@ -107,10 +110,12 @@ fun AuctionItemDetailScreen(
                             verticalArrangement = Arrangement.SpaceBetween,
                         ) {
                             BidHistoryUserDetails(bidHistory)
-                            Divider(
-                                modifier = Modifier.padding(3.dp),
-                                color = Color.Gray
-                            )
+                            if (bidHistoryState.bidHistory[bidHistoryState.bidHistory.size - 1].id != bidHistory.id) {
+                                Divider(
+                                    modifier = Modifier.padding(3.dp),
+                                    color = Color.Gray
+                                )
+                            }
                         }
                     }
                 }
@@ -221,7 +226,9 @@ fun AuctionDetailContent(
                         itemDetailDescription = it
                     )
                 }
-                BidHistoryCard(modifier = Modifier, bottomState = bottomState)
+                if (bidhistoryState.bidHistory.isNotEmpty()) {
+                    BidHistoryCard(modifier = Modifier, bottomState = bottomState)
+                }
             }
 
             itemsIndexed(bidhistoryState.bidHistory) { index, bidhistory ->
@@ -241,6 +248,7 @@ fun AuctionDetailContent(
 
             item {
                 Text(text = "LAST ELEMENT")
+                MoreItems()
             }
         }
 

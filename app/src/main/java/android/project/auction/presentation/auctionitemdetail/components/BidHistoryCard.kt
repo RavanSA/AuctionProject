@@ -46,16 +46,18 @@ fun BidHistoryCard(
         ) {
             Text(
                 text = "Bid History",
-                color = Color.Gray,
+                color = Color.Black,
                 maxLines = 1,
-                modifier = Modifier.padding(start = 14.dp),
+                modifier = Modifier.padding(start = 5.dp),
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             )
 
+            Spacer(modifier = Modifier.weight(1f))
+
             Text(
                 text = "See all",
-                color = Color.Gray,
+                color = Color.Black,
                 maxLines = 1,
                 modifier = Modifier
                     .padding(start = 40.dp)
