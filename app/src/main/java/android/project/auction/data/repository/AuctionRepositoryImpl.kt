@@ -14,8 +14,8 @@ import android.project.auction.data.remote.dto.items.getpictures.AddItemPictureR
 import android.project.auction.data.remote.dto.items.getpictures.GetItemPicturesDto
 import android.project.auction.data.remote.dto.items.itemdetail.ItemDetailDto
 import android.project.auction.data.remote.dto.userinfo.GetUserInfo
+import android.project.auction.data.remote.dto.userinfo.UpdateUserInfoRequest
 import android.project.auction.domain.repository.AuctionRepository
-import android.util.Log
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -95,9 +95,10 @@ class AuctionRepositoryImpl @Inject constructor(
 
 
     override suspend fun getUserInfoById(id: String): GetUserInfo {
-        Log.d("DATAPROFİLE", id)
-
         return api.getUserInfoById(id)
     }
 
+    override suspend fun updateUserInfo(userInfoRequest: UpdateUserInfoRequest): Response<Unit> {
+        return api.updateUserInfo(userInfoRequest)
+    }
 }

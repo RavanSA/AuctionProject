@@ -146,7 +146,8 @@ fun AuctionItemDetailScreen(
                     },
                     actions = {
                         FavoriteButton(
-                            scaffoldState = scaffoldState
+                            scaffoldState = scaffoldState,
+                            navController = navController
                         )
                     }
                 )

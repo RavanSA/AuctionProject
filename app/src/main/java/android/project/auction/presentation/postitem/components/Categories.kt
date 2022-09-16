@@ -89,8 +89,9 @@ fun CategoriesItem(
             modifier = Modifier
                 .size(32.dp)
                 .clip(CircleShape)                       // clip to the circle shape
-                .border(2.dp, Color.Gray, CircleShape)
-        )
+                .border(2.dp, Color.Gray, CircleShape),
+
+            )
         Column() {
             Text(
                 category.name,

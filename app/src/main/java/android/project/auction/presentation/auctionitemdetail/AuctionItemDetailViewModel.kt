@@ -1,5 +1,6 @@
 package android.project.auction.presentation.auctionitemdetail
 
+import android.content.SharedPreferences
 import android.project.auction.common.Resource
 import android.project.auction.data.local.entity.Bids
 import android.project.auction.data.local.entity.Favorites
@@ -32,6 +33,7 @@ import javax.inject.Inject
 class AuctionItemDetailViewModel @Inject constructor(
     private val useCase: AuctionProjectUseCase,
     private val authUseCase: AuctionAuthUseCase,
+    private val preferences: SharedPreferences,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -59,6 +61,8 @@ class AuctionItemDetailViewModel @Inject constructor(
 
     val test: MutableLiveData<String> = MutableLiveData<String>("")
 
+    private val userID = preferences.getString("USERID", null)
+
     init {
         savedStateHandle.get<String>("itemId")?.let { itemId ->
             getItemPicture(itemId)
@@ -67,6 +71,9 @@ class AuctionItemDetailViewModel @Inject constructor(
             getBidHistory(itemId)
             getItemId(itemId)
             getHighestBid(itemId)
+            if (userID != null) {
+                state.value.sellerOrBidderUserId = userID
+            }
         }
     }
 
@@ -109,7 +116,8 @@ class AuctionItemDetailViewModel @Inject constructor(
                                 categoryId = it.categoryId,
                                 title = it.title,
                                 userFullName = it.userFullName,
-                                userId = it.userId
+                                userId = it.userId,
+                                myUserId = userID.toString()
                             )
 
                         }?.let {
@@ -224,7 +232,8 @@ class AuctionItemDetailViewModel @Inject constructor(
                             categoryId = data.categoryId,
                             title = data.title,
                             userFullName = data.userFullName,
-                            userId = it.userId
+                            userId = it.userId,
+                            myUserId = userID.toString()
                         )
                     }
 

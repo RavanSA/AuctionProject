@@ -14,6 +14,7 @@ import android.project.auction.domain.use_case.getitems.GetAuctionsForSellerOrBi
 import android.project.auction.domain.use_case.getitems.GetItems
 import android.project.auction.domain.use_case.getuserinfobyid.GetUserInfoById
 import android.project.auction.domain.use_case.placebidamount.PlaceBidAmount
+import android.project.auction.domain.use_case.updateuserinfo.UpdateUserInfo
 
 data class AuctionProjectUseCase(
     val getCategories: GetCategories,
@@ -34,5 +35,6 @@ data class AuctionProjectUseCase(
     val getItemWithFilterCategories: ItemsSearch,
     val sellerOrBidder: SellerOrBidder,
     val getSellerOrBidderList: GetAuctionsForSellerOrBidder,
-    val getUserInfoById: GetUserInfoById
+    val getUserInfoById: GetUserInfoById,
+    val updateUserInfo: UpdateUserInfo
 )

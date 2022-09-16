@@ -1,10 +1,13 @@
 package android.project.auction.presentation.favorites.favoriteslist
 
 import android.project.auction.R
+import android.project.auction.common.AuthResult
 import android.project.auction.data.local.entity.Favorites
 import android.project.auction.presentation.Screen
+import android.project.auction.presentation.auth.AuthViewModel
 import android.project.auction.presentation.ui.common.bottomNav.BottomNav
 import android.project.auction.presentation.ui.common.topBar.TopBar
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -42,6 +46,7 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun FavoritesScreen(
     navController: NavController,
+    viewModel: AuthViewModel = hiltViewModel(),
     favoritesViewModel: FavoritesViewModel = hiltViewModel()
 ) {
 
@@ -63,6 +68,24 @@ fun FavoritesScreen(
         }
     }
 
+    val context = LocalContext.current
+
+    LaunchedEffect(viewModel, context) {
+        viewModel.authResults.collect { authResult ->
+            when (authResult) {
+                is AuthResult.UnAuthorized -> {
+                    navController.navigate(Screen.LoginScreen.route)
+                }
+                is AuthResult.UnknownError -> {
+                    Toast.makeText(
+                        context,
+                        "UNKNOWN ERROR OCCURED",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {

@@ -12,6 +12,7 @@ import android.project.auction.data.remote.dto.items.getpictures.AddItemPictureR
 import android.project.auction.data.remote.dto.items.getpictures.GetItemPicturesDto
 import android.project.auction.data.remote.dto.items.itemdetail.ItemDetailDto
 import android.project.auction.data.remote.dto.userinfo.GetUserInfo
+import android.project.auction.data.remote.dto.userinfo.UpdateUserInfoRequest
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -68,5 +69,8 @@ interface AuctionAPI {
 
     @GET("Identity/{id}")
     suspend fun getUserInfoById(@Path("id") id: String): GetUserInfo
+
+    @PUT("Identity")
+    suspend fun updateUserInfo(@Body userInfoRequest: UpdateUserInfoRequest): Response<Unit>
 
 }

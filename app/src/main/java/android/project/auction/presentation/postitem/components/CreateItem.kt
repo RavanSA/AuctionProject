@@ -124,8 +124,6 @@ fun CreateItemInputsForms(
     val mContext = LocalContext.current
     var delayJob: Job? = null
 
-    Log.d("STATEVALUE", state.value.startTime)
-    Log.d("ENDTIME", state.value.endTime)
 
     LazyColumn(
         modifier = Modifier
@@ -163,7 +161,7 @@ fun CreateItemInputsForms(
                     CategoryImage(
                         modifier = Modifier
                             .size(32.dp)
-                            .clip(CircleShape)                       // clip to the circle shape
+                            .clip(CircleShape)
                             .border(2.dp, Color.Gray, CircleShape)
                     )
                     Column() {
@@ -329,8 +327,6 @@ fun CreateItemInputsForms(
                                 ).show()
                             },
                     )
-
-                    Log.d("STARTDATEMETHOD", startDate.value)
 
                     OutlinedTextField(
                         value = state.value.endTime,

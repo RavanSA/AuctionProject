@@ -20,18 +20,22 @@ class GetUserInfoById @Inject constructor(
     operator fun invoke(): Flow<Resource<UserInfo?>> = flow {
         try {
             emit(Resource.Loading<UserInfo?>(true))
-            val userID = preferences.getString("USERID", null) ?: "NOT REGISTERED USER"
-            val getUserInfoById = repository.getUserInfoById(userID).data
-            Log.d("DATAPROFILE", getUserInfoById.toString())
-            Log.d("USERID", userID)
 
-            emit(Resource.Loading<UserInfo?>(false))
-            emit(
-                Resource.Success<UserInfo?>(
-                    data = getUserInfoById.toUserInfo()
+            val userID = preferences.getString("USERID", null)
+            if (userID != null) {
+                val getUserInfoById = repository.getUserInfoById(userID).data
+                Log.d("DATAPROFILE", getUserInfoById.toString())
+                Log.d("USERID", userID)
+
+                emit(Resource.Loading<UserInfo?>(false))
+                emit(
+                    Resource.Success<UserInfo?>(
+                        data = getUserInfoById.toUserInfo()
+                    )
                 )
-            )
-
+            } else {
+                emit(Resource.Error<UserInfo?>("Unknown Error Occurred"))
+            }
         } catch (e: IOException) {
             emit(Resource.Error<UserInfo?>("Couldn't reach server. Check your internet connection."))
         } catch (e: HttpException) {

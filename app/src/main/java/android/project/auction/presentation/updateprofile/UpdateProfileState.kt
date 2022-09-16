@@ -12,5 +12,8 @@ data class UpdateProfileState(
     val country: String = "",
     val city: String = "",
     val address: String = "",
-    val profilePicture: String = ""
+    var profilePicture: String = "",
+    val userId: String = "",
+    var pictureUploadingLoading: Boolean = false
+
 )

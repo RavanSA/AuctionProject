@@ -28,12 +28,12 @@ class AuctionRoomRepositoryImpl @Inject constructor(
         return favDao.deleteItem(fav)
     }
 
-    override fun getFavoriteItems(): Flow<List<Favorites>> {
-        return favDao.getFavoriteItems()
+    override fun getFavoriteItems(userId: String): Flow<List<Favorites>> {
+        return favDao.getFavoriteItems(userId)
     }
 
-    override suspend fun getFavoriteItemById(itemId: String): Favorites? {
-        return favDao.getItemFromFavoritesById(itemId)
+    override suspend fun getFavoriteItemById(itemId: String, userId: String): Favorites? {
+        return favDao.getItemFromFavoritesById(itemId, userId)
     }
 
     override suspend fun addItemBidLocal(bid: Bids) {
@@ -78,8 +78,11 @@ class AuctionRoomRepositoryImpl @Inject constructor(
         )
     }
 
-    override fun getSellerOrBidderAuctions(sellerOrBidder: String): Flow<List<SellerOrBidder>> {
-        return sellerOrBidderDao.getSellerOrBidderAuctions(sellerOrBidder)
+    override fun getSellerOrBidderAuctions(
+        sellerOrBidder: String,
+        userId: String
+    ): Flow<List<SellerOrBidder>> {
+        return sellerOrBidderDao.getSellerOrBidderAuctions(sellerOrBidder, userId)
     }
 
 }

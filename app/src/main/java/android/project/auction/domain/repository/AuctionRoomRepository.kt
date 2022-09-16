@@ -12,9 +12,9 @@ interface AuctionRoomRepository {
 
     suspend fun deleteItemFromFavoritesById(fav: Favorites)
 
-    fun getFavoriteItems(): Flow<List<Favorites>>
+    fun getFavoriteItems(userId: String): Flow<List<Favorites>>
 
-    suspend fun getFavoriteItemById(itemId: String): Favorites?
+    suspend fun getFavoriteItemById(itemId: String, userId: String): Favorites?
 
     suspend fun addItemBidLocal(bid: Bids)
 
@@ -36,6 +36,9 @@ interface AuctionRoomRepository {
 
     suspend fun setSellerOrBidder(items: SellerOrBidder)
 
-    fun getSellerOrBidderAuctions(sellerOrBidder: String): Flow<List<SellerOrBidder>>
+    fun getSellerOrBidderAuctions(
+        sellerOrBidder: String,
+        userId: String
+    ): Flow<List<SellerOrBidder>>
 
 }

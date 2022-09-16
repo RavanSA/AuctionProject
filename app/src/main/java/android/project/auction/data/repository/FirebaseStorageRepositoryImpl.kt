@@ -1,5 +1,6 @@
 package android.project.auction.data.repository
 
+import android.content.SharedPreferences
 import android.net.Uri
 import android.project.auction.data.remote.dto.items.createitem.CreatePictureItemId
 import android.project.auction.data.remote.dto.items.getpictures.AddItemPictureRequest
@@ -11,7 +12,8 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class FirebaseStorageRepositoryImpl @Inject constructor(
-    private val repository: AuctionRepositoryImpl
+    private val repository: AuctionRepositoryImpl,
+    private val preferences: SharedPreferences
 ) : FirebaseStorageRepository {
 
     private var imageList: MutableList<String> = mutableListOf()
@@ -26,7 +28,6 @@ class FirebaseStorageRepositoryImpl @Inject constructor(
         storageReference.child(itemId).child(getRandomString()).putFile(image)
             .addOnSuccessListener {
                 val task = it.storage.downloadUrl
-                Log.d("TASKURL", task.toString())
 
                 task.addOnCompleteListener { uri ->
                     GlobalScope.launch(Dispatchers.IO) {
@@ -46,14 +47,11 @@ class FirebaseStorageRepositoryImpl @Inject constructor(
                 }
             }
 
-        Log.d("IMAGES", imageUrl)
-        Log.d("IMAGELIST", imageList.toString())
         return imageUrl
     }
 
     override suspend fun addImagesForItems(itemId: String, uris: List<Uri>): List<String> {
         val itemImageUrls = ArrayList<String>()
-        Log.d("AADDD", uris.size.toString())
         size = uris.size
 
         val uploadedImageUriLink = withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
@@ -62,13 +60,9 @@ class FirebaseStorageRepositoryImpl @Inject constructor(
             }
         }
 
-        Log.d("ADDEDIMAHES", uploadedImageUriLink.toString())
         uploadedImageUriLink.forEach { photoUriLink ->
             itemImageUrls.add((photoUriLink.toString()))
         }
-        //NULL
-        Log.d("IMAGEURLSFORPOST", itemImageUrls.toString())
-        Log.d("ADDIMAGELİST", imageList.toString())
 
         return itemImageUrls
     }
@@ -86,7 +80,6 @@ class FirebaseStorageRepositoryImpl @Inject constructor(
     }
 
     private suspend fun addImageForItemToRemoteDatabase() {
-        Log.d("IMAGELIST", "1111111111")
 
         repository.addImageForItemToRemoteDatabase(
             createPictureForItem = CreatePictureItemId(
@@ -105,5 +98,39 @@ class FirebaseStorageRepositoryImpl @Inject constructor(
         )
 
     }
+
+    override suspend fun updateProfileImage(uri: Uri) {
+        val storageReference = getStorageReference()
+        var imageUrl = ""
+        val userID = preferences.getString("USERID", null) ?: "NOT REGISTERED USER"
+        Log.d("TEST7URI", uri.toString())
+
+        storageReference.child(userID).putFile(uri)
+            .addOnSuccessListener {
+                val task = it.storage.downloadUrl
+
+                task.addOnCompleteListener { uri ->
+                    GlobalScope.launch(Dispatchers.IO) {
+
+                        withContext(Dispatchers.IO) {
+                            Log.d("TEST8URL", imageUrl)
+                            imageUrl = uri.result.toString()
+                            if (imageUrl != "") {
+                                preferences
+                                    .edit()
+                                    .putString("USER_PROFILE_IMAGE", imageUrl)
+                                    .apply()
+                                Log.d("TEST9URL", imageUrl)
+                            }
+                            Log.d("TEST10URL", imageUrl)
+
+
+                        }
+                    }
+                }
+            }
+
+    }
+
 
 }

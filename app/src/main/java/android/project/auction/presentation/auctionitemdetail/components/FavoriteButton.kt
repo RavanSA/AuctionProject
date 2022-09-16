@@ -1,8 +1,12 @@
 package android.project.auction.presentation.auctionitemdetail.components
 
+import android.project.auction.common.AuthResult
+import android.project.auction.presentation.Screen
 import android.project.auction.presentation.auctionitemdetail.AuctionItemDetailEvent
 import android.project.auction.presentation.auctionitemdetail.AuctionItemDetailViewModel
+import android.project.auction.presentation.auth.AuthViewModel
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -16,18 +20,22 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 
 @Composable
 fun FavoriteButton(
     scaffoldState: ScaffoldState,
-    auctionItemDetailViewModel: AuctionItemDetailViewModel = hiltViewModel()
+    viewModel: AuthViewModel = hiltViewModel(),
+    auctionItemDetailViewModel: AuctionItemDetailViewModel = hiltViewModel(),
+    navController: NavController
 ) {
     val isAddedToFavorites = auctionItemDetailViewModel.state.value.itemAddedFavorite
 
-
+    val context = LocalContext.current
     var isFavorite by remember { mutableStateOf(false) }
     var changeColor by remember { mutableStateOf(false) }
     Log.d("FIRSTISFAVORUTE", isAddedToFavorites.toString())
@@ -57,6 +65,7 @@ fun FavoriteButton(
                 tint = if (isFavorite || changeColor) Color.White else Color.Black,
                 modifier = Modifier.clickable {
                     if (isFavorite) {
+
                         Log.d("SECONDISFAVORUTE", isFavorite.toString())
 
                         auctionItemDetailViewModel.onEvent(
@@ -77,7 +86,22 @@ fun FavoriteButton(
                         }
                     } else if (!isFavorite) {
                         Log.d("THIRSFAVORITE", isFavorite.toString())
-
+                        scope.launch {
+                            viewModel.authResults.collect { authResult ->
+                                when (authResult) {
+                                    is AuthResult.UnAuthorized -> {
+                                        navController.navigate(Screen.LoginScreen.route)
+                                    }
+                                    is AuthResult.UnknownError -> {
+                                        Toast.makeText(
+                                            context,
+                                            "UNKNOWN ERROR OCCURED",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+                                }
+                            }
+                        }
                         auctionItemDetailViewModel.onEvent(
                             AuctionItemDetailEvent.AddItemToFavorites
                         )

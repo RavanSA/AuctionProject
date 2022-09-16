@@ -1,19 +1,16 @@
 package android.project.auction.presentation.auctionlist
 
-import android.project.auction.common.AuthResult
 import android.project.auction.presentation.Screen
 import android.project.auction.presentation.auctionlist.components.CategoriesListItem
 import android.project.auction.presentation.auctionlist.components.ItemList
 import android.project.auction.presentation.auctionlist.components.SearchBar
 import android.project.auction.presentation.auth.AuthUiEvent
 import android.project.auction.presentation.auth.AuthViewModel
-import android.project.auction.presentation.ui.common.LoadingScreen
 import android.project.auction.presentation.ui.common.bottomNav.BottomNav
 import android.project.auction.presentation.ui.common.navDrawer.DrawerBody
 import android.project.auction.presentation.ui.common.navDrawer.DrawerHeader
 import android.project.auction.presentation.ui.common.navDrawer.NavDrawerItem
 import android.project.auction.presentation.ui.common.topBar.TopBar
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -25,9 +22,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -58,21 +53,21 @@ fun AuctionListScreen(
     val scope: CoroutineScope = rememberCoroutineScope()
     auctionViewModel.stateItem
 
-    LaunchedEffect(viewModel, context) {
-        viewModel.authResults.collect { authResult ->
-            when (authResult) {
-                is AuthResult.UnAuthorized -> {
-                    navController.navigate(Screen.LoginScreen.route)
-                }
-                is AuthResult.UnknownError -> {
-                    Toast.makeText(
-                        context,
-                        "UNKNOWN ERROR OCCURED",
-                        Toast.LENGTH_LONG).show()
-                }
-            }
-        }
-    }
+//    LaunchedEffect(viewModel, context) {
+//        viewModel.authResults.collect { authResult ->
+//            when (authResult) {
+//                is AuthResult.UnAuthorized -> {
+//                    navController.navigate(Screen.LoginScreen.route)
+//                }
+//                is AuthResult.UnknownError -> {
+//                    Toast.makeText(
+//                        context,
+//                        "UNKNOWN ERROR OCCURED",
+//                        Toast.LENGTH_LONG).show()
+//                }
+//            }
+//        }
+//    }
 
     Scaffold(
         topBar = {
@@ -172,16 +167,16 @@ fun AuctionListScreen(
     )
 
 
-    if (state.value.isLoading) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White),
-            contentAlignment = Alignment.Center
-        ) {
-            LoadingScreen()
-        }
-    }
+//    if (state.value.isLoading) {
+//        Box(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .background(Color.White),
+//            contentAlignment = Alignment.Center
+//        ) {
+//            LoadingScreen()
+//        }
+//    }
 
 }
 

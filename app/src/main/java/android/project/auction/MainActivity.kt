@@ -42,14 +42,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             NavHost(navController, startDestination = Screen.AuctionListScreen.route) {
+                composable(route = Screen.AuctionListScreen.route) {
+                    AuctionListScreen(navController = navController)
+                }
                 composable(route = Screen.LoginScreen.route) {
                     LoginPage(navController = navController)
                 }
                 composable(route = Screen.SignUpScreen.route) {
                     SignUpPage(navController = navController)
-                }
-                composable(route = Screen.AuctionListScreen.route) {
-                    AuctionListScreen(navController = navController)
                 }
                 composable(route = Screen.AuctionItemDetailScreen.route + "/{itemId}") {
                     AuctionItemDetailScreen(navController = navController)

@@ -32,20 +32,20 @@ fun StickyPlaceBidButton(
     auctionItemDetailViewModel: AuctionItemDetailViewModel = hiltViewModel()
 ) {
 
+    val sellerOrBidderUserId = auctionItemDetailViewModel.state.value.sellerOrBidderUserId
+
     var enabled by remember { mutableStateOf(true) }
     var buttonTextState by remember { mutableStateOf("") }
     var currentUtcTime = getCurrentDate().split("T").toTypedArray()
     var endTime = item.endTime.split("T").toTypedArray()
     var highestBidAmount = highestBidder.highestBid?.amount
-    Log.d("CURRENTUTC", currentUtcTime.toString())
-    Log.d("ENDTIME", endTime.toString())
 
     //	2022-08-20T07:00:00.0000000
     val sdf = SimpleDateFormat("yyyy-MM-dd")
     val endTimeParsed: Date = sdf?.parse(endTime[0])
     val utcTimeParsed: Date = sdf?.parse(currentUtcTime[0])
-    Log.d("HİGHESTBIDAMOUBT", highestBidAmount.toString())
 
+    Log.d("SELLERORBIDDERUSERID", sellerOrBidderUserId.toString())
 
     when {
         item.userId == userID -> {
@@ -70,7 +70,7 @@ fun StickyPlaceBidButton(
                     )
                 )
             )
-
+            Log.d("SELLERORBIDDERUSERID1", sellerOrBidderUserId.toString())
             when {
                 //+
                 utcTimeParsed.after(endTimeParsed) && highestBidAmount != 0.0 -> {
@@ -101,8 +101,30 @@ fun StickyPlaceBidButton(
                     buttonTextState = "Contact Seller"
                     Log.d("HIGHESTBIDDER", "CONTACT SELLER")
                 }
+
                 endTimeParsed.after(utcTimeParsed) -> {
                     //+
+                    Log.d("SELLERORBIDDERUSERID2", sellerOrBidderUserId.toString())
+                    auctionItemDetailViewModel.onEvent(
+                        AuctionItemDetailEvent.SellerOrBidderEvent(
+                            SellerOrBidder(
+                                item.description,
+                                item.endTime,
+                                item.id,
+                                item.minIncrease,
+                                item.pictures,
+                                item.startTime,
+                                item.startingPrice,
+                                item.subCategoryId,
+                                item.categoryId,
+                                item.title,
+                                item.userFullName,
+                                sellerOrBidderUserId,
+                                item.mainItemPicture,
+                                "bidder",
+                            )
+                        )
+                    )
                     buttonTextState = "You're highest bidder"
                     enabled = false
 

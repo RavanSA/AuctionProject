@@ -35,6 +35,7 @@ import android.project.auction.domain.use_case.getitems.GetAuctionsForSellerOrBi
 import android.project.auction.domain.use_case.getitems.GetItems
 import android.project.auction.domain.use_case.getuserinfobyid.GetUserInfoById
 import android.project.auction.domain.use_case.placebidamount.PlaceBidAmount
+import android.project.auction.domain.use_case.updateuserinfo.UpdateUserInfo
 import android.project.auction.domain.use_case.usecases.AuctionProjectUseCase
 import android.project.auction.domain.use_case.usecases.ValidationUseCase
 import android.project.auction.domain.use_case.validateform.ValidateEmail
@@ -149,15 +150,28 @@ object AppModule {
             getHighestBid = GetHighestBid(repository = repository),
             addFavoriteItem = AddFavoriteItem(repository = roomRepository),
             deleteFavoriteItem = DeleteFavoriteItem(repository = roomRepository),
-            getFavoriteItems = GetFavoriteItems(repository = roomRepository),
+            getFavoriteItems = GetFavoriteItems(
+                repository = roomRepository,
+                preferences = preferences
+            ),
             addItemBids = AddItemBids(repository = roomRepository),
             getHighestBidLocal = GetHighestBidLocal(repository = roomRepository),
-            getFavoriteItemById = GetFavoriteItemById(repository = roomRepository),
+            getFavoriteItemById = GetFavoriteItemById(
+                repository = roomRepository,
+                preferences = preferences
+            ),
             getItemPictures = GetItemPicture(repository = repository),
             getItemWithFilterCategories = ItemsSearch(repository = roomRepository),
             sellerOrBidder = SellerOrBidder(repository = roomRepository),
-            getSellerOrBidderList = GetAuctionsForSellerOrBidder(repository = roomRepository),
-            getUserInfoById = GetUserInfoById(repository = repository, preferences = preferences)
+            getSellerOrBidderList = GetAuctionsForSellerOrBidder(
+                repository = roomRepository,
+                preferences = preferences
+            ),
+            getUserInfoById = GetUserInfoById(repository = repository, preferences = preferences),
+            updateUserInfo = UpdateUserInfo(
+                repository = repository,
+                cloudRepository = cloudRepository
+            )
         )
     }
 
@@ -198,8 +212,13 @@ object AppModule {
     }
 
     @Provides
-    fun provideFirebaseStorageRepository(repository: AuctionRepositoryImpl): FirebaseStorageRepository =
-        FirebaseStorageRepositoryImpl(repository = repository)
+    fun provideFirebaseStorageRepository(
+        repository: AuctionRepositoryImpl,
+        preferences: SharedPreferences,
+    ): FirebaseStorageRepository =
+        FirebaseStorageRepositoryImpl(
+            repository = repository, preferences = preferences
+        )
 
 //    @Provides
 //    fun provideUseCases(

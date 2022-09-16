@@ -13,7 +13,14 @@ interface SellerOrBidderDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun setSellerBidderInfo(items: SellerOrBidder)
 
-    @Query("SELECT * FROM SellerOrBidder WHERE seller_or_bidder = :sellerOrBidder")
-    fun getSellerOrBidderAuctions(sellerOrBidder: String): Flow<List<SellerOrBidder>>
+    @Query(
+        """
+            SELECT * FROM SellerOrBidder WHERE seller_or_bidder = :sellerOrBidder AND user_id =:userId
+            """
+    )
+    fun getSellerOrBidderAuctions(
+        sellerOrBidder: String,
+        userId: String
+    ): Flow<List<SellerOrBidder>>
 
 }

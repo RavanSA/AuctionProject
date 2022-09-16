@@ -1,12 +1,15 @@
 package android.project.auction.presentation.auctionitemdetail.components
 
+import android.project.auction.common.AuthResult
 import android.project.auction.data.local.entity.SellerOrBidder
 import android.project.auction.domain.model.item.ItemDetail
 import android.project.auction.presentation.Screen
 import android.project.auction.presentation.auctionitemdetail.AuctionItemDetailEvent
 import android.project.auction.presentation.auctionitemdetail.AuctionItemDetailViewModel
+import android.project.auction.presentation.auth.AuthViewModel
 import android.project.auction.presentation.auth.sign_in.dpToSp
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -15,9 +18,11 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -30,12 +35,30 @@ import androidx.navigation.NavController
 fun PlaceBid(
     savedStateHandle: SavedStateHandle,
     navController: NavController,
+    viewModel: AuthViewModel = hiltViewModel(),
     itemDetail: ItemDetail
 ) {
 
 
     val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    val context = LocalContext.current
 
+    LaunchedEffect(viewModel, context) {
+        viewModel.authResults.collect { authResult ->
+            when (authResult) {
+                is AuthResult.UnAuthorized -> {
+                    navController.navigate(Screen.LoginScreen.route)
+                }
+                is AuthResult.UnknownError -> {
+                    Toast.makeText(
+                        context,
+                        "UNKNOWN ERROR OCCURED",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {

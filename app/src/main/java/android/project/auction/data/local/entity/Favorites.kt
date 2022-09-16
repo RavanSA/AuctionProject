@@ -31,4 +31,6 @@ data class Favorites(
     val userFullName: String = "",
     @ColumnInfo(name = "seller_user_id")
     val userId: String,
+    @ColumnInfo(name = "user_id")
+    val myUserId: String
 )

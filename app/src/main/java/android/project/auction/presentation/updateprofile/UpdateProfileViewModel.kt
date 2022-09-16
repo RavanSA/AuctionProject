@@ -1,6 +1,9 @@
 package android.project.auction.presentation.updateprofile
 
+import android.content.SharedPreferences
 import android.project.auction.common.Resource
+import android.project.auction.data.remote.dto.userinfo.UpdateUserInfoRequest
+import android.project.auction.domain.use_case.authentication.AuctionAuthUseCase
 import android.project.auction.domain.use_case.usecases.AuctionProjectUseCase
 import android.util.Log
 import androidx.compose.runtime.State
@@ -8,17 +11,24 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class UpdateProfileViewModel @Inject constructor(
-    private val useCase: AuctionProjectUseCase
+    private val useCase: AuctionProjectUseCase,
+    private val authUseCase: AuctionAuthUseCase,
+    private val preferences: SharedPreferences
 ) : ViewModel() {
 
     private val _state = mutableStateOf(UpdateProfileState())
     val state: State<UpdateProfileState> = _state
+
+    private var uploadJob: Job? = null
 
     init {
         getUserInfoById()
@@ -72,9 +82,32 @@ class UpdateProfileViewModel @Inject constructor(
                 )
             }
             is UpdateProfileEvent.OnProfilePictureChange -> {
-                _state.value = state.value.copy(
-                    profilePicture = event.value
-                )
+
+                Log.d("TEST11111", state.value.pictureUploadingLoading.toString())
+                state.value.pictureUploadingLoading = true
+                uploadJob?.cancel()
+                uploadJob = viewModelScope.launch {
+                    Log.d("TEST2", state.value.pictureUploadingLoading.toString())
+
+                    useCase.updateUserInfo.uploadProfilePicture(event.value)
+
+                    delay(25000L)
+                    state.value.pictureUploadingLoading = false
+//                    val profilePic = preferences.getString("USER_PROFILE_IMAGE", null) ?: "ERROR_PICTURE"
+//                    Log.d("TEST3",state.value.pictureUploadingLoading.toString())
+//
+//                    _state.value = state.value.copy(
+//                        profilePicture = profilePic
+//                    )
+                    _state.value = state.value.copy(
+                        pictureUploadingLoading = false
+                    )
+                    Log.d("TEST2222222222222222", state.value.pictureUploadingLoading.toString())
+
+                }
+            }
+            is UpdateProfileEvent.OnUpdateButtonClicked -> {
+                updateUserInfo()
             }
         }
     }
@@ -125,8 +158,33 @@ class UpdateProfileViewModel @Inject constructor(
                     _state.value = state.value.copy(
                         profilePicture = data.data?.profilePicture ?: ""
                     )
+                    _state.value = state.value.copy(
+                        userId = data.data?.id ?: ""
+                    )
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+
+    private fun updateUserInfo() {
+        viewModelScope.launch {
+            val userId = authUseCase.userId.invoke()
+            useCase.updateUserInfo.invoke(
+                UpdateUserInfoRequest(
+                    id = state.value.userId,
+                    address = state.value.address,
+                    birthday = state.value.birthday,
+                    city = state.value.city,
+                    country = state.value.country,
+                    fullName = state.value.userName,
+                    phoneNumber = state.value.phoneNumber,
+                    postCode = state.value.postCode,
+                    profilePicture =
+                    "https://firebasestorage.googleapis.com/v0/b/auctionproject-72b40.appspot.com/o/${userId}?alt=media",
+                    title = state.value.title
+                )
+            )
+        }
     }
 }

@@ -1,6 +1,17 @@
 package android.project.auction.presentation.updateprofile
 
+import android.net.Uri
 import android.project.auction.R
+import android.project.auction.common.AuthResult
+import android.project.auction.presentation.Screen
+import android.project.auction.presentation.auth.AuthViewModel
+import android.project.auction.presentation.ui.common.LoadingScreen
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -8,29 +19,63 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.skydoves.landscapist.glide.GlideImage
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun UpdateProfileScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: AuthViewModel = hiltViewModel(),
+    updateProfileViewModel: UpdateProfileViewModel = hiltViewModel()
 ) {
 
+    val scaffoldState = rememberScaffoldState()
+    val coroutineScope = rememberCoroutineScope()
+    val pictureLoading = updateProfileViewModel.state.value.pictureUploadingLoading
+    Log.d("TEST6", pictureLoading.toString())
+
+    if (pictureLoading) {
+        LoadingScreen()
+    }
+    Log.d("TEST7", pictureLoading.toString())
+
+    val context = LocalContext.current
+
+    LaunchedEffect(viewModel, context) {
+        viewModel.authResults.collect { authResult ->
+            when (authResult) {
+                is AuthResult.UnAuthorized -> {
+                    navController.navigate(Screen.LoginScreen.route)
+                }
+                is AuthResult.UnknownError -> {
+                    Toast.makeText(
+                        context,
+                        "UNKNOWN ERROR OCCURED",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+    }
 
     Scaffold(
+        scaffoldState = scaffoldState,
         topBar = {
             TopAppBar(
                 title = {
@@ -38,7 +83,6 @@ fun UpdateProfileScreen(
                 },
 
                 navigationIcon = {
-                    // show drawer icon
                     IconButton(
                         onClick = {
 //                            result.value = "Drawer icon clicked"
@@ -51,7 +95,18 @@ fun UpdateProfileScreen(
                 actions = {
                     Text(
                         text = "Save",
-                        fontSize = 20.sp
+                        fontSize = 20.sp,
+                        modifier = Modifier.clickable {
+                            updateProfileViewModel.onEvent(
+                                UpdateProfileEvent.OnUpdateButtonClicked
+                            )
+
+                            coroutineScope.launch {
+                                scaffoldState.snackbarHostState.showSnackbar(
+                                    message = "Updated Successfully"
+                                )
+                            }
+                        }
                     )
                 },
 
@@ -66,7 +121,6 @@ fun UpdateProfileScreen(
             )
         }
     )
-
 }
 
 
@@ -77,6 +131,18 @@ fun UpdateProfileContent(
 ) {
 
     val state = updateProfileViewModel.state.value
+
+    val imageUri = remember { mutableStateOf<Uri?>(null) }
+
+
+    val galleryLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            imageUri.value = uri
+        }
+
+    val scope = rememberCoroutineScope()
+
+    Log.d("IMAGEURI", imageUri.toString())
 
     Column(
         modifier = Modifier
@@ -94,12 +160,31 @@ fun UpdateProfileContent(
                     .padding(
                         start = 20.dp, top = 5.dp,
                         end = 5.dp, bottom = 5.dp
-                    ),
+                    )
+                    .clickable {
+                        galleryLauncher.launch("image/*")
+
+                    },
                 horizontalAlignment = Alignment.Start,
+            ) {
+                if (imageUri.value != null) {
+                    Image(
+                        painter = rememberImagePainter(imageUri.value),
+                        contentScale = ContentScale.Crop,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(16.dp, 8.dp)
+                            .size(70.dp)
+                    )
+                    updateProfileViewModel.onEvent(
+                        UpdateProfileEvent.OnProfilePictureChange(
+                            imageUri.value!!
+                        )
+                    )
 
-                ) {
-
-                UserProfileImage(imageUrl = "")
+                } else {
+                    UserProfileImage(imageUrl = state.profilePicture)
+                }
             }
 
             Column {

@@ -13,11 +13,11 @@ interface FavoritesDao {
     @Delete
     suspend fun deleteItem(fav: Favorites)
 
-    @Query("SELECT * FROM Favorites")
-    fun getFavoriteItems(): Flow<List<Favorites>>
+    @Query("SELECT * FROM Favorites WHERE user_id =:userId")
+    fun getFavoriteItems(userId: String): Flow<List<Favorites>>
 
-    @Query("SELECT * FROM Favorites WHERE item_id=:id")
-    suspend fun getItemFromFavoritesById(id: String): Favorites?
+    @Query("SELECT * FROM Favorites WHERE item_id=:id AND user_id = :userId")
+    suspend fun getItemFromFavoritesById(id: String, userId: String): Favorites?
 
     @Query("SELECT EXISTS (SELECT 1 FROM Favorites WHERE item_id=:id)")
     suspend fun isItemAddedtoFavorites(id: String): Int?
