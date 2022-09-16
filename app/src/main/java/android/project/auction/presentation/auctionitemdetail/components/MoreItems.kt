@@ -68,8 +68,9 @@ fun MoreItems(
                             contentScale = ContentScale.Crop,
                             contentDescription = null,
                             modifier = Modifier
-                                .padding(16.dp, 8.dp)
-                                .size(70.dp)
+                                .padding(0.dp, 10.dp)
+                                .size(200.dp)
+                                .clip(RoundedCornerShape(15.dp, 15.dp, 15.dp, 15.dp))
                         )
                     }
                 }

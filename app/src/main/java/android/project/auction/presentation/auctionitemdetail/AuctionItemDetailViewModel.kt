@@ -192,7 +192,7 @@ class AuctionItemDetailViewModel @Inject constructor(
                 is Resource.Loading -> {
 
                     stateBidHistory = stateBidHistory.copy(
-                        isBidHistoryLoading = true
+                        loading = true
                     )
                 }
                 is Resource.Success -> {
@@ -245,7 +245,7 @@ class AuctionItemDetailViewModel @Inject constructor(
                 }
                 is Resource.Loading -> {
                     _state.value = AuctionItemDetailState(
-                        isItemDetailLoading = true
+                        loading = true
                     )
                 }
                 is Resource.Error -> {
@@ -280,7 +280,7 @@ class AuctionItemDetailViewModel @Inject constructor(
             when (result) {
                 is Resource.Loading -> {
                     stateHighestBid = stateHighestBid.copy(
-                        highestBidLoading = true
+                        loading = true
                     )
                 }
                 is Resource.Success -> {
@@ -331,7 +331,7 @@ class AuctionItemDetailViewModel @Inject constructor(
             when (result) {
                 is Resource.Loading -> {
                     stateItemPictures = stateItemPictures.copy(
-                        itemPictureLoading = true
+                        loading = true
                     )
                 }
                 is Resource.Success -> {

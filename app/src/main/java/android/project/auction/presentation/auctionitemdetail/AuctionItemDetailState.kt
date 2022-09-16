@@ -31,5 +31,7 @@ data class AuctionItemDetailState(
 
     var itemIDTest: String = "",
 
-    var sellerOrBidderUserId: String = ""
+    var sellerOrBidderUserId: String = "",
+
+    val loading: Boolean = false
 )

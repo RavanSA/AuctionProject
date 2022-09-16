@@ -3,6 +3,7 @@ package android.project.auction.presentation.auctionitemdetail
 import android.project.auction.domain.model.item.ItemImages
 import android.project.auction.presentation.Screen
 import android.project.auction.presentation.auctionitemdetail.components.*
+import android.project.auction.presentation.ui.common.LoadingScreen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -247,7 +248,6 @@ fun AuctionDetailContent(
 
 
             item {
-                Text(text = "LAST ELEMENT")
                 MoreItems()
             }
         }
@@ -259,7 +259,17 @@ fun AuctionDetailContent(
                 state.value.userId,
                 highestBidState
             )
+        }
 
+        if (state.value.loading && state.value.itemDetails?.startingPrice == null) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White),
+                contentAlignment = Alignment.Center
+            ) {
+                LoadingScreen()
+            }
         }
     }
 }
