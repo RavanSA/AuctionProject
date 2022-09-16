@@ -61,7 +61,7 @@ class AuctionItemDetailViewModel @Inject constructor(
 
     val test: MutableLiveData<String> = MutableLiveData<String>("")
 
-    private val userID = preferences.getString("USERID", null)
+     val userID = preferences.getString("USERID", null)
 
     init {
         savedStateHandle.get<String>("itemId")?.let { itemId ->
@@ -71,9 +71,7 @@ class AuctionItemDetailViewModel @Inject constructor(
             getBidHistory(itemId)
             getItemId(itemId)
             getHighestBid(itemId)
-            if (userID != null) {
-                state.value.sellerOrBidderUserId = userID
-            }
+
         }
     }
 
@@ -181,6 +179,9 @@ class AuctionItemDetailViewModel @Inject constructor(
                 setSellerOrBidder(
                     item = event.item
                 )
+            }
+            is AuctionItemDetailEvent.OnPlaceBidScreen -> {
+                getHighestBid(event.itemId)
             }
         }
     }

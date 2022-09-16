@@ -17,8 +17,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +26,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
@@ -36,7 +36,7 @@ fun PlaceBid(
     savedStateHandle: SavedStateHandle,
     navController: NavController,
     viewModel: AuthViewModel = hiltViewModel(),
-    itemDetail: ItemDetail
+    itemDetail: ItemDetail,
 ) {
 
 
@@ -59,6 +59,8 @@ fun PlaceBid(
             }
         }
     }
+
+
 
     Scaffold(
         topBar = {
@@ -99,10 +101,37 @@ fun PlaceBidContent(
     auctionItemDetailViewModel: AuctionItemDetailViewModel = hiltViewModel()
 ) {
 
+    auctionItemDetailViewModel.onEvent(
+        AuctionItemDetailEvent.OnPlaceBidScreen(
+            item.id
+        )
+    )
+
     val state = auctionItemDetailViewModel.statePlaceBid
+    val highestBid = auctionItemDetailViewModel.stateHighestBid.highestBid?.amount ?: 0.0
 
-    val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    var bidError by remember { mutableStateOf("") }
+    var enabled by remember { mutableStateOf(true) }
+    var bidAmount by remember { mutableStateOf(0.0) }
+    Log.d("HIGHEST BID", auctionItemDetailViewModel.stateHighestBid.highestBid.toString())
 
+    bidAmount = if (state.bidAmount != "") {
+        state.bidAmount.toDouble()
+    } else {
+        0.0
+    }
+
+    if (bidAmount < item.minIncrease && state.bidAmount != "") {
+        bidError =
+            "Bid amount cannot be less than the minimum increase. Minimum increase is ${item.minIncrease}"
+        enabled = false
+    } else if (bidAmount < highestBid && state.bidAmount != "") {
+        bidError = "Bid amount cannot be less than the highest bid. Highest bid is $highestBid"
+        enabled = false
+    } else {
+        bidError = ""
+        enabled = true
+    }
 
 
     Box(
@@ -149,9 +178,22 @@ fun PlaceBidContent(
                 )
             )
 
+            Spacer(modifier = Modifier.size(5.dp))
+
+            Text(
+                text = bidError,
+                style = TextStyle(
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = dpToSp(2.dp)
+                ),
+                fontSize = 10.sp,
+                color = Color.Red
+            )
+
             Spacer(modifier = Modifier.size(10.dp))
 
             Button(
+                enabled = enabled,
                 onClick = {
 
                     auctionItemDetailViewModel.onEvent(

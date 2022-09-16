@@ -44,8 +44,9 @@ fun StickyPlaceBidButton(
     val sdf = SimpleDateFormat("yyyy-MM-dd")
     val endTimeParsed: Date = sdf?.parse(endTime[0])
     val utcTimeParsed: Date = sdf?.parse(currentUtcTime[0])
+    val userId = auctionItemDetailViewModel.userID
 
-    Log.d("SELLERORBIDDERUSERID", sellerOrBidderUserId.toString())
+    Log.d("SELLERORBIDDERUSERID", userId.toString())
 
     when {
         item.userId == userID -> {
@@ -119,7 +120,7 @@ fun StickyPlaceBidButton(
                                 item.categoryId,
                                 item.title,
                                 item.userFullName,
-                                sellerOrBidderUserId,
+                                userId ?: "undefined",
                                 item.mainItemPicture,
                                 "bidder",
                             )

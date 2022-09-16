@@ -7,6 +7,7 @@ sealed class AuctionItemDetailEvent {
     object AddItemToFavorites : AuctionItemDetailEvent()
     data class BidAmountChanged(val amount: String, val itemId: String) : AuctionItemDetailEvent()
     data class SellerOrBidderEvent(val item: SellerOrBidder) : AuctionItemDetailEvent()
+    data class OnPlaceBidScreen(val itemId: String) : AuctionItemDetailEvent()
     object DeleteItem : AuctionItemDetailEvent()
     object RestoreItem : AuctionItemDetailEvent()
 }
