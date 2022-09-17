@@ -16,10 +16,10 @@ data class PostItemState(
 
     var categoriesInput: String = "",
     var subCategoriesInput: String = "",
-    val title: String = "",
-    val description: String = "",
-    val startingPrice: String = "",
-    val minIncrease: String = "",
+    var title: String = "",
+    var description: String = "",
+    var startingPrice: String = "",
+    var minIncrease: String = "",
     var startTime: String = "",
     var endTime: String = "",
 

@@ -22,8 +22,8 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Filter1
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Sort
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -75,7 +75,7 @@ fun DetailedSearchScreen(
                 ) {
                     TopBar(
                         title = subAndCategory.subCategoryName,
-                        icon = Icons.Default.VisibilityOff,
+                        icon = Icons.Default.Menu,
                         onNavigationIconClick = {
 
                         },

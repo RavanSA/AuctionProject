@@ -1,6 +1,5 @@
 package android.project.auction.presentation.postitem.components
 
-import android.project.auction.R
 import android.project.auction.domain.model.category.SubCategories
 import android.project.auction.presentation.Screen
 import android.project.auction.presentation.postitem.PostItemViewModel
@@ -18,11 +17,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 
 @Composable
 fun CategoriesList(
@@ -87,24 +88,29 @@ fun CategoriesItem(
     ) {
         CategoryImage(
             modifier = Modifier
-                .size(32.dp)
-                .clip(CircleShape)                       // clip to the circle shape
-                .border(2.dp, Color.Gray, CircleShape),
-
-            )
-        Column() {
+                .size(70.dp)
+                .padding(0.dp),
+            category.categoryImage
+        )
+        Column(
+            modifier = Modifier
+                .padding(10.dp),
+        ) {
             Text(
                 category.name,
                 color = Color.Black,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
             )
 
             Text(
-                category.name,
-                color = Color.Black,
+                category.description,
+                color = Color.Gray,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                fontSize = 15.sp,
             )
 
         }
@@ -117,10 +123,11 @@ fun CategoryImage(
     modifier: Modifier = Modifier
         .size(64.dp)
         .clip(CircleShape)                       // clip to the circle shape
-        .border(2.dp, Color.Gray, CircleShape)
+        .border(2.dp, Color.Gray, CircleShape),
+    imageUrl: String
 ) {
     Image(
-        painter = painterResource(R.drawable.sample_avatar),
+        painter = rememberImagePainter(imageUrl),
         contentDescription = "avatar",
         contentScale = ContentScale.Crop,            // crop the image if it's not a square
         modifier = modifier  // add a border (optional)

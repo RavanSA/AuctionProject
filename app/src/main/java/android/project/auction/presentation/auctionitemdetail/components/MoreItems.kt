@@ -1,5 +1,6 @@
 package android.project.auction.presentation.auctionitemdetail.components
 
+import android.project.auction.presentation.Screen
 import android.project.auction.presentation.auctionlist.AuctionListEvent
 import android.project.auction.presentation.auctionlist.AuctionListViewModel
 import androidx.compose.foundation.Image
@@ -20,11 +21,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 
 @Composable
 fun MoreItems(
-    auctionListViewModel: AuctionListViewModel = hiltViewModel()
+    auctionListViewModel: AuctionListViewModel = hiltViewModel(),
+    navController: NavController
 ) {
 
     auctionListViewModel.onEvent(
@@ -59,7 +62,9 @@ fun MoreItems(
                                 end = 5.dp, bottom = 5.dp
                             )
                             .clickable {
-
+                                navController.navigate(
+                                    Screen.AuctionItemDetailScreen.route + "/${item.id}"
+                                )
                             },
                         horizontalAlignment = Alignment.Start,
                     ) {

@@ -1,17 +1,18 @@
 package android.project.auction.presentation.detailedsearch.screens
 
 import android.project.auction.presentation.detailedsearch.components.CategoriesLazyGrid
-import android.project.auction.presentation.ui.common.topBar.TopBar
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material.Scaffold
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
 @ExperimentalFoundationApi
@@ -19,20 +20,33 @@ import androidx.navigation.NavController
 fun DetailedSearchCategoriesScreen(
     navController: NavController
 ) {
+
+    val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+
     Scaffold(
         topBar = {
-            Column(
-                modifier = Modifier.background(Color.White)
-            ) {
-                TopBar(
-                    title = "Categories",
-                    icon = Icons.Default.ArrowBack,
-                    onNavigationIconClick = {
+            TopAppBar(
+                backgroundColor = Color.White,
+                title = {
+                    Row(
+                        modifier = Modifier.padding(15.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text("Categories")
 
-                    },
-                    leftIcon = Icons.Default.Add
-                )
-            }
+                    }
+                },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        onBackPressedDispatcher?.onBackPressed()
+                    }) {
+                        Icon(Icons.Default.ArrowBack, "Menu")
+                    }
+                },
+                actions = {
+
+                }
+            )
         },
         content = {
             CategoriesLazyGrid(

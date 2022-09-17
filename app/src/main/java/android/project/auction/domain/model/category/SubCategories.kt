@@ -8,5 +8,7 @@ import kotlinx.parcelize.RawValue
 data class SubCategories(
     val id: String,
     val name: String,
+    val description: String,
+    val categoryImage: String,
     val subCategories: @RawValue List<SubCategory>
 ) : Parcelable

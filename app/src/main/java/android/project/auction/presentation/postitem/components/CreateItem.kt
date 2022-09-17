@@ -15,28 +15,35 @@ import android.widget.DatePicker
 import android.widget.TimePicker
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.PictureInPictureAlt
+import androidx.compose.material.icons.outlined.CalendarToday
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
@@ -58,12 +65,12 @@ fun CreateItem(
                 modifier = Modifier.background(Color.White)
             ) {
                 TopBar(
-                    title = "Create Item",
+                    title = "Create Auction",
                     icon = Icons.Default.ArrowBack,
                     onNavigationIconClick = {
 
                     },
-                    leftIcon = Icons.Default.Add
+                    leftIcon = Icons.Default.Clear
                 )
             }
         },
@@ -140,14 +147,6 @@ fun CreateItemInputsForms(
                 verticalArrangement = Arrangement.Center
             ) {
 
-                Text(
-                    text = "Create Item",
-                    style = TextStyle(
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = dpToSp(2.dp)
-                    ),
-                    fontSize = dpToSp(30.dp)
-                )
 
                 Row(
                     modifier = Modifier
@@ -158,300 +157,546 @@ fun CreateItemInputsForms(
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.Top
                 ) {
-                    CategoryImage(
+
+//                    CategoryImage(
+//                        modifier = Modifier
+//                            .size(32.dp)
+//                            .clip(CircleShape)
+//                            .border(2.dp, Color.Gray, CircleShape),
+//                    )
+                    Column(
                         modifier = Modifier
-                            .size(32.dp)
-                            .clip(CircleShape)
-                            .border(2.dp, Color.Gray, CircleShape)
-                    )
-                    Column() {
+                            .fillMaxWidth()
+                            .background(Color.White)
+                            .shadow(
+                                elevation = 3.dp,
+                                shape = RoundedCornerShape(2.dp)
+                            )
+                            .padding(20.dp)
+                    ) {
                         Text(
                             subAndCategory.categoryName,
                             color = Color.Black,
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
+                            fontSize = 15.sp
                         )
 
                         Text(
                             subAndCategory.subCategoryName,
                             color = Color.Black,
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
+                            fontSize = 15.sp
                         )
 
                     }
                 }
 
-                Spacer(modifier = Modifier.padding(20.dp))
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    OutlinedTextField(
-                        value = state.value.title,
-                        onValueChange = {
-                            postItemViewModel.onEvent(
-                                PostItemEvent.TitleChanged(
-                                    it
-                                )
-                            )
-                        },
-                        label = { Text(text = "Title", color = Color.Black) },
-                        placeholder = { Text(text = "Title", color = Color.Black) },
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth(0.8f),
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = Color.Black,
-                            unfocusedBorderColor = Color.Black
-                        ),
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Email
-                        ),
-                    )
+                Spacer(modifier = Modifier.padding(10.dp))
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
 
-
-                    Spacer(modifier = Modifier.padding(15.dp))
-
-                    OutlinedTextField(
-                        value = state.value.description,
-                        onValueChange = {
-                            postItemViewModel.onEvent(
-                                PostItemEvent.DescriptionChanges(
-                                    it
-                                )
-                            )
-                        },
-                        label = { Text(text = "Description", color = Color.Black) },
-                        placeholder = { Text(text = "Description", color = Color.Black) },
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth(0.8f),
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = Color.Black,
-                            unfocusedBorderColor = Color.Black
+                    Column {
+                        var titleState by remember { mutableStateOf("") }
+                        state.value.title = titleState
+                        Log.d("TITLETEST", state.value.title)
+                        val maxLength = 50
+                        val lightBlue = Color.LightGray
+                        val blue = Color.Black
+                        Text(
+                            text = "Title",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 4.dp),
+                            textAlign = TextAlign.Start,
+                            color = blue
                         )
-                    )
+                        TextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = titleState,
+                            colors = TextFieldDefaults.textFieldColors(
+                                backgroundColor = lightBlue,
+                                cursorColor = Color.Black,
+                                disabledLabelColor = lightBlue,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent
+                            ),
+                            onValueChange = {
+                                if (it.length <= maxLength) titleState = it
 
-                    Spacer(modifier = Modifier.padding(15.dp))
-
-                    OutlinedTextField(
-                        value = state.value.startingPrice,
-                        onValueChange = {
-                            postItemViewModel.onEvent(
-                                PostItemEvent.StartingPriceChanged(
-                                    it
+                                postItemViewModel.onEvent(
+                                    PostItemEvent.TitleChanged(
+                                        it
+                                    )
                                 )
-                            )
-                        },
-                        label = { Text(text = "Starting Price", color = Color.Black) },
-                        placeholder = { Text(text = "Starting Price", color = Color.Black) },
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth(0.8f),
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number
-                        ),
-                    )
-
-                    Spacer(modifier = Modifier.padding(15.dp))
-
-
-                    OutlinedTextField(
-                        value = state.value.minIncrease,
-                        onValueChange = {
-                            postItemViewModel.onEvent(
-                                PostItemEvent.MinIncreaseChanged(
-                                    it
-                                )
-                            )
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number
-                        ),
-                        label = { Text(text = "Min Increase", color = Color.Black) },
-                        placeholder = { Text(text = "Min INcrease", color = Color.Black) },
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth(0.8f),
-                    )
-
-                    OutlinedTextField(
-                        value = state.value.startTime,
-                        onValueChange = {
-                            postItemViewModel.onEvent(
-                                PostItemEvent.StartTimeChanged(
-                                    it
-                                )
-                            )
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Password
-                        ),
-                        label = { Text(text = "Start Time", color = Color.Black) },
-                        placeholder = { Text(text = "Start Time", color = Color.Black) },
-                        singleLine = true,
-                        enabled = false,
-                        modifier = Modifier
-                            .fillMaxWidth(0.8f)
-                            .clickable {
-
-                                val mYear: Int
-                                val mMonth: Int
-                                val mDay: Int
-                                val mHours: Int
-                                val mMinutes: Int
-
-                                val mCalendar = Calendar.getInstance()
-
-                                mCalendar.time = Date()
-
-                                mYear = mCalendar.get(Calendar.YEAR)
-                                mMonth = mCalendar.get(Calendar.MONTH)
-                                mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
-                                mHours = mCalendar.get(Calendar.HOUR_OF_DAY)
-                                mMinutes = mCalendar.get(Calendar.MINUTE)
-
-                                DatePickerDialog(
-                                    mContext,
-                                    { _: DatePicker, year: Int, month: Int, mDayOfMonth: Int ->
-                                        TimePickerDialog(
-                                            mContext,
-                                            { _: TimePicker, hour: Int, minute: Int ->
-
-                                                startDate.value =
-                                                    "$year-${month + 1}-$mDayOfMonth $hour:$minute"
-
-                                            },
-                                            mHours,
-                                            mMinutes,
-                                            false
-                                        ).show()
-                                    },
-                                    mYear,
-                                    mMonth,
-                                    mDay
-                                ).show()
                             },
-                    )
-
-                    OutlinedTextField(
-                        value = state.value.endTime,
-                        onValueChange = {
-                            postItemViewModel.onEvent(
-                                PostItemEvent.EndTimeChanged(
-                                    it
-                                )
-                            )
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Password
-                        ),
-                        label = { Text(text = "End Time", color = Color.Black) },
-                        placeholder = { Text(text = "End Time", color = Color.Black) },
-                        singleLine = true,
-                        enabled = false,
-
-                        modifier = Modifier
-                            .fillMaxWidth(0.8f)
-                            .clickable {
-                                var endTime: String = ""
-                                val mYear: Int
-                                val mMonth: Int
-                                val mDay: Int
-                                val mHours: Int
-                                val mMinutes: Int
-
-                                val mCalendar = Calendar.getInstance()
-
-                                mYear = mCalendar.get(Calendar.YEAR)
-                                mMonth = mCalendar.get(Calendar.MONTH)
-                                mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
-                                mHours = mCalendar.get(Calendar.HOUR_OF_DAY)
-                                mMinutes = mCalendar.get(Calendar.MINUTE)
-
-                                mCalendar.time = Date()
-
-
-                                DatePickerDialog(
-                                    mContext,
-                                    { _: DatePicker, year: Int, month: Int, mDayOfMonth: Int ->
-                                        TimePickerDialog(
-                                            mContext,
-                                            { _: TimePicker, hour: Int, minute: Int ->
-
-                                                endDate.value =
-                                                    "$year-${month + 1}-$mDayOfMonth $hour:$minute"
-                                                Log.d("ENDTIME", endTime)
-
-                                                postItemViewModel.onEvent(
-                                                    PostItemEvent.EndTimeChanged(
-                                                        postItemViewModel.state.value.endTime
-                                                    )
-                                                )
-                                            },
-                                            mHours,
-                                            mMinutes,
-                                            false
-                                        ).show()
-                                    },
-                                    mYear,
-                                    mMonth,
-                                    mDay
-                                ).show()
-                            },
-                    )
-
-                    Spacer(modifier = Modifier.padding(15.dp))
+                            shape = RoundedCornerShape(8.dp),
+                            singleLine = true,
+                            trailingIcon = {
+                                if (titleState.isNotEmpty()) {
+                                    IconButton(onClick = { titleState = "" }) {
+                                        Icon(
+                                            imageVector = Icons.Outlined.Close,
+                                            contentDescription = null
+                                        )
+                                    }
+                                }
+                            }
+                        )
+                        Text(
+                            text = "${titleState.length} / $maxLength",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 4.dp),
+                            textAlign = TextAlign.End,
+                            color = blue
+                        )
+                    }
 
                     Spacer(modifier = Modifier.padding(10.dp))
 
-                    Spacer(modifier = Modifier.padding(20.dp))
+                    Column {
+                        var stateDescription by remember { mutableStateOf("") }
+                        state.value.description = stateDescription
+                        Log.d("DESCRIPTION", state.value.description)
+                        val maxLength = 5000
+                        val lightBlue = Color.LightGray
+                        val blue = Color.Black
+                        Text(
+                            text = "Description",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 4.dp),
+                            textAlign = TextAlign.Start,
+                            color = blue
+                        )
+                        TextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(150.dp),
+                            value = stateDescription,
+                            colors = TextFieldDefaults.textFieldColors(
+                                backgroundColor = lightBlue,
+                                cursorColor = Color.Black,
+                                disabledLabelColor = lightBlue,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent
+                            ),
+                            onValueChange = {
+                                if (it.length <= maxLength) stateDescription = it
 
-                    Button(
-                        onClick = { galleryLauncher.launch("image/*") },
-                        modifier = Modifier
-                            .padding(10.dp)
-                    ) {
-                        Text(text = "Pick Image From Gallery")
+                                postItemViewModel.onEvent(
+                                    PostItemEvent.DescriptionChanges(
+                                        it
+                                    )
+                                )
+                            },
+                            shape = RoundedCornerShape(8.dp),
+                            trailingIcon = {
+                                if (stateDescription.isNotEmpty()) {
+                                    IconButton(onClick = { stateDescription = "" }) {
+                                        Icon(
+                                            imageVector = Icons.Outlined.Close,
+                                            contentDescription = null
+                                        )
+                                    }
+                                }
+                            }
+                        )
+                        Text(
+                            text = "${stateDescription.length} / $maxLength",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 4.dp),
+                            textAlign = TextAlign.Right,
+                            color = blue
+                        )
                     }
+
+                    Spacer(modifier = Modifier.padding(10.dp))
+
+                    Column {
+                        Log.d("STARTPROCE", state.value.description)
+                        val lightBlue = Color.LightGray
+                        val blue = Color.Black
+                        Text(
+                            text = "Starting Price",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 4.dp),
+                            textAlign = TextAlign.Start,
+                            color = blue
+                        )
+                        TextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = state.value.startingPrice,
+                            colors = TextFieldDefaults.textFieldColors(
+                                backgroundColor = lightBlue,
+                                cursorColor = Color.Black,
+                                disabledLabelColor = lightBlue,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent
+                            ),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number
+                            ),
+                            onValueChange = {
+                                postItemViewModel.onEvent(
+                                    PostItemEvent.StartingPriceChanged(
+                                        it
+                                    )
+                                )
+                            },
+                            shape = RoundedCornerShape(8.dp),
+                            trailingIcon = {
+                                if (state.value.startingPrice.isNotEmpty()) {
+                                    IconButton(onClick = { state.value.startingPrice = "" }) {
+                                        Icon(
+                                            imageVector = Icons.Outlined.Close,
+                                            contentDescription = null
+                                        )
+                                    }
+                                }
+                            }
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.padding(15.dp))
+
+
+                    Column {
+                        Log.d("MININCREASE", state.value.description)
+                        val lightBlue = Color.LightGray
+                        val blue = Color.Black
+                        Text(
+                            text = "Minimum Increase",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 4.dp),
+                            textAlign = TextAlign.Start,
+                            color = blue
+                        )
+                        TextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = state.value.minIncrease,
+                            colors = TextFieldDefaults.textFieldColors(
+                                backgroundColor = lightBlue,
+                                cursorColor = Color.Black,
+                                disabledLabelColor = lightBlue,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent
+                            ),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number
+                            ),
+                            onValueChange = {
+                                postItemViewModel.onEvent(
+                                    PostItemEvent.MinIncreaseChanged(
+                                        it
+                                    )
+                                )
+                            },
+                            shape = RoundedCornerShape(8.dp),
+                            trailingIcon = {
+                                if (state.value.minIncrease.isNotEmpty()) {
+                                    IconButton(onClick = { state.value.minIncrease = "" }) {
+                                        Icon(
+                                            imageVector = Icons.Outlined.Close,
+                                            contentDescription = null
+                                        )
+                                    }
+                                }
+                            }
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.padding(15.dp))
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.White)
+                            .shadow(
+                                elevation = 3.dp,
+                                shape = RoundedCornerShape(2.dp)
+                            )
+                            .padding(10.dp)
+                            .clickable {
+                                galleryLauncher.launch("image/*")
+                            },
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+
+                        Icon(
+                            Icons.Filled.PictureInPictureAlt,
+                            "Calendar",
+                            modifier = Modifier.size(60.dp)
+                        )
+
+                        Text(
+                            "Add Pictures",
+                            color = Color.Black,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            fontSize = 18.sp
+                        )
+
+                    }
+
+                    LazyRow(
+
+                    ) {
+                        items(selectImages) { uri ->
+                            Image(
+                                painter = rememberImagePainter(uri),
+                                contentScale = ContentScale.Fit,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .padding(16.dp, 8.dp)
+                                    .size(70.dp)
+                                    .clickable {
+
+                                    }
+                            )
+                        }
+                    }
+
+//                    items(selectImages) { uri ->
+//                        Image(
+//                            painter = rememberImagePainter(uri),
+//                            contentScale = ContentScale.Fit,
+//                            contentDescription = null,
+//                            modifier = Modifier
+//                                .padding(16.dp, 8.dp)
+//                                .size(70.dp)
+//                                .clickable {
+//
+//                                }
+//                        )
+//                    }
+
+                    Spacer(modifier = Modifier.padding(15.dp))
+
+                    Column {
+                        val lightBlue = Color.LightGray
+                        val blue = Color.Black
+                        Text(
+                            text = "Start Time",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 4.dp),
+                            textAlign = TextAlign.Start,
+                            color = blue
+                        )
+                        TextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+
+                                    val mYear: Int
+                                    val mMonth: Int
+                                    val mDay: Int
+                                    val mHours: Int
+                                    val mMinutes: Int
+
+                                    val mCalendar = Calendar.getInstance()
+
+                                    mCalendar.time = Date()
+
+                                    mYear = mCalendar.get(Calendar.YEAR)
+                                    mMonth = mCalendar.get(Calendar.MONTH)
+                                    mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
+                                    mHours = mCalendar.get(Calendar.HOUR_OF_DAY)
+                                    mMinutes = mCalendar.get(Calendar.MINUTE)
+
+                                    DatePickerDialog(
+                                        mContext,
+                                        { _: DatePicker, year: Int, month: Int, mDayOfMonth: Int ->
+                                            TimePickerDialog(
+                                                mContext,
+                                                { _: TimePicker, hour: Int, minute: Int ->
+
+                                                    startDate.value =
+                                                        "$year-${month + 1}-$mDayOfMonth $hour:$minute"
+
+                                                },
+                                                mHours,
+                                                mMinutes,
+                                                false
+                                            ).show()
+                                        },
+                                        mYear,
+                                        mMonth,
+                                        mDay
+                                    ).show()
+                                },
+                            value = state.value.startTime,
+                            colors = TextFieldDefaults.textFieldColors(
+                                backgroundColor = lightBlue,
+                                cursorColor = Color.Black,
+                                disabledLabelColor = lightBlue,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent
+                            ),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number
+                            ),
+                            onValueChange = {
+                                postItemViewModel.onEvent(
+                                    PostItemEvent.StartTimeChanged(
+                                        it
+                                    )
+                                )
+                            },
+                            shape = RoundedCornerShape(8.dp),
+                            trailingIcon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.CalendarToday,
+                                    contentDescription = null
+                                )
+                            },
+                            enabled = false
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.padding(15.dp))
+
+                    Column {
+                        val lightBlue = Color.LightGray
+                        val blue = Color.Black
+                        Text(
+                            text = "End Time",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 4.dp),
+                            textAlign = TextAlign.Start,
+                            color = blue
+                        )
+                        TextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    var endTime: String = ""
+                                    val mYear: Int
+                                    val mMonth: Int
+                                    val mDay: Int
+                                    val mHours: Int
+                                    val mMinutes: Int
+
+                                    val mCalendar = Calendar.getInstance()
+
+                                    mYear = mCalendar.get(Calendar.YEAR)
+                                    mMonth = mCalendar.get(Calendar.MONTH)
+                                    mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
+                                    mHours = mCalendar.get(Calendar.HOUR_OF_DAY)
+                                    mMinutes = mCalendar.get(Calendar.MINUTE)
+
+                                    mCalendar.time = Date()
+
+
+                                    DatePickerDialog(
+                                        mContext,
+                                        { _: DatePicker, year: Int, month: Int, mDayOfMonth: Int ->
+                                            TimePickerDialog(
+                                                mContext,
+                                                { _: TimePicker, hour: Int, minute: Int ->
+
+                                                    endDate.value =
+                                                        "$year-${month + 1}-$mDayOfMonth $hour:$minute"
+                                                    Log.d("ENDTIME", endTime)
+
+                                                    postItemViewModel.onEvent(
+                                                        PostItemEvent.EndTimeChanged(
+                                                            postItemViewModel.state.value.endTime
+                                                        )
+                                                    )
+                                                },
+                                                mHours,
+                                                mMinutes,
+                                                false
+                                            ).show()
+                                        },
+                                        mYear,
+                                        mMonth,
+                                        mDay
+                                    ).show()
+                                },
+                            value = state.value.endTime,
+                            colors = TextFieldDefaults.textFieldColors(
+                                backgroundColor = lightBlue,
+                                cursorColor = Color.Black,
+                                disabledLabelColor = lightBlue,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent
+                            ),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number
+                            ),
+                            onValueChange = {
+                                postItemViewModel.onEvent(
+                                    PostItemEvent.EndTimeChanged(
+                                        it
+                                    )
+                                )
+                            },
+                            shape = RoundedCornerShape(8.dp),
+                            trailingIcon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.CalendarToday,
+                                    contentDescription = null
+                                )
+                            },
+                            enabled = false
+                        )
+                    }
+
+
+                    Spacer(modifier = Modifier.padding(10.dp))
+
+
                 }
             }
         }
 
-        items(selectImages) { uri ->
-            Image(
-                painter = rememberImagePainter(uri),
-                contentScale = ContentScale.Fit,
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(16.dp, 8.dp)
-                    .size(70.dp)
-                    .clickable {
-
-                    }
-            )
-        }
-
         item {
-            Button(
-                onClick = {
-                    postItemViewModel.onEvent(
-                        PostItemEvent.CreateItemClicked
-                    )
-                    navController.navigate(
-                        Screen.AuctionListScreen.route
-                    )
-                }, modifier = Modifier
-                    .fillMaxWidth(0.8f)
-                    .height(50.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color.Black,
-                    contentColor = Color.White
-                )
+            Column(
+                modifier = Modifier
+                    .padding(15.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
-                Text(text = loadingItem, fontSize = dpToSp(20.dp))
-            }
-            Spacer(modifier = Modifier.padding(20.dp))
-            Text(
-                text = "",
-                modifier = Modifier.clickable(
+
+                Button(
                     onClick = {
-                    })
-            )
+                        postItemViewModel.onEvent(
+                            PostItemEvent.CreateItemClicked
+                        )
+                        navController.navigate(
+                            Screen.AuctionListScreen.route
+                        )
+                    }, modifier = Modifier
+                        .fillMaxWidth(1f)
+                        .height(50.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.Black,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(text = loadingItem, fontSize = dpToSp(20.dp))
+                }
+                Spacer(modifier = Modifier.padding(5.dp))
+
+                Text(
+                    text = "By creating an auction, you agree to the Terms and Conditions",
+                    modifier = Modifier,
+                    fontSize = 12.sp,
+                    color = Color.Gray
+                )
+            }
         }
     }
 }

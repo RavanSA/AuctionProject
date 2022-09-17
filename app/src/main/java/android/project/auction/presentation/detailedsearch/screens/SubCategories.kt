@@ -4,20 +4,13 @@ import android.project.auction.domain.model.category.SubAndCategory
 import android.project.auction.domain.model.category.SubCategories
 import android.project.auction.domain.model.category.SubCategory
 import android.project.auction.presentation.Screen
-import android.project.auction.presentation.ui.common.topBar.TopBar
-import androidx.compose.foundation.background
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Divider
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,21 +26,32 @@ fun DetailedSearchSubCategoriesScreen(
     category: SubCategories
 ) {
 
+    val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
     Scaffold(
         topBar = {
-            Column(
-                modifier = Modifier.background(Color.White)
-            ) {
-                TopBar(
-                    title = category.name,
-                    icon = Icons.Default.ArrowBack,
-                    onNavigationIconClick = {
+            TopAppBar(
+                backgroundColor = Color.White,
+                title = {
+                    Row(
+                        modifier = Modifier.padding(15.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(category.name)
 
-                    },
-                    leftIcon = Icons.Default.Add
-                )
-            }
+                    }
+                },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        onBackPressedDispatcher?.onBackPressed()
+                    }) {
+                        Icon(Icons.Default.ArrowBack, "Menu")
+                    }
+                },
+                actions = {
+
+                }
+            )
         },
         content = {
             SubCategoriesLazyList(category, navController)
@@ -98,9 +102,10 @@ fun SubCategoriesItems(
                 )
 
 
-            },
+            }
+            .fillMaxWidth(),
         verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.Start
     ) {
         Text(text = subCategory.name, fontSize = 15.sp)
         Divider(modifier = Modifier.size(1.dp), thickness = 3.dp)

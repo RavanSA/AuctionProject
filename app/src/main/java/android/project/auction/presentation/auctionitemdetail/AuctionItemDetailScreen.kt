@@ -248,7 +248,7 @@ fun AuctionDetailContent(
 
 
             item {
-                MoreItems()
+                MoreItems(navController = navController)
             }
         }
 

@@ -52,6 +52,8 @@ fun AuctionListScreen(
     val scaffoldState: ScaffoldState = rememberScaffoldState()
     val scope: CoroutineScope = rememberCoroutineScope()
     auctionViewModel.stateItem
+    val categoryState = auctionViewModel.state.value
+    val itemState = auctionViewModel.stateItem
 
 //    LaunchedEffect(viewModel, context) {
 //        viewModel.authResults.collect { authResult ->
@@ -167,7 +169,7 @@ fun AuctionListScreen(
     )
 
 
-//    if (state.value.isLoading) {
+//    if (categoryState.isCategoriesLoading || itemState.isItemLoading) {
 //        Box(
 //            modifier = Modifier
 //                .fillMaxSize()
