@@ -35,6 +35,7 @@ import androidx.compose.material.icons.outlined.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -451,33 +452,32 @@ fun CreateItemInputsForms(
 
                     ) {
                         items(selectImages) { uri ->
-                            Image(
-                                painter = rememberImagePainter(uri),
-                                contentScale = ContentScale.Fit,
-                                contentDescription = null,
+                            Column(
                                 modifier = Modifier
-                                    .padding(16.dp, 8.dp)
-                                    .size(70.dp)
+                                    .size(120.dp)
+                                    .clip(RoundedCornerShape(15.dp, 15.dp, 15.dp, 15.dp))
+                                    .padding(
+                                        start = 20.dp, top = 5.dp,
+                                        end = 5.dp, bottom = 5.dp
+                                    )
                                     .clickable {
 
-                                    }
-                            )
+                                    },
+                                horizontalAlignment = Alignment.Start,
+                            ) {
+                                Image(
+                                    painter = rememberImagePainter(uri),
+                                    contentScale = ContentScale.Crop,
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .padding(0.dp, 10.dp)
+                                        .size(200.dp)
+                                        .clip(RoundedCornerShape(15.dp, 15.dp, 15.dp, 15.dp))
+                                )
+                            }
                         }
                     }
 
-//                    items(selectImages) { uri ->
-//                        Image(
-//                            painter = rememberImagePainter(uri),
-//                            contentScale = ContentScale.Fit,
-//                            contentDescription = null,
-//                            modifier = Modifier
-//                                .padding(16.dp, 8.dp)
-//                                .size(70.dp)
-//                                .clickable {
-//
-//                                }
-//                        )
-//                    }
 
                     Spacer(modifier = Modifier.padding(15.dp))
 

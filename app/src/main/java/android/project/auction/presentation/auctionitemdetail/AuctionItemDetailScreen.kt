@@ -248,7 +248,12 @@ fun AuctionDetailContent(
 
 
             item {
-                MoreItems(navController = navController)
+                state.value.itemDetails?.let {
+                    MoreItems(
+                        navController = navController,
+                        itemDetails = it
+                    )
+                }
             }
         }
 

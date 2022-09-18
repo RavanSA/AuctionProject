@@ -24,7 +24,7 @@ private val LightColorPalette = lightColors(
 @Composable
 fun AuctionProjectTheme(darkTheme: Boolean = true, content: @Composable() () -> Unit) {
     val colors = if (darkTheme) {
-        DarkColorPalette
+        LightColorPalette
     } else {
         LightColorPalette
     }

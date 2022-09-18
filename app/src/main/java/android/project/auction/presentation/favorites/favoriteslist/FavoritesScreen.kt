@@ -9,6 +9,7 @@ import android.project.auction.presentation.ui.common.bottomNav.BottomNav
 import android.project.auction.presentation.ui.common.topBar.TopBar
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -31,6 +32,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -191,6 +193,20 @@ fun FavoritesScreenBody(
                     }
                     if (count == state.favoritesItems.size) {
                         Spacer(modifier = Modifier.size(100.dp))
+                    }
+                }
+                if (state.favoritesItems.isEmpty()) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.empty),
+                            contentDescription = null,
+                            modifier = Modifier.size(100.dp)
+                        )
+
+                        Text("No item added favorites yet")
                     }
                 }
             }

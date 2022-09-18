@@ -3,7 +3,6 @@ package android.project.auction.presentation.auctionitemdetail.components
 import android.os.Handler
 import android.os.Looper
 import android.project.auction.domain.model.item.ItemDetail
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -67,10 +66,6 @@ fun AuctionStatusCard(
                     minutesState = (diff / minutes).toString()
                     diff %= minutes
                     secondsState = (diff / seconds).toString()
-
-                    Log.d("DAYSTEST", daysState)
-                    Log.d("HOURSTEST", hoursState)
-                    Log.d("MINUTESTEST", minutesState)
 
                 }
             }
