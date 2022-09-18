@@ -51,7 +51,7 @@ fun MoreItems(
             text = "Recommended Auctions",
             color = Color.Black,
             maxLines = 1,
-            modifier = Modifier.padding(start = 0.dp),
+            modifier = Modifier.padding(start = 16.dp),
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp
         )

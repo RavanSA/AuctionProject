@@ -26,11 +26,14 @@ class AuctionListViewModel @Inject constructor(
 
     var stateItem by mutableStateOf(AuctionListState())
 
+    var userInfoState by mutableStateOf(AuctionListState())
+
     private var searchJob: Job? = null
 
     init {
         getCategories()
         getItems()
+        getUserInfo()
     }
 
     fun onEvent(event: AuctionListEvent) {
@@ -92,6 +95,28 @@ class AuctionListViewModel @Inject constructor(
                 is Resource.Loading -> {
                     stateItem = stateItem.copy(
                         isItemLoading = true
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun getUserInfo() {
+        auctionProjectUseCase.getUserInfoById.invoke().onEach { data ->
+            when (data) {
+                is Resource.Loading -> {
+                    userInfoState = userInfoState.copy(
+                        loadingUserInfo = true
+                    )
+                }
+                is Resource.Error -> {
+                    userInfoState = userInfoState.copy(
+                        userInfoError = "ERROR OCCURRED"
+                    )
+                }
+                is Resource.Success -> {
+                    userInfoState = userInfoState.copy(
+                        userInfo = data.data
                     )
                 }
             }

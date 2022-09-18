@@ -65,7 +65,7 @@ object AppModule {
         val okHttpClient = OkHttpClient.Builder()
             .readTimeout(5, TimeUnit.MINUTES)
             .connectTimeout(5, TimeUnit.MINUTES)
-            .writeTimeout(5,TimeUnit.MINUTES)
+            .writeTimeout(5, TimeUnit.MINUTES)
             .build()
 
 
@@ -125,6 +125,7 @@ object AppModule {
     fun provideAuctionRoomRepository(db: AppDatabase): AuctionRoomRepository {
         return AuctionRoomRepositoryImpl(db.favDao, db.bidDao, db.itemDao, db.sellerOrBidderDao)
     }
+
 
     @Provides
     @Singleton
@@ -219,13 +220,6 @@ object AppModule {
         FirebaseStorageRepositoryImpl(
             repository = repository, preferences = preferences
         )
-
-//    @Provides
-//    fun provideUseCases(
-//        repository: AuctionRepositoryImpl
-//    ) = FirebaseStorageRepositoryImpl(
-//        repository
-//    )
 
 
 }

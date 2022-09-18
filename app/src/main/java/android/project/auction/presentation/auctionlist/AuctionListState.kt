@@ -2,6 +2,7 @@ package android.project.auction.presentation.auctionlist
 
 import android.project.auction.domain.model.category.Category
 import android.project.auction.domain.model.item.Item
+import android.project.auction.domain.model.userinfo.UserInfo
 
 data class AuctionListState(
     val isCategoriesLoading: Boolean = false,
@@ -11,5 +12,8 @@ data class AuctionListState(
     val item: List<Item> = emptyList(),
     val errorItem: String = "",
     val isItemRefreshing: Boolean = false,
-    val searchQuery: String = ""
+    val searchQuery: String = "",
+    val userInfo: UserInfo? = null,
+    val userInfoError: String = "",
+    val loadingUserInfo: Boolean = false
 )

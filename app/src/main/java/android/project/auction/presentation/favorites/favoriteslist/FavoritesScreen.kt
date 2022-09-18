@@ -197,16 +197,20 @@ fun FavoritesScreenBody(
                 }
                 if (state.favoritesItems.isEmpty()) {
                     Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.empty),
                             contentDescription = null,
-                            modifier = Modifier.size(100.dp)
+                            modifier = Modifier.size(300.dp)
                         )
 
-                        Text("No item added favorites yet")
+                        Text(
+                            "No item added favorites yet",
+                            fontSize = 20.sp
+                        )
                     }
                 }
             }

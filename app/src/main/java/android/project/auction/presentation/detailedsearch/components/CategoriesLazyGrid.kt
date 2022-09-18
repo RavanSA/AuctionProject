@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,6 +29,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.annotation.ExperimentalCoilApi
+import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
 
 @ExperimentalFoundationApi
@@ -112,6 +115,7 @@ fun DetailedSearchCategoriesItem(
 }
 
 
+@ExperimentalCoilApi
 @Composable
 fun CategoryImage(
     modifier: Modifier = Modifier
@@ -120,10 +124,25 @@ fun CategoryImage(
         .border(2.dp, Color.Gray, CircleShape),
     imageUrl: String
 ) {
-    Image(
-        painter = rememberImagePainter(imageUrl),
-        contentDescription = "avatar",
-        contentScale = ContentScale.Crop,            // crop the image if it's not a square
-        modifier = modifier  // add a border (optional)
-    )
+    val painter = rememberImagePainter(
+        data = imageUrl,
+        builder = {
+            crossfade(500)
+        })
+
+    val painterState = painter.state
+
+    if (painterState is ImagePainter.State.Loading) {
+        CircularProgressIndicator(
+            modifier = Modifier,
+            color = Color.Black
+        )
+    } else {
+        Image(
+            painter = rememberImagePainter(imageUrl),
+            contentDescription = "avatar",
+            contentScale = ContentScale.Crop,            // crop the image if it's not a square
+            modifier = modifier  // add a border (optional)
+        )
+    }
 }

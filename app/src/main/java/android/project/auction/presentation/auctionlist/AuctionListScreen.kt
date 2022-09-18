@@ -4,12 +4,11 @@ import android.project.auction.presentation.Screen
 import android.project.auction.presentation.auctionlist.components.CategoriesListItem
 import android.project.auction.presentation.auctionlist.components.ItemList
 import android.project.auction.presentation.auctionlist.components.SearchBar
-import android.project.auction.presentation.auth.AuthUiEvent
 import android.project.auction.presentation.auth.AuthViewModel
+import android.project.auction.presentation.ui.common.LoadingScreen
 import android.project.auction.presentation.ui.common.bottomNav.BottomNav
-import android.project.auction.presentation.ui.common.navDrawer.DrawerBody
-import android.project.auction.presentation.ui.common.navDrawer.DrawerHeader
-import android.project.auction.presentation.ui.common.navDrawer.NavDrawerItem
+import android.project.auction.presentation.ui.common.navDrawer.DrawerList
+import android.project.auction.presentation.ui.common.navDrawer.PushScreen
 import android.project.auction.presentation.ui.common.topBar.TopBar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -20,16 +19,22 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.White
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -40,6 +45,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 
+@ExperimentalMaterialApi
 @Composable
 fun AuctionListScreen(
     navController: NavController,
@@ -47,14 +53,27 @@ fun AuctionListScreen(
     auctionViewModel: AuctionListViewModel = hiltViewModel()
 ) {
 
-    val state = viewModel.state
-    val context = LocalContext.current
-    val scaffoldState: ScaffoldState = rememberScaffoldState()
-    val scope: CoroutineScope = rememberCoroutineScope()
-    auctionViewModel.stateItem
-    val categoryState = auctionViewModel.state.value
-    val itemState = auctionViewModel.stateItem
+    if (auctionViewModel.state.value.isItemLoading
+        || auctionViewModel.stateItem.isCategoriesLoading
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White),
+            contentAlignment = Alignment.Center
+        ) {
+            LoadingScreen()
+        }
+    }
 
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
+    val scaffoldState = rememberScaffoldState(
+        drawerState = drawerState
+    )
+    val scope: CoroutineScope = rememberCoroutineScope()
+    val myShape = customShape()
+    val widthDp = myShape.leftSpaceWidth?.let { pxToDp(it) }
 //    LaunchedEffect(viewModel, context) {
 //        viewModel.authResults.collect { authResult ->
 //            when (authResult) {
@@ -90,46 +109,71 @@ fun AuctionListScreen(
             }
         },
         drawerContent = {
-        DrawerHeader()
-        DrawerBody(
-            items = listOf(
-            NavDrawerItem(
-                id = "home",
-                title = "Home",
-                contentDescription = "Go to Home Screen",
-                icon = Icons.Default.Home
-            ),
-            NavDrawerItem(
-                id = "settings",
-                title = "Settings",
-                contentDescription = "Go to Settings Screen",
-                icon = Icons.Default.Settings
-            ),
-                NavDrawerItem(
-                    id = "help",
-                    title = "Help",
-                    contentDescription = "Go to Help Screen",
-                    icon = Icons.Default.Info
-                ),
-                NavDrawerItem(
-                    id = "logout",
-                    title = "Logout",
-                    contentDescription = "Go to Login Screen",
-                    icon = Icons.Default.Info
-                )
-            ),
-            onItemClick = {
-                if (it.title == "Logout") {
-                    viewModel.onEvent(AuthUiEvent.Logout)
-                }
-                if (it.title == "Home") {
-                    navController.navigate(
-                        Screen.AuctionListScreen.route
-                    )
-                }
-            }
-        )
-    },
+            auctionViewModel.userInfoState.userInfo?.let { DrawerList(navController, it) }
+//        DrawerHeader()
+//        DrawerBody(
+//            items = listOf(
+//            NavDrawerItem(
+//                id = "login",
+//                title = "Login",
+//                contentDescription = "Go to Home Screen",
+//                icon = Icons.Default.Home
+//            ),
+//            NavDrawerItem(
+//                id = "myauction",
+//                title = "My Auctions",
+//                contentDescription = "Go to Settings Screen",
+//                icon = Icons.Default.AdminPanelSettings
+//            ),
+//                NavDrawerItem(
+//                    id = "addauction",
+//                    title = "Add Auction",
+//                    contentDescription = "Go to Help Screen",
+//                    icon = Icons.Default.Add
+//                ),
+//                NavDrawerItem(
+//                    id = "contactus",
+//                    title = "Contact Us",
+//                    contentDescription = "Go to Help Screen",
+//                    icon = Icons.Default.Contacts
+//                ),
+//                NavDrawerItem(
+//                    id = "language",
+//                    title = "Language",
+//                    contentDescription = "Go to Help Screen",
+//                    icon = Icons.Default.Language
+//                ),
+//                NavDrawerItem(
+//                    id = "help",
+//                    title = "Help",
+//                    contentDescription = "Go to Help Screen",
+//                    icon = Icons.Default.Help
+//                ),
+////                NavDrawerItem(
+////                    id = "logout",
+////                    title = "Logout",
+////                    contentDescription = "Go to Login Screen",
+////                    icon = Icons.Default.Info
+////                )
+//            ),
+//            onItemClick = {
+//                if (it.title == "Logout") {
+//                    viewModel.onEvent(AuthUiEvent.Logout)
+//                }
+//                if (it.title == "Home") {
+//                    navController.navigate(
+//                        Screen.AuctionListScreen.route
+//                    )
+//                }
+//            }
+//        )
+            widthDp?.let {
+                Modifier
+                    .fillMaxHeight()
+                    .width(it)
+            }?.let { Spacer(it) }
+        },
+        drawerShape = myShape,
         bottomBar = {
             BottomAppBar(
                 modifier = Modifier
@@ -159,7 +203,9 @@ fun AuctionListScreen(
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add icon")
             }
         },
+        scaffoldState = scaffoldState,
         content = {
+            PushScreen()
             MainScreenBody(
                 auctionViewModel = auctionViewModel,
                 navController = navController
@@ -168,17 +214,6 @@ fun AuctionListScreen(
 
     )
 
-
-//    if (categoryState.isCategoriesLoading || itemState.isItemLoading) {
-//        Box(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .background(Color.White),
-//            contentAlignment = Alignment.Center
-//        ) {
-//            LoadingScreen()
-//        }
-//    }
 
 }
 
@@ -190,10 +225,13 @@ fun MainScreenBody(
 ) {
 
     val auctionItemState = auctionViewModel.stateItem
+    val categories = auctionViewModel.state.value.categories
 
     val swipeRefreshState = rememberSwipeRefreshState(
         isRefreshing = auctionViewModel.stateItem.isItemRefreshing
     )
+
+
 
     Column(
         modifier = Modifier
@@ -293,5 +331,33 @@ fun ItemLazyColumn(
                 Spacer(modifier = Modifier.size(60.dp))
             }
         }
+    }
+}
+
+
+@Composable
+fun customShape() = MyShape()
+
+@Composable
+fun pxToDp(px: Float) = with(LocalDensity.current) { px.toDp() }
+
+class MyShape : Shape {
+    var leftSpaceWidth: Float? = null
+
+    override fun createOutline(
+        size: androidx.compose.ui.geometry.Size,
+        layoutDirection: androidx.compose.ui.unit.LayoutDirection,
+        density: Density
+    ): Outline {
+        leftSpaceWidth = size.width * 1 / 3
+        return Outline.Rectangle(
+            Rect(
+                left = 0f,
+                top = 0f,
+                right = (size.width * 2.5 / 3).toFloat(),
+                bottom = size.height
+            )
+        )
+
     }
 }
