@@ -1,5 +1,6 @@
 package android.project.auction.presentation.auctionlist
 
+import android.annotation.SuppressLint
 import android.project.auction.presentation.Screen
 import android.project.auction.presentation.auctionlist.components.CategoriesListItem
 import android.project.auction.presentation.auctionlist.components.ItemList
@@ -45,6 +46,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @ExperimentalMaterialApi
 @Composable
 fun AuctionListScreen(
@@ -341,6 +343,7 @@ fun customShape() = MyShape()
 @Composable
 fun pxToDp(px: Float) = with(LocalDensity.current) { px.toDp() }
 
+
 class MyShape : Shape {
     var leftSpaceWidth: Float? = null
 
@@ -358,6 +361,5 @@ class MyShape : Shape {
                 bottom = size.height
             )
         )
-
     }
 }

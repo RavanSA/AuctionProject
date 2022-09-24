@@ -54,8 +54,8 @@ fun ItemList(
     var endTime = item.endTime.split("T").toTypedArray()
 
     val sdf = SimpleDateFormat("yyyy-MM-dd")
-    val endTimeParsed: Date = sdf?.parse(endTime[0])
-    val utcTimeParsed: Date = sdf?.parse(currentUtcTime[0])
+    val endTimeParsed: Date = sdf.parse(endTime[0])
+    val utcTimeParsed: Date = sdf.parse(currentUtcTime[0])
 
     Surface(
         modifier = Modifier

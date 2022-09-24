@@ -1,5 +1,6 @@
 package android.project.auction.presentation.favorites.favoritesdetail
 
+import android.annotation.SuppressLint
 import android.project.auction.data.local.entity.Favorites
 import android.project.auction.presentation.Screen
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun AuctionItemDetailScreen(
     navController: NavController,

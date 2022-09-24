@@ -1,5 +1,6 @@
 package android.project.auction.presentation.favorites.favoriteslist
 
+import android.annotation.SuppressLint
 import android.project.auction.R
 import android.project.auction.common.AuthResult
 import android.project.auction.data.local.entity.Favorites
@@ -44,6 +45,7 @@ import com.google.accompanist.flowlayout.FlowRow
 import com.skydoves.landscapist.glide.GlideImage
 import kotlinx.coroutines.flow.collectLatest
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @ExperimentalFoundationApi
 @Composable
 fun FavoritesScreen(
@@ -85,6 +87,7 @@ fun FavoritesScreen(
                         Toast.LENGTH_LONG
                     ).show()
                 }
+                else -> {}
             }
         }
     }

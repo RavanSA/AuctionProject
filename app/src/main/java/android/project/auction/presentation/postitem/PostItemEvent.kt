@@ -14,5 +14,5 @@ sealed class PostItemEvent {
 
     data class SelectImagesChanged(val value: List<Uri>) : PostItemEvent()
     object CreateItemClicked : PostItemEvent()
-    object OnCategoryItemClicked : PostItemEvent()
+//    object OnCategoryItemClicked : PostItemEvent()
 }

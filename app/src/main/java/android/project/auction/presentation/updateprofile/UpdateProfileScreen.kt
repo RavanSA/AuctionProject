@@ -1,5 +1,6 @@
 package android.project.auction.presentation.updateprofile
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.project.auction.R
 import android.project.auction.common.AuthResult
@@ -38,6 +39,7 @@ import com.skydoves.landscapist.glide.GlideImage
 import kotlinx.coroutines.launch
 
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun UpdateProfileScreen(
     navController: NavController,
@@ -70,6 +72,7 @@ fun UpdateProfileScreen(
                         Toast.LENGTH_LONG
                     ).show()
                 }
+                else -> {}
             }
         }
     }

@@ -1,5 +1,7 @@
 package android.project.auction.presentation.detailedsearch.components
 
+//import androidx.compose.foundation.lazy.GridCells
+//import androidx.compose.foundation.lazy.LazyVerticalGrid
 import android.project.auction.domain.model.category.SubCategories
 import android.project.auction.presentation.Screen
 import android.project.auction.presentation.detailedsearch.DetailedSearchViewModel
@@ -11,9 +13,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
@@ -56,7 +58,7 @@ fun CategoriesContent(
     subCategories: List<SubCategories>
 ) {
     LazyVerticalGrid(
-        cells = GridCells.Fixed(3)
+        columns = GridCells.Fixed(3)
     ) {
         items(subCategories) { subCategory ->
             DetailedSearchCategoriesItem(

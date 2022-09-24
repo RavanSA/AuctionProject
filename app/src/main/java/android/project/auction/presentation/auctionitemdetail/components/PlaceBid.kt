@@ -1,5 +1,6 @@
 package android.project.auction.presentation.auctionitemdetail.components
 
+import android.annotation.SuppressLint
 import android.project.auction.common.AuthResult
 import android.project.auction.data.local.entity.SellerOrBidder
 import android.project.auction.domain.model.item.ItemDetail
@@ -31,6 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun PlaceBid(
     savedStateHandle: SavedStateHandle,
@@ -56,6 +58,10 @@ fun PlaceBid(
                         Toast.LENGTH_LONG
                     ).show()
                 }
+                else -> {
+                    navController.navigate(Screen.AuctionListScreen.route)
+                }
+
             }
         }
     }

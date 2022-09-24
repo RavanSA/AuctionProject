@@ -1,5 +1,6 @@
 package android.project.auction.presentation.userprofile
 
+import android.annotation.SuppressLint
 import android.project.auction.R
 import android.project.auction.common.AuthResult
 import android.project.auction.data.local.entity.SellerOrBidder
@@ -41,6 +42,7 @@ import androidx.navigation.NavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.skydoves.landscapist.glide.GlideImage
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @ExperimentalPagerApi
 @Composable
 fun UserProfileScreen(
@@ -68,6 +70,7 @@ fun UserProfileScreen(
                         Toast.LENGTH_LONG
                     ).show()
                 }
+                else -> {}
             }
         }
     }

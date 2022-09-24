@@ -1,5 +1,6 @@
 package android.project.auction.presentation.postitem.components
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.net.Uri
@@ -52,6 +53,7 @@ import kotlinx.coroutines.Job
 import java.util.*
 
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @ExperimentalFoundationApi
 @Composable
 fun CreateItem(

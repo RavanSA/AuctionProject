@@ -73,4 +73,6 @@ interface AuctionAPI {
     @PUT("Identity")
     suspend fun updateUserInfo(@Body userInfoRequest: UpdateUserInfoRequest): Response<Unit>
 
+    @POST("")
+    suspend fun sendMessageToUser(@Body messageRequest)
 }
