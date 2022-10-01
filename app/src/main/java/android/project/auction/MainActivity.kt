@@ -10,6 +10,7 @@ import android.project.auction.presentation.auctionitemdetail.components.PlaceBi
 import android.project.auction.presentation.auctionlist.AuctionListScreen
 import android.project.auction.presentation.auth.sign_in.LoginPage
 import android.project.auction.presentation.auth.signup.SignUpPage
+import android.project.auction.presentation.chat.ChatScreen
 import android.project.auction.presentation.detailedsearch.DetailedSearchScreen
 import android.project.auction.presentation.detailedsearch.screens.DetailedSearchCategoriesScreen
 import android.project.auction.presentation.detailedsearch.screens.DetailedSearchSubCategoriesScreen
@@ -58,8 +59,9 @@ class MainActivity : ComponentActivity() {
                     val itemDetailForPlaceBid = navController
                         .previousBackStackEntry?.savedStateHandle?.get<ItemDetail>("itemDetails")
 
-                    Log.d("ITEMDETAIŞTEST", itemDetailForPlaceBid.toString())
+                    Log.d("ITEMDETAILTEST", itemDetailForPlaceBid.toString())
                     if (itemDetailForPlaceBid != null) {
+                        Log.d("TESTSCREEN", "PLACEBID")
                         PlaceBid(
                             navController = navController,
                             savedStateHandle = SavedStateHandle(),
@@ -67,6 +69,18 @@ class MainActivity : ComponentActivity() {
                         )
                     }
 
+                }
+                composable(route = Screen.ChatScreen.route) {
+                    val itemDetailForChat = navController
+                        .previousBackStackEntry?.savedStateHandle?.get<ItemDetail>("itemDetails")
+
+                    Log.d("ITEMDETAILCHAT", itemDetailForChat.toString())
+                    if (itemDetailForChat != null) {
+                        ChatScreen(
+                            navController = navController,
+                            itemDetail = itemDetailForChat
+                        )
+                    }
                 }
                 composable(route = Screen.PostItemScreen.route) {
                     PostItem(navController = navController)

@@ -35,6 +35,7 @@ fun StickyPlaceBidButton(
     val sellerOrBidderUserId = auctionItemDetailViewModel.state.value.sellerOrBidderUserId
 
     var enabled by remember { mutableStateOf(true) }
+
     var buttonTextState by remember { mutableStateOf("") }
     var currentUtcTime = getCurrentDate().split("T").toTypedArray()
     var endTime = item.endTime.split("T").toTypedArray()
@@ -142,15 +143,30 @@ fun StickyPlaceBidButton(
     Log.d("ITEMID", item.toString())
     Button(
         onClick = {
+            if (buttonTextState == "Contact Winner" || buttonTextState == "Contact Seller") {
+                Log.d("TEST", "CHATsSCREEN")
 
-            navController.currentBackStackEntry?.savedStateHandle?.set(
-                key = "itemDetails",
-                value = item
-            )
+                navController.currentBackStackEntry?.savedStateHandle?.set(
+                    key = "itemDetails",
+                    value = item
+                )
 
-            navController.navigate(
-                Screen.PlaceBidAmountScreen.route
-            )
+                navController.navigate(
+                    Screen.ChatScreen.route
+                )
+
+            } else {
+                navController.currentBackStackEntry?.savedStateHandle?.set(
+                    key = "itemDetails",
+                    value = item
+                )
+                Log.d("TEST", "PLACEBIDSCREEN")
+
+                navController.navigate(
+                    Screen.PlaceBidAmountScreen.route
+                )
+            }
+
         }, modifier = Modifier
             .fillMaxWidth()
             .height(50.dp),

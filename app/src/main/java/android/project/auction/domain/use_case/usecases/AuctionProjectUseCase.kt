@@ -4,6 +4,7 @@ import android.project.auction.domain.use_case.adddeletefavorites.*
 import android.project.auction.domain.use_case.createitem.CreateItem
 import android.project.auction.domain.use_case.createitem.SellerOrBidder
 import android.project.auction.domain.use_case.detailedsearch.ItemsSearch
+import android.project.auction.domain.use_case.getallmessagebyitemid.GetAllMessageByItemId
 import android.project.auction.domain.use_case.getbidhistory.GetBidHistory
 import android.project.auction.domain.use_case.getcategories.GetCategories
 import android.project.auction.domain.use_case.getcategories.GetSubCategories
@@ -14,6 +15,7 @@ import android.project.auction.domain.use_case.getitems.GetAuctionsForSellerOrBi
 import android.project.auction.domain.use_case.getitems.GetItems
 import android.project.auction.domain.use_case.getuserinfobyid.GetUserInfoById
 import android.project.auction.domain.use_case.placebidamount.PlaceBidAmount
+import android.project.auction.domain.use_case.sendmessage.SendMessageToUser
 import android.project.auction.domain.use_case.updateuserinfo.UpdateUserInfo
 
 data class AuctionProjectUseCase(
@@ -36,5 +38,7 @@ data class AuctionProjectUseCase(
     val sellerOrBidder: SellerOrBidder,
     val getSellerOrBidderList: GetAuctionsForSellerOrBidder,
     val getUserInfoById: GetUserInfoById,
-    val updateUserInfo: UpdateUserInfo
+    val updateUserInfo: UpdateUserInfo,
+    val sendMessageToUser: SendMessageToUser,
+    val getAllMessageByItemId: GetAllMessageByItemId
 )

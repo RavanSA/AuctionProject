@@ -13,6 +13,8 @@ import android.project.auction.data.remote.dto.items.getitems.ItemDto
 import android.project.auction.data.remote.dto.items.getpictures.AddItemPictureRequest
 import android.project.auction.data.remote.dto.items.getpictures.GetItemPicturesDto
 import android.project.auction.data.remote.dto.items.itemdetail.ItemDetailDto
+import android.project.auction.data.remote.dto.message.GetAllMessageByItemId
+import android.project.auction.data.remote.dto.message.MessageRequest
 import android.project.auction.data.remote.dto.userinfo.GetUserInfo
 import android.project.auction.data.remote.dto.userinfo.UpdateUserInfoRequest
 import android.project.auction.domain.repository.AuctionRepository
@@ -100,5 +102,13 @@ class AuctionRepositoryImpl @Inject constructor(
 
     override suspend fun updateUserInfo(userInfoRequest: UpdateUserInfoRequest): Response<Unit> {
         return api.updateUserInfo(userInfoRequest)
+    }
+
+    override suspend fun sendMessageToUser(messageRequest: MessageRequest): Response<Unit> {
+        return api.sendMessageToUser(messageRequest)
+    }
+
+    override suspend fun getAllMessagesByItemId(itemId: String): GetAllMessageByItemId {
+        return api.getAllMessages(itemId)
     }
 }

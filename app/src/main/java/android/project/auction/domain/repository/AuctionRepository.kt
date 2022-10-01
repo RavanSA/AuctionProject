@@ -11,6 +11,8 @@ import android.project.auction.data.remote.dto.items.getitems.ItemDto
 import android.project.auction.data.remote.dto.items.getpictures.AddItemPictureRequest
 import android.project.auction.data.remote.dto.items.getpictures.GetItemPicturesDto
 import android.project.auction.data.remote.dto.items.itemdetail.ItemDetailDto
+import android.project.auction.data.remote.dto.message.GetAllMessageByItemId
+import android.project.auction.data.remote.dto.message.MessageRequest
 import android.project.auction.data.remote.dto.userinfo.GetUserInfo
 import android.project.auction.data.remote.dto.userinfo.UpdateUserInfoRequest
 import retrofit2.Response
@@ -43,4 +45,7 @@ interface AuctionRepository {
 
     suspend fun updateUserInfo(userInfoRequest: UpdateUserInfoRequest): Response<Unit>
 
+    suspend fun sendMessageToUser(messageRequest: MessageRequest): Response<Unit>
+
+    suspend fun getAllMessagesByItemId(itemId: String): GetAllMessageByItemId
 }

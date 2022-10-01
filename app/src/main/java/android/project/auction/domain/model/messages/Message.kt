@@ -1,6 +1,6 @@
-package android.project.auction.data.remote.dto.message
+package android.project.auction.domain.model.messages
 
-data class MessageRequest(
+data class Message(
     val message: String,
     val itemId: String,
     val sellerId: String,

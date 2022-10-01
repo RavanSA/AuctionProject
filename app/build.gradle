@@ -126,4 +126,7 @@ dependencies {
     //SignalR
     implementation 'com.microsoft.signalr:signalr:5.0.5'
 
+    //Logger
+    implementation 'org.slf4j:slf4j-api:1.7.30'
+    implementation 'uk.uuid.slf4j:slf4j-android:1.7.30-0'
 }

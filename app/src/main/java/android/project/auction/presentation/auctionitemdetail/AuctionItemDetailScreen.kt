@@ -1,5 +1,6 @@
 package android.project.auction.presentation.auctionitemdetail
 
+import android.annotation.SuppressLint
 import android.project.auction.domain.model.item.ItemImages
 import android.project.auction.presentation.Screen
 import android.project.auction.presentation.auctionitemdetail.components.*
@@ -32,6 +33,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @ExperimentalPagerApi
 @ExperimentalMaterialApi
 @Composable

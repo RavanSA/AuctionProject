@@ -99,9 +99,7 @@ fun FavoriteButton(
                                             Toast.LENGTH_LONG
                                         ).show()
                                     }
-                                    else -> {
-                                        navController.navigate(Screen.AuctionListScreen.route)
-                                    }
+                                    else -> {}
                                 }
                             }
                         }

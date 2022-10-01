@@ -59,7 +59,6 @@ fun PlaceBid(
                     ).show()
                 }
                 else -> {
-                    navController.navigate(Screen.AuctionListScreen.route)
                 }
 
             }

@@ -25,6 +25,7 @@ import android.project.auction.domain.use_case.authentication.sign_up.SignUp
 import android.project.auction.domain.use_case.createitem.CreateItem
 import android.project.auction.domain.use_case.createitem.SellerOrBidder
 import android.project.auction.domain.use_case.detailedsearch.ItemsSearch
+import android.project.auction.domain.use_case.getallmessagebyitemid.GetAllMessageByItemId
 import android.project.auction.domain.use_case.getbidhistory.GetBidHistory
 import android.project.auction.domain.use_case.getcategories.GetCategories
 import android.project.auction.domain.use_case.getcategories.GetSubCategories
@@ -35,6 +36,7 @@ import android.project.auction.domain.use_case.getitems.GetAuctionsForSellerOrBi
 import android.project.auction.domain.use_case.getitems.GetItems
 import android.project.auction.domain.use_case.getuserinfobyid.GetUserInfoById
 import android.project.auction.domain.use_case.placebidamount.PlaceBidAmount
+import android.project.auction.domain.use_case.sendmessage.SendMessageToUser
 import android.project.auction.domain.use_case.updateuserinfo.UpdateUserInfo
 import android.project.auction.domain.use_case.usecases.AuctionProjectUseCase
 import android.project.auction.domain.use_case.usecases.ValidationUseCase
@@ -172,7 +174,12 @@ object AppModule {
             updateUserInfo = UpdateUserInfo(
                 repository = repository,
                 cloudRepository = cloudRepository
-            )
+            ),
+            sendMessageToUser = SendMessageToUser(
+                repository = repository,
+                preferences = preferences
+            ),
+            getAllMessageByItemId = GetAllMessageByItemId(repository = repository)
         )
     }
 
