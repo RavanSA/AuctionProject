@@ -101,6 +101,7 @@ fun StickyPlaceBidButton(
                 //+
                 utcTimeParsed.after(endTimeParsed) -> {
                     buttonTextState = "Contact Seller"
+                    enabled = true
                     Log.d("HIGHESTBIDDER", "CONTACT SELLER")
                 }
 

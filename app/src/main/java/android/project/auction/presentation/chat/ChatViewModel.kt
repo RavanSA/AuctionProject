@@ -1,6 +1,6 @@
 package android.project.auction.presentation.chat
 
-import android.annotation.SuppressLint
+import android.content.SharedPreferences
 import android.project.auction.common.Resource
 import android.project.auction.domain.use_case.usecases.AuctionProjectUseCase
 import android.util.Log
@@ -20,10 +20,10 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 
-@SuppressLint("CheckResult")
 @HiltViewModel
 class ChatViewModel @Inject constructor(
-    private val useCase: AuctionProjectUseCase
+    private val useCase: AuctionProjectUseCase,
+    private val preferences: SharedPreferences
 ) : ViewModel() {
 
     private var hubConnection: HubConnection
@@ -34,6 +34,7 @@ class ChatViewModel @Inject constructor(
 
 
     init {
+        getUserId()
         Log.d("SIGNALR", "TEST1")
         logger = LoggerFactory.getLogger(HubConnection::class.java)
 
@@ -44,9 +45,6 @@ class ChatViewModel @Inject constructor(
         hubConnection.start().blockingAwait()
 
 
-//        hubConnection.invoke("JoinGroup",
-//            state.value.itemDetail?.id)
-
         hubConnection.on(
             "SendMessageToUser",
             { message: String ->
@@ -56,32 +54,6 @@ class ChatViewModel @Inject constructor(
             String::class.java
         )
 
-//
-
-
-//        hubConnection.
-
-//        hubConnection.start().blockingAwait()
-//
-//        hubConnection.invoke("SetConversation", "B1C3C892-9DFF-4C48-1000-08DA9D8B586F")
-//
-//        Log.d("SIGNALR1" , "TEST" )
-//        state.value.itemDetail?.let { getAllMessages(it.id) }
-//
-//        //TODO-PROBLEM
-//        hubConnection.on("ReceiveMessage",
-//            Action1 { messageRequest: MessageRequest ->
-//                Log.d("messageRequest.message " , messageRequest.toString())
-//                },
-//            MessageRequest::class.java::class.java
-//        )
-//
-//        Log.d("SIGNALR2" , "TEST2" )
-//        hubConnection.start().doOnError( { Log.d("TESTERROR","SIGNALR") })
-
-//        signalR = SignalRListener.getInstance()
-
-//        getConnectState()
     }
 
 
@@ -94,8 +66,6 @@ class ChatViewModel @Inject constructor(
                         itemId = it.id,
                         itemOwnerId = it.userId
                     )
-//                    sendMessage()
-//                    getAllMessages(it.id)
                 }
             }
             is ChatEvent.OnMessageInputChanged -> {
@@ -154,6 +124,13 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    private fun getUserId() {
+        val userId = preferences.getString("USERID", null)
+        _state.value = state.value.copy(
+            userId = userId ?: "ERR"
+        )
+    }
+
     fun stopHubConnection() {
         if (hubConnection.connectionState == HubConnectionState.CONNECTED) {
             hubConnection.stop()
@@ -176,10 +153,6 @@ class ChatViewModel @Inject constructor(
     }
 
     fun sendMessage() {
-        Log.d("SIGNALR10", "SENDMESSAGE")
-        Log.d("11111", state.value.itemDetail?.userId.toString())
-        Log.d("2222222222", state.value.message)
-
 
         hubConnection.invoke(
             "SendMessageToGroup",
@@ -198,28 +171,5 @@ class ChatViewModel @Inject constructor(
         )
 
     }
-
-//    private fun fetchMessage() {
-//        val hubConnection = HubConnectionBuilder.create(Constants.BASE_URL+"/chathub").build()
-//        hubConnection.start()
-//
-//        val itemId = state.value.itemDetail?.id
-//        val userId = "testId"
-//        val sellerId = state.value.itemDetail?.userId
-//        val message = state.value.message
-//
-//        hubConnection.invoke("SetConversation", state.value.itemDetail?.id)
-//
-//        hubConnection.send(
-//            "ReceiveMessage", MessageRequest(
-//                itemId = itemId,
-//                bidderId = userId,
-//                sellerId = sellerId,
-//                message = message
-//            ) {
-//
-//            }, MessageRequest::class)
-//    }
-
 
 }
