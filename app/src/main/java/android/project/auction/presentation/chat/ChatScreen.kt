@@ -2,6 +2,7 @@ package android.project.auction.presentation.chat
 
 import android.annotation.SuppressLint
 import android.project.auction.domain.model.item.ItemDetail
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,7 +11,7 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,9 +28,11 @@ import androidx.navigation.NavController
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ChatScreen(
+    chatViewModel: ChatViewModel = hiltViewModel(),
     navController: NavController,
     itemDetail: ItemDetail
 ) {
+    val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
 
     Scaffold(
@@ -38,15 +41,16 @@ fun ChatScreen(
                 title = {
                     Text(text = "Messages")
                 },
-
                 navigationIcon = {
-                    IconButton(
-                        onClick = {}
-                    ) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "")
+                    IconButton(onClick = {
+                        chatViewModel.onEvent(
+                            ChatEvent.StopHubConnection
+                        )
+                        onBackPressedDispatcher?.onBackPressed()
+                    }) {
+                        Icon(Icons.Default.Clear, "Menu")
                     }
                 },
-
                 actions = {
                     Text(
                         text = "",
@@ -162,7 +166,6 @@ fun MessageTextAndButtonContent(
                     )
                 )
             },
-
             )
         Button(
             modifier = Modifier.height(56.dp),

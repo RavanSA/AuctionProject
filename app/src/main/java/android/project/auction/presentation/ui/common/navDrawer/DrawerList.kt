@@ -4,6 +4,7 @@ import android.project.auction.domain.model.userinfo.UserInfo
 import android.project.auction.presentation.Screen
 import android.project.auction.presentation.auth.AuthUiEvent
 import android.project.auction.presentation.auth.AuthViewModel
+import android.util.Log
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -16,11 +17,13 @@ import androidx.navigation.NavController
 @Composable
 fun DrawerList(
     navController: NavController,
-    userInfo: UserInfo,
+    userInfo: UserInfo?,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
 
-    if (userInfo.id != null) {
+    Log.d("USERINFONAV", userInfo?.id.toString())
+
+    if (userInfo?.id != null) {
         DrawerBody(
             items = listOf(
                 NavDrawerItem(
@@ -84,9 +87,9 @@ fun DrawerList(
             onItemClick = {
                 if (it.id == "logout") {
                     viewModel.onEvent(AuthUiEvent.Logout)
-//                    navController.navigate(
-//                        Screen.LoginScreen.route
-//                    )
+                    navController.navigate(
+                        Screen.LoginScreen.route
+                    )
                 }
                 if (it.id == "username") {
                     navController.navigate(
@@ -156,7 +159,7 @@ fun DrawerList(
                 ),
             ),
             onItemClick = {
-                if (it.title == "login") {
+                if (it.id == "login") {
                     navController.navigate(
                         Screen.LoginScreen.route
                     )

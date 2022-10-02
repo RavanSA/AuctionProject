@@ -111,7 +111,7 @@ fun AuctionListScreen(
             }
         },
         drawerContent = {
-            auctionViewModel.userInfoState.userInfo?.let { DrawerList(navController, it) }
+             DrawerList(navController, auctionViewModel.userInfoState.userInfo)
 //        DrawerHeader()
 //        DrawerBody(
 //            items = listOf(

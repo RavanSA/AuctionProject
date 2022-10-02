@@ -1,5 +1,6 @@
 package android.project.auction.presentation.auth
 
+import android.content.SharedPreferences
 import android.project.auction.common.AuthResult
 import android.project.auction.domain.use_case.authentication.AuctionAuthUseCase
 import android.project.auction.domain.use_case.usecases.ValidationUseCase
@@ -17,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val authUseCases: AuctionAuthUseCase,
-    private val validationUseCase: ValidationUseCase
+    private val validationUseCase: ValidationUseCase,
+    private val preferences: SharedPreferences
 ) : ViewModel() {
 
     private val _state = mutableStateOf(AuthState())

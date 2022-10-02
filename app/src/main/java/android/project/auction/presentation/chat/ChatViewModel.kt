@@ -60,6 +60,9 @@ class ChatViewModel @Inject constructor(
 
     fun onEvent(event: ChatEvent) {
         when (event) {
+            is ChatEvent.StopHubConnection -> {
+                stopHubConnection()
+            }
             is ChatEvent.OnSendMessageButtonClicked -> {
                 state.value.itemDetail?.let {
                     sendMessage(

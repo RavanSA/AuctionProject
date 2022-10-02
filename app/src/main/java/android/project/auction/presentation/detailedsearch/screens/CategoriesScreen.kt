@@ -1,5 +1,6 @@
 package android.project.auction.presentation.detailedsearch.screens
 
+import android.annotation.SuppressLint
 import android.project.auction.presentation.detailedsearch.components.CategoriesLazyGrid
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -15,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @ExperimentalFoundationApi
 @Composable
 fun DetailedSearchCategoriesScreen(
