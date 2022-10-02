@@ -26,7 +26,7 @@ class GetAllMessageByItemId @Inject constructor(
             emit(Resource.Success<List<Messages>>(
                 data = messages
                     .map { it.toMessages() }
-                    .sortedByDescending { it.created }
+                    .sortedBy { it.created }
             ))
 
             emit(Resource.Loading<List<Messages>>(false))

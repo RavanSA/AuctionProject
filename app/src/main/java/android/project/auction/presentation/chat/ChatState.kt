@@ -8,7 +8,7 @@ data class ChatState(
     val messages: List<Messages> = emptyList(),
     val messageError: String = "",
 
-    val message: String = "",
+    var message: String = "",
     var itemDetail: ItemDetail? = null,
     var userId: String = ""
 )

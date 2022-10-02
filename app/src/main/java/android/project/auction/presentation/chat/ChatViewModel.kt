@@ -54,6 +54,7 @@ class ChatViewModel @Inject constructor(
             String::class.java
         )
 
+
     }
 
 
@@ -77,7 +78,7 @@ class ChatViewModel @Inject constructor(
     }
 
 
-    private fun getAllMessages(itemId: String) {
+    fun getAllMessages(itemId: String) {
         useCase.getAllMessageByItemId.invoke(itemId).onEach { result ->
             when (result) {
                 is Resource.Loading -> {
@@ -157,9 +158,9 @@ class ChatViewModel @Inject constructor(
         hubConnection.invoke(
             "SendMessageToGroup",
             state.value.itemDetail?.userId,
-            "81039061-9d09-4337-b19b-c214f729a7ce",
             state.value.message
         )
+
         hubConnection.on(
             "ReceiveMessage",
             { username: String, message: String ->
