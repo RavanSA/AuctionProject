@@ -6,7 +6,6 @@ import android.project.auction.presentation.auctionlist.components.CategoriesLis
 import android.project.auction.presentation.auctionlist.components.ItemList
 import android.project.auction.presentation.auctionlist.components.SearchBar
 import android.project.auction.presentation.auth.AuthViewModel
-import android.project.auction.presentation.ui.common.LoadingScreen
 import android.project.auction.presentation.ui.common.bottomNav.BottomNav
 import android.project.auction.presentation.ui.common.navDrawer.DrawerList
 import android.project.auction.presentation.ui.common.navDrawer.PushScreen
@@ -24,7 +23,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Rect
@@ -46,7 +44,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
 @ExperimentalMaterialApi
 @Composable
 fun AuctionListScreen(
@@ -54,19 +52,6 @@ fun AuctionListScreen(
     viewModel: AuthViewModel = hiltViewModel(),
     auctionViewModel: AuctionListViewModel = hiltViewModel()
 ) {
-
-    if (auctionViewModel.state.value.isItemLoading
-        || auctionViewModel.stateItem.isCategoriesLoading
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White),
-            contentAlignment = Alignment.Center
-        ) {
-            LoadingScreen()
-        }
-    }
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
@@ -76,21 +61,6 @@ fun AuctionListScreen(
     val scope: CoroutineScope = rememberCoroutineScope()
     val myShape = customShape()
     val widthDp = myShape.leftSpaceWidth?.let { pxToDp(it) }
-//    LaunchedEffect(viewModel, context) {
-//        viewModel.authResults.collect { authResult ->
-//            when (authResult) {
-//                is AuthResult.UnAuthorized -> {
-//                    navController.navigate(Screen.LoginScreen.route)
-//                }
-//                is AuthResult.UnknownError -> {
-//                    Toast.makeText(
-//                        context,
-//                        "UNKNOWN ERROR OCCURED",
-//                        Toast.LENGTH_LONG).show()
-//                }
-//            }
-//        }
-//    }
 
     Scaffold(
         topBar = {
@@ -112,63 +82,6 @@ fun AuctionListScreen(
         },
         drawerContent = {
              DrawerList(navController, auctionViewModel.userInfoState.userInfo)
-//        DrawerHeader()
-//        DrawerBody(
-//            items = listOf(
-//            NavDrawerItem(
-//                id = "login",
-//                title = "Login",
-//                contentDescription = "Go to Home Screen",
-//                icon = Icons.Default.Home
-//            ),
-//            NavDrawerItem(
-//                id = "myauction",
-//                title = "My Auctions",
-//                contentDescription = "Go to Settings Screen",
-//                icon = Icons.Default.AdminPanelSettings
-//            ),
-//                NavDrawerItem(
-//                    id = "addauction",
-//                    title = "Add Auction",
-//                    contentDescription = "Go to Help Screen",
-//                    icon = Icons.Default.Add
-//                ),
-//                NavDrawerItem(
-//                    id = "contactus",
-//                    title = "Contact Us",
-//                    contentDescription = "Go to Help Screen",
-//                    icon = Icons.Default.Contacts
-//                ),
-//                NavDrawerItem(
-//                    id = "language",
-//                    title = "Language",
-//                    contentDescription = "Go to Help Screen",
-//                    icon = Icons.Default.Language
-//                ),
-//                NavDrawerItem(
-//                    id = "help",
-//                    title = "Help",
-//                    contentDescription = "Go to Help Screen",
-//                    icon = Icons.Default.Help
-//                ),
-////                NavDrawerItem(
-////                    id = "logout",
-////                    title = "Logout",
-////                    contentDescription = "Go to Login Screen",
-////                    icon = Icons.Default.Info
-////                )
-//            ),
-//            onItemClick = {
-//                if (it.title == "Logout") {
-//                    viewModel.onEvent(AuthUiEvent.Logout)
-//                }
-//                if (it.title == "Home") {
-//                    navController.navigate(
-//                        Screen.AuctionListScreen.route
-//                    )
-//                }
-//            }
-//        )
             widthDp?.let {
                 Modifier
                     .fillMaxHeight()
@@ -233,8 +146,6 @@ fun MainScreenBody(
         isRefreshing = auctionViewModel.stateItem.isItemRefreshing
     )
 
-
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -260,6 +171,8 @@ fun MainScreenBody(
                 )
             }
         }
+
+
     }
 }
 

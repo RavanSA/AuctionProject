@@ -31,9 +31,15 @@ class AuctionListViewModel @Inject constructor(
     private var searchJob: Job? = null
 
     init {
+        _state.value = _state.value.copy(
+            loading = true
+        )
         getCategories()
         getItems()
         getUserInfo()
+        _state.value = _state.value.copy(
+            loading = false
+        )
     }
 
     fun onEvent(event: AuctionListEvent) {
@@ -59,7 +65,7 @@ class AuctionListViewModel @Inject constructor(
         auctionProjectUseCase.getCategories.invoke().onEach { result ->
             when (result) {
                 is Resource.Success -> {
-                    _state.value = AuctionListState(categories = result.data ?: emptyList())
+                    _state.value = state.value.copy(categories = result.data ?: emptyList())
                 }
                 is Resource.Error -> {
                     _state.value = AuctionListState(
@@ -67,7 +73,7 @@ class AuctionListViewModel @Inject constructor(
                     )
                 }
                 is Resource.Loading -> {
-                    _state.value = AuctionListState(isCategoriesLoading = true)
+                    _state.value = state.value.copy(isCategoriesLoading = true)
                 }
             }
         }.launchIn(viewModelScope)

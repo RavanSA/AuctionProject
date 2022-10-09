@@ -18,6 +18,7 @@ import android.project.auction.presentation.favorites.favoriteslist.FavoritesScr
 import android.project.auction.presentation.postitem.PostItem
 import android.project.auction.presentation.postitem.components.CreateItem
 import android.project.auction.presentation.postitem.components.SubCategegoriesList
+import android.project.auction.presentation.splashscreen.SplashScreen
 import android.project.auction.presentation.updateprofile.UpdateProfileScreen
 import android.project.auction.presentation.userprofile.UserProfileScreen
 import android.util.Log
@@ -42,7 +43,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
-            NavHost(navController, startDestination = Screen.AuctionListScreen.route) {
+            NavHost(navController, startDestination = Screen.SplashScreen.route) {
+                composable(route = Screen.SplashScreen.route) {
+                    SplashScreen(navController = navController)
+                }
                 composable(route = Screen.AuctionListScreen.route) {
                     AuctionListScreen(navController = navController)
                 }

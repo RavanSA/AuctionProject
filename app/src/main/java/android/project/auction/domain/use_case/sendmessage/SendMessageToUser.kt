@@ -26,7 +26,8 @@ class SendMessageToUser @Inject constructor(
                     message = message,
                     itemId = itemId,
                     sellerId = sellerId,
-                    bidderId = userID
+                    bidderId = userID,
+                    messageOwner = userID
                 )
             )
 

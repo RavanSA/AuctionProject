@@ -15,5 +15,6 @@ data class AuctionListState(
     val searchQuery: String = "",
     val userInfo: UserInfo? = null,
     val userInfoError: String = "",
-    val loadingUserInfo: Boolean = false
+    val loadingUserInfo: Boolean = false,
+    val loading: Boolean = false
 )

@@ -1,6 +1,7 @@
 package android.project.auction.data.remote.dto.message
 
 import android.project.auction.domain.model.messages.Messages
+import com.google.gson.annotations.SerializedName
 
 data class MessagesDto(
     val bidderId: String,
@@ -9,7 +10,8 @@ data class MessagesDto(
     val itemId: String,
     val message: String,
     val sellerId: String,
-    val userId: Any?
+    @SerializedName("messageOwner")
+    val userId: String
 )
 
 fun MessagesDto.toMessages(): Messages {

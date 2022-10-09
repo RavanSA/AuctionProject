@@ -17,4 +17,5 @@ sealed class Screen(val route: String) {
     object UserProfileScreen : Screen("user_profile_screen")
     object UpdateProfileScreen : Screen("update_profile_screen")
     object ChatScreen : Screen("chat_screen")
+    object SplashScreen : Screen("splash_screen")
 }
