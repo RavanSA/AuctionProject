@@ -28,9 +28,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.PictureInPictureAlt
 import androidx.compose.material.icons.outlined.CalendarToday
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.runtime.*
@@ -50,6 +50,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import kotlinx.coroutines.Job
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -109,6 +110,7 @@ fun CreateItemInputsForms(
 
     var selectImages by remember { mutableStateOf(listOf<Uri>()) }
 
+    var validationError by remember { mutableStateOf(true) }
 
     val galleryLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetMultipleContents()) {
@@ -134,7 +136,31 @@ fun CreateItemInputsForms(
     val mContext = LocalContext.current
     var delayJob: Job? = null
 
+    var titleError by remember { mutableStateOf(true) }
+    var descriptionError by remember { mutableStateOf(true) }
+    var startingPriceError by remember { mutableStateOf(true) }
+    var minimumIncreaseError by remember { mutableStateOf(true) }
+    var imageCountError by remember { mutableStateOf(true) }
+    var startDateError by remember { mutableStateOf(true) }
+    var endDateError by remember { mutableStateOf(true) }
+    var starTimeChecker by remember { mutableStateOf("") }
+    var endTimeChecker by remember { mutableStateOf("") }
+    var loadingScreenShow by remember { mutableStateOf(false) }
+    val sdf = SimpleDateFormat("dd/MM/yyyy")
+//    LaunchedEffect(key1 = loadingScreenShow) {
+//        Box(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .background(Color.White),
+//            contentAlignment = Alignment.Center
+//        ) {
+//            LoadingScreen()
+//        }
+//    }
 
+//    if(loadingScreenShow) {
+//        WaitingScreenForCreatingItem()
+//    }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -205,7 +231,6 @@ fun CreateItemInputsForms(
                     Column {
                         var titleState by remember { mutableStateOf("") }
                         state.value.title = titleState
-                        Log.d("TITLETEST", state.value.title)
                         val maxLength = 50
                         val lightBlue = Color.LightGray
                         val blue = Color.Black
@@ -229,7 +254,7 @@ fun CreateItemInputsForms(
                             ),
                             onValueChange = {
                                 if (it.length <= maxLength) titleState = it
-
+                                if (it.isEmpty()) titleError = true
                                 postItemViewModel.onEvent(
                                     PostItemEvent.TitleChanged(
                                         it
@@ -247,7 +272,7 @@ fun CreateItemInputsForms(
                                         )
                                     }
                                 }
-                            }
+                            },
                         )
                         Text(
                             text = "${titleState.length} / $maxLength",
@@ -257,6 +282,17 @@ fun CreateItemInputsForms(
                             textAlign = TextAlign.End,
                             color = blue
                         )
+                        if (titleState.length < 5 && titleState != "") {
+                            titleError = true
+                            Text(
+                                text = "Title length must be grater than 5 ",
+                                color = MaterialTheme.colors.error,
+                                style = MaterialTheme.typography.caption,
+                                modifier = Modifier.padding(start = 16.dp)
+                            )
+                        } else if (titleState.length > 5) {
+                            titleError = false
+                        }
                     }
 
                     Spacer(modifier = Modifier.padding(10.dp))
@@ -290,7 +326,7 @@ fun CreateItemInputsForms(
                             ),
                             onValueChange = {
                                 if (it.length <= maxLength) stateDescription = it
-
+                                if (it.isEmpty()) descriptionError = true
                                 postItemViewModel.onEvent(
                                     PostItemEvent.DescriptionChanges(
                                         it
@@ -317,6 +353,17 @@ fun CreateItemInputsForms(
                             textAlign = TextAlign.Right,
                             color = blue
                         )
+                        if (stateDescription.length < 10 && stateDescription != "") {
+                            descriptionError = true
+                            Text(
+                                text = "Description length must be grater than 10",
+                                color = MaterialTheme.colors.error,
+                                style = MaterialTheme.typography.caption,
+                                modifier = Modifier.padding(start = 16.dp)
+                            )
+                        } else if (stateDescription.length > 10) {
+                            descriptionError = false
+                        }
                     }
 
                     Spacer(modifier = Modifier.padding(10.dp))
@@ -347,6 +394,7 @@ fun CreateItemInputsForms(
                                 keyboardType = KeyboardType.Number
                             ),
                             onValueChange = {
+                                if (it.isEmpty()) startingPriceError = true
                                 postItemViewModel.onEvent(
                                     PostItemEvent.StartingPriceChanged(
                                         it
@@ -363,8 +411,21 @@ fun CreateItemInputsForms(
                                         )
                                     }
                                 }
-                            }
+                            },
                         )
+                        if (state.value.startingPrice != "") {
+                            if (state.value.startingPrice.toDouble() < 100) {
+                                startingPriceError = true
+                                Text(
+                                    text = "Starting Price must be greater than 100",
+                                    color = MaterialTheme.colors.error,
+                                    style = MaterialTheme.typography.caption,
+                                    modifier = Modifier.padding(start = 16.dp)
+                                )
+                            } else if (state.value.startingPrice.toDouble() > 100) {
+                                startingPriceError = false
+                            }
+                        }
                     }
 
                     Spacer(modifier = Modifier.padding(15.dp))
@@ -396,6 +457,7 @@ fun CreateItemInputsForms(
                                 keyboardType = KeyboardType.Number
                             ),
                             onValueChange = {
+                                if (state.value.minIncrease.length < 0) minimumIncreaseError = true
                                 postItemViewModel.onEvent(
                                     PostItemEvent.MinIncreaseChanged(
                                         it
@@ -412,8 +474,21 @@ fun CreateItemInputsForms(
                                         )
                                     }
                                 }
-                            }
+                            },
                         )
+                        if (state.value.startingPrice != "" && state.value.minIncrease != "") {
+                            if (state.value.minIncrease.toDouble() < (state.value.startingPrice.toDouble() * 0.1)) {
+                                minimumIncreaseError = true
+                                Text(
+                                    text = "Minimum Increase must be greater than starting price of 10 %",
+                                    color = MaterialTheme.colors.error,
+                                    style = MaterialTheme.typography.caption,
+                                    modifier = Modifier.padding(start = 16.dp)
+                                )
+                            } else if (state.value.minIncrease.toDouble() > (state.value.startingPrice.toDouble() * 0.1)) {
+                                minimumIncreaseError = false
+                            }
+                        }
                     }
 
                     Spacer(modifier = Modifier.padding(15.dp))
@@ -435,7 +510,7 @@ fun CreateItemInputsForms(
                     ) {
 
                         Icon(
-                            Icons.Filled.PictureInPictureAlt,
+                            Icons.Filled.AddCircle,
                             "Calendar",
                             modifier = Modifier.size(60.dp)
                         )
@@ -447,224 +522,328 @@ fun CreateItemInputsForms(
                             overflow = TextOverflow.Ellipsis,
                             fontSize = 18.sp
                         )
-
-                    }
-
-                    LazyRow(
-
-                    ) {
-                        items(selectImages) { uri ->
-                            Column(
-                                modifier = Modifier
-                                    .size(120.dp)
-                                    .clip(RoundedCornerShape(15.dp, 15.dp, 15.dp, 15.dp))
-                                    .padding(
-                                        start = 20.dp, top = 5.dp,
-                                        end = 5.dp, bottom = 5.dp
-                                    )
-                                    .clickable {
-
-                                    },
-                                horizontalAlignment = Alignment.Start,
-                            ) {
-                                Image(
-                                    painter = rememberImagePainter(uri),
-                                    contentScale = ContentScale.Crop,
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .padding(0.dp, 10.dp)
-                                        .size(200.dp)
-                                        .clip(RoundedCornerShape(15.dp, 15.dp, 15.dp, 15.dp))
+                        when {
+                            selectImages.size in 1..3 -> {
+                                imageCountError = true
+                                Text(
+                                    text = "You need to upload at least 3 pictures",
+                                    color = MaterialTheme.colors.error,
+                                    style = MaterialTheme.typography.caption,
+                                    modifier = Modifier.padding(start = 16.dp)
                                 )
+                            }
+                            selectImages.size > 8 -> {
+                                imageCountError = true
+                                Text(
+                                    text = "You can upload maximum 8 images",
+                                    color = MaterialTheme.colors.error,
+                                    style = MaterialTheme.typography.caption,
+                                    modifier = Modifier.padding(start = 16.dp)
+                                )
+                            }
+                            selectImages.size in 3..8 -> {
+                                imageCountError = false
+                            }
+                            selectImages.isEmpty() -> {
+                                imageCountError = true
                             }
                         }
                     }
+                }
 
+                LazyRow(
 
-                    Spacer(modifier = Modifier.padding(15.dp))
-
-                    Column {
-                        val lightBlue = Color.LightGray
-                        val blue = Color.Black
-                        Text(
-                            text = "Start Time",
+                ) {
+//                        var selectImagesError by remember { mutableStateOf(false)}
+                    items(selectImages) { uri ->
+                        Column(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 4.dp),
-                            textAlign = TextAlign.Start,
-                            color = blue
-                        )
-                        TextField(
-                            modifier = Modifier
-                                .fillMaxWidth()
+                                .size(120.dp)
+                                .clip(RoundedCornerShape(15.dp, 15.dp, 15.dp, 15.dp))
+                                .padding(
+                                    start = 20.dp, top = 5.dp,
+                                    end = 5.dp, bottom = 5.dp
+                                )
                                 .clickable {
 
-                                    val mYear: Int
-                                    val mMonth: Int
-                                    val mDay: Int
-                                    val mHours: Int
-                                    val mMinutes: Int
-
-                                    val mCalendar = Calendar.getInstance()
-
-                                    mCalendar.time = Date()
-
-                                    mYear = mCalendar.get(Calendar.YEAR)
-                                    mMonth = mCalendar.get(Calendar.MONTH)
-                                    mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
-                                    mHours = mCalendar.get(Calendar.HOUR_OF_DAY)
-                                    mMinutes = mCalendar.get(Calendar.MINUTE)
-
-                                    DatePickerDialog(
-                                        mContext,
-                                        { _: DatePicker, year: Int, month: Int, mDayOfMonth: Int ->
-                                            TimePickerDialog(
-                                                mContext,
-                                                { _: TimePicker, hour: Int, minute: Int ->
-
-                                                    startDate.value =
-                                                        "$year-${month + 1}-$mDayOfMonth $hour:$minute"
-
-                                                },
-                                                mHours,
-                                                mMinutes,
-                                                false
-                                            ).show()
-                                        },
-                                        mYear,
-                                        mMonth,
-                                        mDay
-                                    ).show()
                                 },
-                            value = state.value.startTime,
-                            colors = TextFieldDefaults.textFieldColors(
-                                backgroundColor = lightBlue,
-                                cursorColor = Color.Black,
-                                disabledLabelColor = lightBlue,
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent
-                            ),
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number
-                            ),
-                            onValueChange = {
-                                postItemViewModel.onEvent(
-                                    PostItemEvent.StartTimeChanged(
-                                        it
-                                    )
-                                )
-                            },
-                            shape = RoundedCornerShape(8.dp),
-                            trailingIcon = {
-                                Icon(
-                                    imageVector = Icons.Outlined.CalendarToday,
-                                    contentDescription = null
-                                )
-                            },
-                            enabled = false
-                        )
+                            horizontalAlignment = Alignment.Start,
+                        ) {
+                            Image(
+                                painter = rememberImagePainter(uri),
+                                contentScale = ContentScale.Crop,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .padding(0.dp, 10.dp)
+                                    .size(200.dp)
+                                    .clip(RoundedCornerShape(15.dp, 15.dp, 15.dp, 15.dp))
+                            )
+                        }
                     }
-
-                    Spacer(modifier = Modifier.padding(15.dp))
-
-                    Column {
-                        val lightBlue = Color.LightGray
-                        val blue = Color.Black
-                        Text(
-                            text = "End Time",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 4.dp),
-                            textAlign = TextAlign.Start,
-                            color = blue
-                        )
-                        TextField(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    var endTime: String = ""
-                                    val mYear: Int
-                                    val mMonth: Int
-                                    val mDay: Int
-                                    val mHours: Int
-                                    val mMinutes: Int
-
-                                    val mCalendar = Calendar.getInstance()
-
-                                    mYear = mCalendar.get(Calendar.YEAR)
-                                    mMonth = mCalendar.get(Calendar.MONTH)
-                                    mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
-                                    mHours = mCalendar.get(Calendar.HOUR_OF_DAY)
-                                    mMinutes = mCalendar.get(Calendar.MINUTE)
-
-                                    mCalendar.time = Date()
-
-
-                                    DatePickerDialog(
-                                        mContext,
-                                        { _: DatePicker, year: Int, month: Int, mDayOfMonth: Int ->
-                                            TimePickerDialog(
-                                                mContext,
-                                                { _: TimePicker, hour: Int, minute: Int ->
-
-                                                    endDate.value =
-                                                        "$year-${month + 1}-$mDayOfMonth $hour:$minute"
-                                                    Log.d("ENDTIME", endTime)
-
-                                                    postItemViewModel.onEvent(
-                                                        PostItemEvent.EndTimeChanged(
-                                                            postItemViewModel.state.value.endTime
-                                                        )
-                                                    )
-                                                },
-                                                mHours,
-                                                mMinutes,
-                                                false
-                                            ).show()
-                                        },
-                                        mYear,
-                                        mMonth,
-                                        mDay
-                                    ).show()
-                                },
-                            value = state.value.endTime,
-                            colors = TextFieldDefaults.textFieldColors(
-                                backgroundColor = lightBlue,
-                                cursorColor = Color.Black,
-                                disabledLabelColor = lightBlue,
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent
-                            ),
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number
-                            ),
-                            onValueChange = {
-                                postItemViewModel.onEvent(
-                                    PostItemEvent.EndTimeChanged(
-                                        it
-                                    )
-                                )
-                            },
-                            shape = RoundedCornerShape(8.dp),
-                            trailingIcon = {
-                                Icon(
-                                    imageVector = Icons.Outlined.CalendarToday,
-                                    contentDescription = null
-                                )
-                            },
-                            enabled = false
-                        )
-                    }
-
-
-                    Spacer(modifier = Modifier.padding(10.dp))
-
 
                 }
+//                    if (selectImages.size < 3 ) {
+//                        validationError = true
+////                        Text(
+////                            text = "You need to select at least three images",
+////                            color = Color.Red,
+////                            modifier = Modifier.padding(start = 16.dp),
+////                            size = 10.sp
+////                        )
+//                    } else {
+//                        validationError = false
+//                    }
+
+                Spacer(modifier = Modifier.padding(15.dp))
+
+                Column {
+                    val lightBlue = Color.LightGray
+                    val blue = Color.Black
+                    Text(
+                        text = "Start Time",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 4.dp),
+                        textAlign = TextAlign.Start,
+                        color = blue
+                    )
+                    TextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+
+                                val mYear: Int
+                                val mMonth: Int
+                                val mDay: Int
+                                val mHours: Int
+                                val mMinutes: Int
+
+                                val mCalendar = Calendar.getInstance()
+
+                                mCalendar.time = Date()
+
+                                mYear = mCalendar.get(Calendar.YEAR)
+                                mMonth = mCalendar.get(Calendar.MONTH)
+                                mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
+                                mHours = mCalendar.get(Calendar.HOUR_OF_DAY)
+                                mMinutes = mCalendar.get(Calendar.MINUTE)
+
+                                DatePickerDialog(
+                                    mContext,
+                                    { _: DatePicker, year: Int, month: Int, mDayOfMonth: Int ->
+                                        TimePickerDialog(
+                                            mContext,
+                                            { _: TimePicker, hour: Int, minute: Int ->
+
+                                                startDate.value =
+                                                    "$year-${month + 1}-$mDayOfMonth $hour:$minute"
+                                                starTimeChecker = "$mDayOfMonth/${month + 1}/$year"
+                                            },
+                                            mHours,
+                                            mMinutes,
+                                            false
+                                        ).show()
+                                    },
+                                    mYear,
+                                    mMonth,
+                                    mDay
+                                ).show()
+                            },
+                        value = state.value.startTime,
+                        colors = TextFieldDefaults.textFieldColors(
+                            backgroundColor = lightBlue,
+                            cursorColor = Color.Black,
+                            disabledLabelColor = lightBlue,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent
+                        ),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number
+                        ),
+                        onValueChange = {
+                            if (it.length < 0) startDateError = true
+                            postItemViewModel.onEvent(
+                                PostItemEvent.StartTimeChanged(
+                                    it
+                                )
+                            )
+                        },
+                        shape = RoundedCornerShape(8.dp),
+                        trailingIcon = {
+                            Icon(
+                                imageVector = Icons.Outlined.CalendarToday,
+                                contentDescription = null
+                            )
+                        },
+                        enabled = false
+                    )
+                    Log.d("TESTSTARTIME", starTimeChecker.toString())
+                    if (starTimeChecker.isNotEmpty()) {
+                        if (sdf.parse(sdf.format(Date())).after(sdf.parse(starTimeChecker))) {
+                            startDateError = true
+                            Text(
+                                text = "Start time must be greater than current time",
+                                color = MaterialTheme.colors.error,
+                                style = MaterialTheme.typography.caption,
+                                modifier = Modifier.padding(start = 16.dp)
+                            )
+                        } else {
+                            startDateError = false
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.padding(15.dp))
+
+                Column {
+                    val lightBlue = Color.LightGray
+                    val blue = Color.Black
+                    Text(
+                        text = "End Time",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 4.dp),
+                        textAlign = TextAlign.Start,
+                        color = blue
+                    )
+                    TextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                var endTime: String = ""
+                                val mYear: Int
+                                val mMonth: Int
+                                val mDay: Int
+                                val mHours: Int
+                                val mMinutes: Int
+
+                                val mCalendar = Calendar.getInstance()
+
+                                mYear = mCalendar.get(Calendar.YEAR)
+                                mMonth = mCalendar.get(Calendar.MONTH)
+                                mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
+                                mHours = mCalendar.get(Calendar.HOUR_OF_DAY)
+                                mMinutes = mCalendar.get(Calendar.MINUTE)
+
+                                mCalendar.time = Date()
+
+
+                                DatePickerDialog(
+                                    mContext,
+                                    { _: DatePicker, year: Int, month: Int, mDayOfMonth: Int ->
+                                        TimePickerDialog(
+                                            mContext,
+                                            { _: TimePicker, hour: Int, minute: Int ->
+
+                                                endDate.value =
+                                                    "$year-${month + 1}-$mDayOfMonth $hour:$minute"
+                                                Log.d("ENDTIME", endTime)
+                                                endTimeChecker = "$mDayOfMonth/${month + 1}/$year"
+                                                postItemViewModel.onEvent(
+                                                    PostItemEvent.EndTimeChanged(
+                                                        postItemViewModel.state.value.endTime
+                                                    )
+                                                )
+                                            },
+                                            mHours,
+                                            mMinutes,
+                                            false
+                                        ).show()
+                                    },
+                                    mYear,
+                                    mMonth,
+                                    mDay
+                                ).show()
+                            },
+                        value = state.value.endTime,
+                        colors = TextFieldDefaults.textFieldColors(
+                            backgroundColor = lightBlue,
+                            cursorColor = Color.Black,
+                            disabledLabelColor = lightBlue,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent
+                        ),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number
+                        ),
+                        onValueChange = {
+                            if (it.length < 0) endDateError = true
+                            postItemViewModel.onEvent(
+                                PostItemEvent.EndTimeChanged(
+                                    it
+                                )
+                            )
+                        },
+                        shape = RoundedCornerShape(8.dp),
+                        trailingIcon = {
+                            Icon(
+                                imageVector = Icons.Outlined.CalendarToday,
+                                contentDescription = null
+                            )
+                        },
+                        enabled = false
+                    )
+                    if (endTimeChecker.isNotEmpty() && starTimeChecker.isNotEmpty()) {
+                        if (sdf.parse(endTimeChecker).before(sdf.parse(starTimeChecker))) {
+                            //sdf.parse(starTimeChecker)
+                            endDateError = true
+                            Text(
+                                text = "End time must be greater than Start time",
+                                color = MaterialTheme.colors.error,
+                                style = MaterialTheme.typography.caption,
+                                modifier = Modifier.padding(start = 16.dp)
+                            )
+                        } else {
+                            endDateError = false
+                        }
+                    }
+                }
+
+
+                Spacer(modifier = Modifier.padding(10.dp))
+
+
             }
         }
 
+
         item {
+            var hasError = false
+
+            Log.d("BEFORETESTtıtle", titleError.toString())
+            Log.d("BEFORETESTdescription", descriptionError.toString())
+            Log.d("BEFORETESTgprice", startingPriceError.toString())
+            Log.d("BEFORETEST minimum", minimumIncreaseError.toString())
+
+            if (!titleError && !descriptionError &&
+                !startingPriceError && !minimumIncreaseError
+                && !imageCountError && !startDateError && !endDateError
+            ) {
+                Log.d("TESTtıtle", titleError.toString())
+                Log.d("TESTdescription", descriptionError.toString())
+                Log.d("TEST startingprice", startingPriceError.toString())
+                Log.d("TEST minimum", minimumIncreaseError.toString())
+                hasError = true
+            }
+
+
+//            val emptyInputCase = listOf(
+//                titleError,
+//                descriptionError,
+//                startingPriceError,
+//                minimumIncreaseError
+//            ).all {
+//                it
+//            }
+//
+//            // hamısı falsedusa false
+//            val errorInputsCase = listOf(
+//                titleError,
+//                descriptionError,
+//                startingPriceError,
+//                minimumIncreaseError
+//            ).map { !it }
+
             Column(
                 modifier = Modifier
                     .padding(15.dp),
@@ -677,16 +856,26 @@ fun CreateItemInputsForms(
                         postItemViewModel.onEvent(
                             PostItemEvent.CreateItemClicked
                         )
+
+                        loadingScreenShow = true
                         navController.navigate(
-                            Screen.AuctionListScreen.route
+                            Screen.SplashScreen.route
                         )
+//                        CoroutineScope(Dispatchers.Main).launch {
+//                            delay(20000L)
+//                            navController.navigate(
+//                                Screen.AuctionListScreen.route
+//                            )
+//                        }
+
                     }, modifier = Modifier
                         .fillMaxWidth(1f)
                         .height(50.dp),
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = Color.Black,
                         contentColor = Color.White
-                    )
+                    ),
+                    enabled = hasError
                 ) {
                     Text(text = loadingItem, fontSize = dpToSp(20.dp))
                 }
@@ -699,12 +888,15 @@ fun CreateItemInputsForms(
                     color = Color.Gray
                 )
             }
+
+
         }
     }
 }
 
 @Composable
-fun LoadingScreen() {
+fun WaitingScreenForCreatingItem() {
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -713,4 +905,5 @@ fun LoadingScreen() {
     ) {
         LoadingScreen()
     }
+
 }

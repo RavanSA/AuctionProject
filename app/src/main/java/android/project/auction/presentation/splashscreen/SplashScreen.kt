@@ -19,7 +19,8 @@ import kotlinx.coroutines.launch
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun SplashScreen(
-    navController: NavController
+    navController: NavController,
+    duration: Long = 5000L
 ) {
 
     val scope = rememberCoroutineScope()
@@ -34,7 +35,7 @@ fun SplashScreen(
     }
 
     scope.launch(Dispatchers.Main) {
-        delay(3000)
+        delay(duration)
         navController.navigate(
             Screen.AuctionListScreen.route
         )
