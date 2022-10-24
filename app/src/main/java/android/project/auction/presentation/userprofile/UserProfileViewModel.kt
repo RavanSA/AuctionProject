@@ -2,7 +2,6 @@ package android.project.auction.presentation.userprofile
 
 import android.project.auction.common.Resource
 import android.project.auction.domain.use_case.usecases.AuctionProjectUseCase
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -60,7 +59,6 @@ class UserProfileViewModel @Inject constructor(
                     )
                 }
                 is Resource.Success -> {
-                    Log.d("DATATEST", data.data.toString())
                     _state.value = state.value.copy(
                         userInfo = data.data
                     )

@@ -45,10 +45,6 @@ fun AuctionStatusCard(
             val parsedStartTime = sdf.parse(startTime)
 
             when {
-
-//                parsedCurrentUtcTime.before(parsedStartTime) && !parsedCurrentUtcTime.after(
-//                    parsedEndTime
-//                )
                 parsedEndTime.after(parsedCurrentUtcTime) -> {
 
                     var diff: Long = parsedEndTime.time - parsedCurrentUtcTime.time

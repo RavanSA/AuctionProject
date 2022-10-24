@@ -5,7 +5,6 @@ import android.project.auction.common.Resource
 import android.project.auction.data.remote.dto.userinfo.UpdateUserInfoRequest
 import android.project.auction.domain.use_case.authentication.AuctionAuthUseCase
 import android.project.auction.domain.use_case.usecases.AuctionProjectUseCase
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -83,26 +82,17 @@ class UpdateProfileViewModel @Inject constructor(
             }
             is UpdateProfileEvent.OnProfilePictureChange -> {
 
-                Log.d("TEST11111", state.value.pictureUploadingLoading.toString())
                 state.value.pictureUploadingLoading = true
                 uploadJob?.cancel()
                 uploadJob = viewModelScope.launch {
-                    Log.d("TEST2", state.value.pictureUploadingLoading.toString())
 
                     useCase.updateUserInfo.uploadProfilePicture(event.value)
 
                     delay(25000L)
                     state.value.pictureUploadingLoading = false
-//                    val profilePic = preferences.getString("USER_PROFILE_IMAGE", null) ?: "ERROR_PICTURE"
-//                    Log.d("TEST3",state.value.pictureUploadingLoading.toString())
-//
-//                    _state.value = state.value.copy(
-//                        profilePicture = profilePic
-//                    )
                     _state.value = state.value.copy(
                         pictureUploadingLoading = false
                     )
-                    Log.d("TEST2222222222222222", state.value.pictureUploadingLoading.toString())
 
                 }
             }
@@ -127,7 +117,6 @@ class UpdateProfileViewModel @Inject constructor(
                     )
                 }
                 is Resource.Success -> {
-                    Log.d("DATATEST", data.data.toString())
                     _state.value = state.value.copy(
                         userName = data.data?.userName ?: ""
                     )

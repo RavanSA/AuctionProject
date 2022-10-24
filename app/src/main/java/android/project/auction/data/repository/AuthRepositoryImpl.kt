@@ -1,6 +1,7 @@
 package android.project.auction.data.repository
 
 import android.content.SharedPreferences
+import android.project.auction.common.Constants
 import android.project.auction.data.remote.AuthAPI
 import android.project.auction.data.remote.dto.auth.authsignin.AuthSignInRequest
 import android.project.auction.data.remote.dto.auth.authsignin.LoginResponse
@@ -43,7 +44,7 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getUserIDFromPreferences(): String {
-        return preferences.getString("USERID", null) ?: "UNAUTHORIZED USER"
+        return preferences.getString(Constants.USER_ID, null) ?: Constants.UNAUTHORIZED_USER
     }
 
 }

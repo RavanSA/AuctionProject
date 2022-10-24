@@ -2,7 +2,6 @@ package android.project.auction.presentation.chat
 
 import android.annotation.SuppressLint
 import android.project.auction.domain.model.item.ItemDetail
-import android.util.Log
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -100,13 +99,9 @@ fun ChatContent(
         ) {
             items(states.messages) { item ->
                 var isMessageMine = false
-                Log.d("USERID", userId)
-                Log.d("BIDDERID", item.bidderId)
-                Log.d("SELLERID", item.sellerId)
                 if (item.userId == userId) {
                     isMessageMine = true
                 }
-                Log.d("ISMESSAGEMINE", isMessageMine.toString())
 
                 MessageItem(
                     isMessageMine = isMessageMine,
@@ -198,6 +193,3 @@ fun cardShapeFor(isMessageMine: Boolean): Shape {
         else -> roundedCorners.copy(bottomStart = CornerSize(0))
     }
 }
-
-
-

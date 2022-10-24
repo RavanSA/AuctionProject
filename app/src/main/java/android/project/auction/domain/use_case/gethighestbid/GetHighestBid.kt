@@ -18,8 +18,6 @@ class GetHighestBid @Inject constructor(
 
             emit(Resource.Loading<HighestBid?>(true))
 
-            val test2 = repository.getBidsHistoryByItemId(itemId = itemId)
-
             val response = repository.getHighestBidByItemId(itemId = itemId).data
 
             emit(

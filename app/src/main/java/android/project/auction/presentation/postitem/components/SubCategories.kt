@@ -1,5 +1,6 @@
 package android.project.auction.presentation.postitem.components
 
+import android.annotation.SuppressLint
 import android.project.auction.domain.model.category.SubAndCategory
 import android.project.auction.domain.model.category.SubCategories
 import android.project.auction.domain.model.category.SubCategory
@@ -20,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun SubCategegoriesList(
     navController: NavController,

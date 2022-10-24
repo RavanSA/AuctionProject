@@ -1,11 +1,11 @@
 package android.project.auction.domain.use_case.getuserinfobyid
 
 import android.content.SharedPreferences
+import android.project.auction.common.Constants
 import android.project.auction.common.Resource
 import android.project.auction.data.remote.dto.userinfo.toUserInfo
 import android.project.auction.domain.model.userinfo.UserInfo
 import android.project.auction.domain.repository.AuctionRepository
-import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
@@ -21,11 +21,9 @@ class GetUserInfoById @Inject constructor(
         try {
             emit(Resource.Loading<UserInfo?>(true))
 
-            val userID = preferences.getString("USERID", null)
+            val userID = preferences.getString(Constants.USER_ID, null)
             if (userID != null) {
                 val getUserInfoById = repository.getUserInfoById(userID).data
-                Log.d("DATAPROFILE", getUserInfoById.toString())
-                Log.d("USERID", userID)
 
                 emit(Resource.Loading<UserInfo?>(false))
                 emit(

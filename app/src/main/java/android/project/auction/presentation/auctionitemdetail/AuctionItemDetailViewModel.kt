@@ -1,6 +1,7 @@
 package android.project.auction.presentation.auctionitemdetail
 
 import android.content.SharedPreferences
+import android.project.auction.common.Constants
 import android.project.auction.common.Resource
 import android.project.auction.data.local.entity.Bids
 import android.project.auction.data.local.entity.Favorites
@@ -9,7 +10,6 @@ import android.project.auction.data.remote.dto.bids.HighestBid
 import android.project.auction.domain.model.exceptions.InvalidFavoriteItemException
 import android.project.auction.domain.use_case.authentication.AuctionAuthUseCase
 import android.project.auction.domain.use_case.usecases.AuctionProjectUseCase
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,11 +57,9 @@ class AuctionItemDetailViewModel @Inject constructor(
 
     var itemID: String = ""
 
-    private var _itemIDTest = "test"
-
     val test: MutableLiveData<String> = MutableLiveData<String>("")
 
-     val userID = preferences.getString("USERID", null)
+     val userID = preferences.getString(Constants.USER_ID, null)
 
     init {
         savedStateHandle.get<String>("itemId")?.let { itemId ->
@@ -89,7 +87,6 @@ class AuctionItemDetailViewModel @Inject constructor(
             }
             is AuctionItemDetailEvent.OnBidAmountPlaced -> {
                 placeBidAmount(event.itemId)
-//                test.value?.let { getBidHistory(it) }
             }
             is AuctionItemDetailEvent.AddItemToFavorites -> {
                 viewModelScope.launch {
@@ -263,7 +260,6 @@ class AuctionItemDetailViewModel @Inject constructor(
                 postingBidAmount = true
             )
 
-            Log.d("testBID", itemID)
             useCase.placeBidAmount.invoke(
                 amount = statePlaceBid.bidAmount.toInt(),
                 itemId = itemId

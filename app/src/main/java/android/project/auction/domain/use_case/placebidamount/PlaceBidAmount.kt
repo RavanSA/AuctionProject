@@ -1,6 +1,7 @@
 package android.project.auction.domain.use_case.placebidamount
 
 import android.content.SharedPreferences
+import android.project.auction.common.Constants
 import android.project.auction.domain.repository.AuctionRepository
 import android.util.Log
 import retrofit2.HttpException
@@ -15,11 +16,7 @@ class PlaceBidAmount @Inject constructor(
     suspend operator fun invoke(amount: Int, itemId: String) {
         try {
 
-            val userID = preferences.getString("USERID", null) ?: "NOT REGISTERED USER"
-
-            Log.d("testBID", amount.toString())
-            Log.d("testBID", itemId)
-
+            val userID = preferences.getString(Constants.USER_ID, null) ?: Constants.UNAUTHORIZED_USER
 
             repository.placeBidAmount(
                 amount = amount,

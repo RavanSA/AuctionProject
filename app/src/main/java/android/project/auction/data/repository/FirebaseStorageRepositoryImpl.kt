@@ -2,18 +2,17 @@ package android.project.auction.data.repository
 
 import android.content.SharedPreferences
 import android.net.Uri
+import android.project.auction.common.Constants
 import android.project.auction.data.remote.dto.items.createitem.CreatePictureItemId
 import android.project.auction.data.remote.dto.items.getpictures.AddItemPictureRequest
 import android.project.auction.domain.repository.FirebaseStorageRepository
-import android.util.Log
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class FirebaseStorageRepositoryImpl @Inject constructor(
-    private val repository: AuctionRepositoryImpl,
-    private val preferences: SharedPreferences
+    private val repository: AuctionRepositoryImpl, private val preferences: SharedPreferences
 ) : FirebaseStorageRepository {
 
     private var imageList: MutableList<String> = mutableListOf()
@@ -36,8 +35,6 @@ class FirebaseStorageRepositoryImpl @Inject constructor(
 
                             imageUrl = uri.result.toString()
                             imageList.add(imageUrl)
-                            Log.d("IMAGEURL", imageUrl)
-                            Log.d("IMAGELIST", imageList.toString())
                             if (imageList.size == size) {
                                 addImageForItemToRemoteDatabase()
                                 addMainItemPicture(itemId, imageList[0])
@@ -74,17 +71,14 @@ class FirebaseStorageRepositoryImpl @Inject constructor(
 
     private fun getRandomString(): String {
         val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
-        return (1..10)
-            .map { allowedChars.random() }
-            .joinToString("")
+        return (1..10).map { allowedChars.random() }.joinToString("")
     }
 
     private suspend fun addImageForItemToRemoteDatabase() {
 
         repository.addImageForItemToRemoteDatabase(
             createPictureForItem = CreatePictureItemId(
-                itemId = itemID,
-                pictures = imageList
+                itemId = itemID, pictures = imageList
             )
         )
     }
@@ -92,8 +86,7 @@ class FirebaseStorageRepositoryImpl @Inject constructor(
     private suspend fun addMainItemPicture(itemId: String, mainItemPicture: String) {
         repository.addItemMainPicture(
             AddItemPictureRequest(
-                id = itemId,
-                mainItemPicture = mainItemPicture
+                id = itemId, mainItemPicture = mainItemPicture
             )
         )
 
@@ -102,35 +95,22 @@ class FirebaseStorageRepositoryImpl @Inject constructor(
     override suspend fun updateProfileImage(uri: Uri) {
         val storageReference = getStorageReference()
         var imageUrl = ""
-        val userID = preferences.getString("USERID", null) ?: "NOT REGISTERED USER"
-        Log.d("TEST7URI", uri.toString())
+        val userID = preferences.getString(Constants.USER_ID, null) ?: Constants.UNAUTHORIZED_USER
 
-        storageReference.child(userID).putFile(uri)
-            .addOnSuccessListener {
-                val task = it.storage.downloadUrl
+        storageReference.child(userID).putFile(uri).addOnSuccessListener {
+            val task = it.storage.downloadUrl
 
-                task.addOnCompleteListener { uri ->
-                    GlobalScope.launch(Dispatchers.IO) {
+            task.addOnCompleteListener { uri ->
+                GlobalScope.launch(Dispatchers.IO) {
 
-                        withContext(Dispatchers.IO) {
-                            Log.d("TEST8URL", imageUrl)
-                            imageUrl = uri.result.toString()
-                            if (imageUrl != "") {
-                                preferences
-                                    .edit()
-                                    .putString("USER_PROFILE_IMAGE", imageUrl)
-                                    .apply()
-                                Log.d("TEST9URL", imageUrl)
-                            }
-                            Log.d("TEST10URL", imageUrl)
-
-
+                    withContext(Dispatchers.IO) {
+                        imageUrl = uri.result.toString()
+                        if (imageUrl != "") {
+                            preferences.edit().putString(Constants.USER_PROFILE_IMAGE, imageUrl).apply()
                         }
                     }
                 }
             }
-
+        }
     }
-
-
 }

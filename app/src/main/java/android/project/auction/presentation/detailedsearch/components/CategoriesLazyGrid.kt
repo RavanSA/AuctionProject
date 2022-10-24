@@ -106,12 +106,6 @@ fun DetailedSearchCategoriesItem(
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold
             )
-//            Text(
-//                category.name,
-//                color = Color.Black,
-//                maxLines = 1,
-//                overflow = TextOverflow.Ellipsis
-//            )
         }
     }
 }
@@ -143,8 +137,8 @@ fun CategoryImage(
         Image(
             painter = rememberImagePainter(imageUrl),
             contentDescription = "avatar",
-            contentScale = ContentScale.Crop,            // crop the image if it's not a square
-            modifier = modifier  // add a border (optional)
+            contentScale = ContentScale.Crop,
+            modifier = modifier
         )
     }
 }

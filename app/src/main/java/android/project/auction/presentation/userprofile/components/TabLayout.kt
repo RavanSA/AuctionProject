@@ -3,7 +3,6 @@ package android.project.auction.presentation.userprofile.components
 import android.project.auction.data.local.entity.SellerOrBidder
 import android.project.auction.presentation.userprofile.UserProfileEvent
 import android.project.auction.presentation.userprofile.UserProfileViewModel
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -85,24 +84,10 @@ fun Tabs(
 
         contentColor = Color.White,
 
-
-//        indicator = { tabPositions ->
-//
-//            TabRowDefaults.Indicator(
-//                Modifier.pagerTabIndicatorOffset(pagerState, tabPositions),
-//                height = 2.dp,
-//                color = Color.White
-//            )
-//        }
     ) {
 
         list.forEachIndexed { index, _ ->
             Tab(
-
-//                icon = {
-//                    Icon(imageVector = list[index], contentDescription = null)
-//                },
-
                 text = {
                     Text(
                         list[index],
@@ -138,11 +123,9 @@ fun TabsContent(
         state = pagerState,
         count = list.size
     ) {
-//        Log.d("PAGE1212", page.toString())
 
         when (pagerState.currentPage) {
             0 -> {
-                Log.d("TESDSDF", "owner")
                 userProfileViewModel.onEvent(
                     UserProfileEvent.OnTabChanged(
                         "owner"
@@ -155,7 +138,6 @@ fun TabsContent(
             }
 
             1 -> {
-                Log.d("TEST", "bidder")
                 userProfileViewModel.onEvent(
                     UserProfileEvent.OnTabChanged(
                         "bidder"
@@ -176,14 +158,6 @@ fun TabContentScreen(
     data: List<SellerOrBidder>,
     navController: NavController
 ) {
-
-//    Text(
-//        text = data.toString(),
-//        color = Color.Black,
-//        fontWeight = FontWeight.Bold,
-//        textAlign = TextAlign.Center,
-//        fontSize = 12.sp
-//    )
 
     LazyColumn(
         contentPadding = PaddingValues(2.dp),

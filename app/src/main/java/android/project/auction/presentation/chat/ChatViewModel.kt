@@ -35,23 +35,19 @@ class ChatViewModel @Inject constructor(
 
     init {
         getUserId()
-        Log.d("SIGNALR", "TEST1")
         logger = LoggerFactory.getLogger(HubConnection::class.java)
 
-        hubConnection = HubConnectionBuilder
-            .create("http://auctionproject-001-site1.ftempurl.com/chathub")
-            .build()
+        hubConnection =
+            HubConnectionBuilder.create("http://auctionproject-001-site1.ftempurl.com/chathub")
+                .build()
 
         hubConnection.start().blockingAwait()
 
 
         hubConnection.on(
-            "SendMessageToUser",
-            { message: String ->
+            "SendMessageToUser", { message: String ->
                 state.value.itemDetail?.id?.let { getAllMessages(it) }
-                Log.d("REVEIVEMESSAGETEST222", message)
-            },
-            String::class.java
+            }, String::class.java
         )
 
 
@@ -66,9 +62,7 @@ class ChatViewModel @Inject constructor(
             is ChatEvent.OnSendMessageButtonClicked -> {
                 state.value.itemDetail?.let {
                     sendMessage(
-                        message = state.value.message,
-                        itemId = it.id,
-                        itemOwnerId = it.userId
+                        message = state.value.message, itemId = it.id, itemOwnerId = it.userId
                     )
                 }
             }
@@ -85,21 +79,18 @@ class ChatViewModel @Inject constructor(
         useCase.getAllMessageByItemId.invoke(itemId).onEach { result ->
             when (result) {
                 is Resource.Loading -> {
-                    Log.d("MESSAGESLOADING", "TEST2")
 
                     _state.value = state.value.copy(
                         isMessagesLoading = true
                     )
                 }
                 is Resource.Error -> {
-                    Log.d("MESSAGESERROR", "TEST")
 
                     _state.value = state.value.copy(
                         messageError = result.message ?: "Error Occured"
                     )
                 }
                 is Resource.Success -> {
-                    Log.d("DATATEST", result.data.toString())
                     _state.value = state.value.copy(
                         messages = result.data ?: emptyList()
                     )
@@ -117,9 +108,7 @@ class ChatViewModel @Inject constructor(
             )
 
             useCase.sendMessageToUser.invoke(
-                message = message,
-                itemId = itemId,
-                sellerId = itemOwnerId
+                message = message, itemId = itemId, sellerId = itemOwnerId
             )
 
             _state.value = state.value.copy(
@@ -144,8 +133,7 @@ class ChatViewModel @Inject constructor(
     fun getConnectionState() {
         Log.d("SIGNALR4", hubConnection.connectionState.toString())
         Log.d(
-            "SIGNAL5", hubConnection.connectionState
-                .name
+            "SIGNAL5", hubConnection.connectionState.name
         )
         println(hubConnection.connectionState.toString())
     }
@@ -159,19 +147,15 @@ class ChatViewModel @Inject constructor(
     fun sendMessage() {
 
         hubConnection.invoke(
-            "SendMessageToGroup",
-            state.value.itemDetail?.userId,
-            state.value.message
+            "SendMessageToGroup", state.value.itemDetail?.userId, state.value.message
         )
 
         hubConnection.on(
-            "ReceiveMessage",
-            { username: String, message: String ->
+            "ReceiveMessage", { username: String, message: String ->
                 println("$username offline")
                 Log.d("RECIVEMESSAGETEST", username)
                 Log.d("REVEIVEMESSAGETEST222", message)
-            },
-            String::class.java, String::class.java
+            }, String::class.java, String::class.java
         )
 
     }

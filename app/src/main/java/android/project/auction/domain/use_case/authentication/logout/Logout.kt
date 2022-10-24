@@ -2,6 +2,7 @@ package android.project.auction.domain.use_case.authentication.logout
 
 import android.content.SharedPreferences
 import android.project.auction.common.AuthResult
+import android.project.auction.common.Constants
 import android.project.auction.domain.repository.AuthRepository
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -19,12 +20,12 @@ class Logout @Inject constructor(
 
             preferences
                 .edit()
-                .putString("JWT", null)
+                .putString(Constants.TOKEN_JWT, null)
                 .apply()
 
             preferences
                 .edit()
-                .putString("USERID", null)
+                .putString(Constants.USER_ID, null)
                 .apply()
 
             AuthResult.UnAuthorized()

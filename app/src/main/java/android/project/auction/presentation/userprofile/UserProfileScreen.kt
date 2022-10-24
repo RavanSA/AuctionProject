@@ -10,7 +10,6 @@ import android.project.auction.presentation.auth.AuthViewModel
 import android.project.auction.presentation.ui.common.bottomNav.BottomNav
 import android.project.auction.presentation.userprofile.components.TabLayout
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -33,7 +32,6 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -201,64 +199,6 @@ fun UserProfileContent(
                         }
                     }
                 }
-//
-//                Spacer(modifier = Modifier.size(20.dp))
-//
-//                Column(
-//                    modifier = Modifier
-//                        .fillMaxWidth(0.8f)
-//                        .clip(RoundedCornerShape(10.dp, 10.dp, 10.dp, 10.dp))
-//                        .background(Color.White)
-//                        .shadow(0.dp),
-//                    horizontalAlignment = Alignment.CenterHorizontally
-//                ) {
-//                    Row(
-//                        modifier = Modifier
-//                            .fillMaxWidth(1f)
-//                            .background(Color.White)
-//                            .clip(RoundedCornerShape(10.dp, 10.dp, 10.dp, 10.dp))
-//                            .shadow(0.dp),
-//                        horizontalArrangement = Arrangement.Center
-//                    ) {
-//                        Column(
-//                            modifier = Modifier.padding(10.dp),
-//                            horizontalAlignment = Alignment.CenterHorizontally
-//
-//                        ) {
-//                            Text(
-//                                userInfo?.email ?: "Error",
-//                                color = Color.Black,
-//                                maxLines = 1,
-//                                overflow = TextOverflow.Ellipsis,
-//                                fontSize = 15.sp,
-//                                modifier = Modifier.padding(0.dp)
-//                            )
-//
-//                            Text(
-//                                userInfo?.phoneNumber ?: "Phone Number not defined",
-//                                color = Color.Gray,
-//                                maxLines = 1,
-//                                overflow = TextOverflow.Ellipsis,
-//                                fontSize = 12.sp,
-//                                modifier = Modifier.padding(0.dp)
-//                            )
-//                        }
-//
-//                        Spacer(modifier = Modifier.weight(1f))
-//
-//                        Button(
-//                            modifier = Modifier
-//                                .padding(10.dp),
-//                            onClick = {},
-//                            colors = ButtonDefaults.buttonColors(
-//                                backgroundColor = Color.Black,
-//                                contentColor = Color.White
-//                            )
-//                        ) {
-//                            Text(text = "UPDATE")
-//                        }
-//                    }
-//                }
             }
         }
 
@@ -273,26 +213,6 @@ fun UserProfileContent(
             TabLayout(navController)
         }
     }
-}
-
-//    }
-//}
-
-@Composable
-fun ProfileImage(
-    modifier: Modifier = Modifier
-        .size(64.dp)
-        .clip(CircleShape)
-        .border(2.dp, Color.Gray, CircleShape)
-) {
-
-    Image(
-        painter = painterResource(android.project.auction.R.drawable.sample_avatar),
-        contentDescription = "avatar",
-        contentScale = ContentScale.Crop,
-        modifier = modifier
-    )
-
 }
 
 @Composable

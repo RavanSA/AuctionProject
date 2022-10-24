@@ -20,10 +20,6 @@ fun TopBar(
     onNavigationIconClick: () -> Unit
 ) {
 
-//    val appBarHorizontalPadding = 4.dp
-//    val titleIconModifier = Modifier.fillMaxHeight()
-//        .width(72.dp - appBarHorizontalPadding)
-
     TopAppBar(
         backgroundColor = White,
         elevation = 0.dp,
@@ -31,13 +27,11 @@ fun TopBar(
 
         ) {
 
-        //TopAppBar Content
         Row(
             modifier = Modifier.height(32.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
 
-            //Navigation Icon
             Row(verticalAlignment = Alignment.CenterVertically) {
                 CompositionLocalProvider(
                     LocalContentAlpha provides ContentAlpha.high,
@@ -48,7 +42,6 @@ fun TopBar(
                 }
             }
 
-            //Title
             Row(
                 Modifier.fillMaxSize(),
                 verticalAlignment = Alignment.CenterVertically
@@ -77,16 +70,6 @@ fun TopBar(
                     }
                 }
             }
-
-//            //actions
-//            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-//                Row(
-//                    Modifier.fillMaxHeight(),
-//                    horizontalArrangement = Arrangement.End,
-//                    verticalAlignment = Alignment.CenterVertically,
-//                    content = actions
-//                )
-//            }
         }
     }
 }

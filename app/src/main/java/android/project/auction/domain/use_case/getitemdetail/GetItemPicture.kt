@@ -18,7 +18,6 @@ class GetItemPicture @Inject constructor(
         try {
             emit(Resource.Loading<List<ItemImages>>(true))
 
-
             val pictures = repository.getItemPictures(id)
 
             emit(Resource.Loading<List<ItemImages>>(false))

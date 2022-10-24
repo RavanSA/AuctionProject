@@ -7,7 +7,6 @@ import android.project.auction.common.AuthResult
 import android.project.auction.presentation.Screen
 import android.project.auction.presentation.auth.AuthViewModel
 import android.project.auction.presentation.ui.common.LoadingScreen
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -50,12 +49,10 @@ fun UpdateProfileScreen(
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
     val pictureLoading = updateProfileViewModel.state.value.pictureUploadingLoading
-    Log.d("TEST6", pictureLoading.toString())
 
     if (pictureLoading) {
         LoadingScreen()
     }
-    Log.d("TEST7", pictureLoading.toString())
 
     val context = LocalContext.current
 
@@ -88,7 +85,6 @@ fun UpdateProfileScreen(
                 navigationIcon = {
                     IconButton(
                         onClick = {
-//                            result.value = "Drawer icon clicked"
                         }
                     ) {
                         Icon(Icons.Filled.ArrowBack, contentDescription = "")
@@ -145,7 +141,6 @@ fun UpdateProfileContent(
 
     val scope = rememberCoroutineScope()
 
-    Log.d("IMAGEURI", imageUri.toString())
 
     Column(
         modifier = Modifier

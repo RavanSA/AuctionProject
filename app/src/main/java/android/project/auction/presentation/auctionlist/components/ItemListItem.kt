@@ -110,7 +110,6 @@ fun ItemList(
                             .fillMaxWidth(0.5f)
                             .align(Alignment.TopStart)
                     ) {
-//                        Text(item.title, style = TextStyle(color = Color.White, fontSize = 16.sp))
                     }
                 }
             }
@@ -156,32 +155,7 @@ fun ItemList(
                                         )
                                     }
                                 }
-
-
-//                                val logoAnimationState = animateLottieCompositionAsState(
-//                                    composition = logoAnimationComposition,
-//                                    isPlaying = true
-//                                )
-//                                LottieAnimation(
-//                                    modifier = Modifier.size(
-//                                        size = 50.dp
-//                                    ),
-//                                    composition = logoAnimationComposition,
-//                                    progress = logoAnimationState.progress
-//                                )
-//                                Text(
-//                                    "Live", fontSize = 15.sp, color = Color.Black, maxLines = 1,
-//                                    overflow = TextOverflow.Ellipsis,
-//                                    fontWeight = Bold
-//                                )
                             }
-//                            Icon(
-//                                Icons.Default.Podcasts, "Live", modifier = Modifier.background(
-//                                    Color.Black
-//                                )
-//                            )
-
-
                         }
                         Spacer(modifier = Modifier.size(0.dp))
                         ProfileImage(item = item)

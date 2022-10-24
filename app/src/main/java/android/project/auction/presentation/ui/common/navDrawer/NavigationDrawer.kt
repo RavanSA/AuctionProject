@@ -10,24 +10,11 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-
-@Composable
-fun DrawerHeader(){
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(64.dp),
-            contentAlignment = Alignment.Center
-    ) {
-        Text(text = "HEADER", fontSize = 40.sp)
-    }
-}
 
 @ExperimentalMaterialApi
 @Composable

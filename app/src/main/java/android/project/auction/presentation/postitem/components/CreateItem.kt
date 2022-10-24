@@ -92,8 +92,6 @@ fun CreateItemContent(
     subAndCategory: SubAndCategory,
     navController: NavController
 ) {
-    Log.d("SUBANDCATEGORY", subAndCategory.toString())
-//    SubAndCategoryContent(subAndCategory)
     Spacer(modifier = Modifier.size(10.dp))
     CreateItemInputsForms(subAndCategory, navController = navController)
 }
@@ -109,8 +107,6 @@ fun CreateItemInputsForms(
 
 
     var selectImages by remember { mutableStateOf(listOf<Uri>()) }
-
-    var validationError by remember { mutableStateOf(true) }
 
     val galleryLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetMultipleContents()) {
@@ -147,20 +143,7 @@ fun CreateItemInputsForms(
     var endTimeChecker by remember { mutableStateOf("") }
     var loadingScreenShow by remember { mutableStateOf(false) }
     val sdf = SimpleDateFormat("dd/MM/yyyy")
-//    LaunchedEffect(key1 = loadingScreenShow) {
-//        Box(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .background(Color.White),
-//            contentAlignment = Alignment.Center
-//        ) {
-//            LoadingScreen()
-//        }
-//    }
 
-//    if(loadingScreenShow) {
-//        WaitingScreenForCreatingItem()
-//    }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -432,7 +415,6 @@ fun CreateItemInputsForms(
 
 
                     Column {
-                        Log.d("MININCREASE", state.value.description)
                         val lightBlue = Color.LightGray
                         val blue = Color.Black
                         Text(
@@ -554,7 +536,6 @@ fun CreateItemInputsForms(
                 LazyRow(
 
                 ) {
-//                        var selectImagesError by remember { mutableStateOf(false)}
                     items(selectImages) { uri ->
                         Column(
                             modifier = Modifier
@@ -582,17 +563,6 @@ fun CreateItemInputsForms(
                     }
 
                 }
-//                    if (selectImages.size < 3 ) {
-//                        validationError = true
-////                        Text(
-////                            text = "You need to select at least three images",
-////                            color = Color.Red,
-////                            modifier = Modifier.padding(start = 16.dp),
-////                            size = 10.sp
-////                        )
-//                    } else {
-//                        validationError = false
-//                    }
 
                 Spacer(modifier = Modifier.padding(15.dp))
 
@@ -810,41 +780,14 @@ fun CreateItemInputsForms(
         item {
             var hasError = false
 
-            Log.d("BEFORETESTtıtle", titleError.toString())
-            Log.d("BEFORETESTdescription", descriptionError.toString())
-            Log.d("BEFORETESTgprice", startingPriceError.toString())
-            Log.d("BEFORETEST minimum", minimumIncreaseError.toString())
-
             if (!titleError && !descriptionError &&
                 !startingPriceError && !minimumIncreaseError
                 && !imageCountError && !startDateError && !endDateError
             ) {
-                Log.d("TESTtıtle", titleError.toString())
-                Log.d("TESTdescription", descriptionError.toString())
-                Log.d("TEST startingprice", startingPriceError.toString())
-                Log.d("TEST minimum", minimumIncreaseError.toString())
                 hasError = true
             }
 
-
-//            val emptyInputCase = listOf(
-//                titleError,
-//                descriptionError,
-//                startingPriceError,
-//                minimumIncreaseError
-//            ).all {
-//                it
-//            }
-//
-//            // hamısı falsedusa false
-//            val errorInputsCase = listOf(
-//                titleError,
-//                descriptionError,
-//                startingPriceError,
-//                minimumIncreaseError
-//            ).map { !it }
-
-            Column(
+          Column(
                 modifier = Modifier
                     .padding(15.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -861,14 +804,8 @@ fun CreateItemInputsForms(
                         navController.navigate(
                             Screen.SplashScreen.route
                         )
-//                        CoroutineScope(Dispatchers.Main).launch {
-//                            delay(20000L)
-//                            navController.navigate(
-//                                Screen.AuctionListScreen.route
-//                            )
-//                        }
 
-                    }, modifier = Modifier
+               }, modifier = Modifier
                         .fillMaxWidth(1f)
                         .height(50.dp),
                     colors = ButtonDefaults.buttonColors(

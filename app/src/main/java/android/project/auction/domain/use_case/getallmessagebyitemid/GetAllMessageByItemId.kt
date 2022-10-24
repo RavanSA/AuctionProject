@@ -4,7 +4,6 @@ import android.project.auction.common.Resource
 import android.project.auction.data.remote.dto.message.toMessages
 import android.project.auction.domain.model.messages.Messages
 import android.project.auction.domain.repository.AuctionRepository
-import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
@@ -20,8 +19,6 @@ class GetAllMessageByItemId @Inject constructor(
             emit(Resource.Loading<List<Messages>>(true))
 
             val messages = repository.getAllMessagesByItemId(itemId).data
-
-            Log.d("MESSAGESTEST", messages.toString())
 
             emit(Resource.Success<List<Messages>>(
                 data = messages

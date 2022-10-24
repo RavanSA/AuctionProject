@@ -1,6 +1,5 @@
 package android.project.auction.presentation.auctionitemdetail.components
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -17,8 +16,6 @@ fun DotsIndicator(
     selectedIndex: Int
 ) {
 
-    Log.d("TOTALDOTS", totalDots.toString())
-
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
@@ -26,7 +23,6 @@ fun DotsIndicator(
     ) {
 
         items(totalDots) { index ->
-            Log.d("SELECTEDINDEX", selectedIndex.toString())
 
             if (index == selectedIndex) {
                 Box(

@@ -17,9 +17,7 @@ import kotlin.math.abs
 
 @ExperimentalMaterialApi
 @Composable
-fun PushScreen(
-
-) {
+fun PushScreen() {
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -40,24 +38,14 @@ fun PushScreen(
     )
 
     Box(Modifier.fillMaxSize()) {
-        // Here's the content's offset calculation logic
         val xPos = (abs(drawerWidth) - abs(contentOffset.value))
         Column(
-            // Set the content's offset
             Modifier.offset(
                 x = with(LocalDensity.current) {
                     max(0.dp, xPos.toDp() - 56.dp)
                 }
             )
         ) {
-//            // Optional: opening the drawer using a button
-//            Button(onClick = {
-//                coroutineScope.launch {
-//                    drawerState.open()
-//                }
-//            }) {
-//                Text("Open Drawer")
-//            }
         }
     }
 

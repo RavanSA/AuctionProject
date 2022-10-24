@@ -33,24 +33,13 @@ fun BottomNav(navController: NavController) {
 
     val items = listOf(
         BottomNavItem(
-            "home_screen",
-            "Home",
-            Icons.Default.Home
-        ),
-        BottomNavItem(
-            "categories_screen",
-            "Categories",
-            Icons.Default.Menu
-        ),
-        BottomNavItem(
-            "favorites_screen",
-            "Favorites",
-            Icons.Default.Favorite
-        ),
-        BottomNavItem(
-            "profile_screen",
-            "Profile",
-            Icons.Default.Person
+            "home_screen", "Home", Icons.Default.Home
+        ), BottomNavItem(
+            "categories_screen", "Categories", Icons.Default.Menu
+        ), BottomNavItem(
+            "favorites_screen", "Favorites", Icons.Default.Favorite
+        ), BottomNavItem(
+            "profile_screen", "Profile", Icons.Default.Person
         )
     )
 
@@ -60,8 +49,7 @@ fun BottomNav(navController: NavController) {
             .height(100.dp)
             .background(White),
         //backgroundColor = Color.White,
-        elevation = 0.dp,
-        backgroundColor = White
+        elevation = 0.dp, backgroundColor = White
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
 
@@ -80,8 +68,7 @@ fun BottomNav(navController: NavController) {
                 },
                 label = {
                     Text(
-                        text = it.title,
-                        color = Color.Gray
+                        text = it.title, color = Color.Gray
                     )
                 },
                 selected = currentRoute == it.route,
@@ -114,10 +101,8 @@ fun BottomNav(navController: NavController) {
                             )
                         }
                     }
-
                 },
-
-                )
+            )
         }
     }
 }

@@ -4,7 +4,6 @@ import android.project.auction.common.Resource
 import android.project.auction.domain.model.util.ItemOrder
 import android.project.auction.domain.model.util.OrderType
 import android.project.auction.domain.use_case.usecases.AuctionProjectUseCase
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,10 +49,6 @@ class DetailedSearchViewModel @Inject constructor(
                 ) {
                     return
                 }
-                Log.d("CategoryId1", state.value.categoryId)
-                Log.d("SubCategoryId1", state.value.subCategoryId)
-                Log.d("TESTITEMS10", state.value.filteredItemList.toString())
-                Log.d("ITEMORDER", event.itemOrder.toString())
                 getItemWithFilteredCategories(
                     categoryId = state.value.categoryId,
                     subCategoryId = state.value.subCategoryId,
@@ -61,31 +56,15 @@ class DetailedSearchViewModel @Inject constructor(
                 )
             }
             is DetailedSearchEvent.OnSubCategoryItemClicked -> {
-                Log.d("CategoryId2", state.value.categoryId)
-                Log.d("SubCategoryId2", state.value.subCategoryId)
-                Log.d("TESTITEMS11", state.value.filteredItemList.toString())
-
                 getItemWithFilteredCategories(
                     categoryId = event.categoryId,
                     subCategoryId = event.subCubCategoryId,
                     itemOrder = ItemOrder.Created(OrderType.Descending)
                 )
 
-//                getItemWithFilteredCategories(
-//                    categoryId = event.categoryId,
-//                    subCategoryId = event.subCubCategoryId,
-//                    itemOrder = ItemOrder.Created(OrderType.Descending)
-//                    )
-
-//                _state.value = state.value.copy(
-//                    subCategoryId = event.subCubCategoryId,
-//                    categoryId = event.categoryId
-//                )
             }
             is DetailedSearchEvent.ToggleOrderSection -> {
-                Log.d("CategoryId3", state.value.categoryId)
-                Log.d("SubCategoryId3", state.value.subCategoryId)
-                Log.d("TESTITEMS13", state.value.filteredItemList.toString())
+
                 _state.value = state.value.copy(
                     isOrderSectionVisible = !state.value.isOrderSectionVisible
                 )
@@ -172,11 +151,6 @@ class DetailedSearchViewModel @Inject constructor(
         firstDate: String = "",
         secondDate: String = ""
     ) {
-
-        Log.d("CategoryId", state.value.categoryId)
-        Log.d("SubCategoryId", state.value.subCategoryId)
-        Log.d("ItemOrder", itemOrder.toString())
-
         useCase.getItemWithFilterCategories.invoke(
             categoryId = categoryId,
             subCategoryId = subCategoryId,
@@ -187,19 +161,12 @@ class DetailedSearchViewModel @Inject constructor(
             searchQuery = searchQuery,
             itemOrder = itemOrder
         ).onEach { item ->
-            Log.d("ITEMLISTTEST", item.toString())
-//                _state.value = state.value.copy(
-//                    filteredItemList = item,
-//                    itemOrder = itemOrder
-//                )
             _state.value = state.value.copy(
                 filteredItemList = item,
                 itemOrder = itemOrder
             )
-            Log.d("ITEMTST2", stateFilteredItemList.filteredItemList.toString())
 
         }.launchIn(viewModelScope)
-        Log.d("ITEMTST3", stateFilteredItemList.filteredItemList.toString())
 
     }
 

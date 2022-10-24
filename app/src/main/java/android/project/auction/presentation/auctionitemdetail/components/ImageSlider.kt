@@ -2,7 +2,6 @@ package android.project.auction.presentation.auctionitemdetail.components
 
 import android.project.auction.R
 import android.project.auction.presentation.auctionitemdetail.AuctionItemDetailViewModel
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,20 +25,15 @@ fun ImageSlider(
     state: PagerState,
     viewModel: AuctionItemDetailViewModel = hiltViewModel()
 ) {
-    Log.d("ITEMPICSTATTE", viewModel.stateItemPictures.itemPictures.toString())
-    Log.d("ITEMPICSAATATTE", viewModel.state.value.itemPictures.toString())
+
 
     val images = viewModel.stateItemPictures.itemPictures
 
-    Log.d("ITEMIMAGESSLIDER", images.toString())
 
-
-    val imageUrl =
-        remember { mutableStateOf("") }
+    val imageUrl = remember { mutableStateOf("") }
     images?.size?.let {
         HorizontalPager(
-            state = state,
-            count = it, modifier = Modifier
+            state = state, count = it, modifier = Modifier
                 .height(300.dp)
                 .fillMaxWidth()
         ) { page ->
@@ -60,30 +54,16 @@ fun ImageSlider(
                         scale(coil.size.Scale.FILL)
                     })
                     Image(
-                        painter = painter, contentDescription = "", Modifier
+                        painter = painter,
+                        contentDescription = "",
+                        Modifier
                             .padding(8.dp)
                             .clip(RoundedCornerShape(10.dp))
-                            .fillMaxSize(), contentScale = ContentScale.Crop
+                            .fillMaxSize(),
+                        contentScale = ContentScale.Crop
                     )
-
-//                Text(
-//                    text = viewModel.movieListResponse[page].name,
-//                    Modifier
-//                        .fillMaxWidth()
-//                        .height(60.dp)
-//                        .padding(8.dp)
-//                        .background(Color.LightGray.copy(alpha = 0.60F))
-//                        .padding(8.dp),
-//                    textAlign = TextAlign.Start,
-//                    fontSize = 18.sp,
-//                    fontWeight = FontWeight.Medium
-//                )
                 }
-
-
             }
-
-
         }
     }
 }

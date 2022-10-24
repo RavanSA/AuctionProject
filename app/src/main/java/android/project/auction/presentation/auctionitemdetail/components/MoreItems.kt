@@ -5,7 +5,6 @@ import android.project.auction.domain.model.item.ItemDetail
 import android.project.auction.presentation.Screen
 import android.project.auction.presentation.auctionlist.AuctionListEvent
 import android.project.auction.presentation.auctionlist.AuctionListViewModel
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,8 +39,6 @@ fun MoreItems(
 
     val item = auctionListViewModel.stateItem
 
-    Log.d("ITEMDETAIL", itemDetails.toString())
-
     Column(
         modifier = Modifier,
         horizontalAlignment = Alignment.Start,
@@ -57,12 +54,8 @@ fun MoreItems(
         )
 
         var filterWithCategories: List<Item> = item.item.filter {
-            Log.d("ITEMFILTER", it.categoryId)
-            Log.d("ITEMDETAILFILTER", itemDetails.categoryId)
             it.categoryId.lowercase() == itemDetails.categoryId.lowercase()
         }
-
-        Log.d("FILTERWITHCATEGORY", filterWithCategories.toString())
 
         filterWithCategories = filterWithCategories.asSequence().shuffled().take(8).toList()
 

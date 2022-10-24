@@ -8,7 +8,6 @@ import android.project.auction.presentation.auctionitemdetail.AuctionItemDetailS
 import android.project.auction.presentation.auctionitemdetail.AuctionItemDetailViewModel
 import android.project.auction.presentation.auctionitemdetail.getCurrentDate
 import android.project.auction.presentation.auth.sign_in.dpToSp
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.Button
@@ -32,22 +31,17 @@ fun StickyPlaceBidButton(
     auctionItemDetailViewModel: AuctionItemDetailViewModel = hiltViewModel()
 ) {
 
-    val sellerOrBidderUserId = auctionItemDetailViewModel.state.value.sellerOrBidderUserId
-
     var enabled by remember { mutableStateOf(true) }
 
-    var buttonTextState by remember { mutableStateOf("") }
+    var buttonTextState by remember { mutableStateOf("Place a Bid") }
     var currentUtcTime = getCurrentDate().split("T").toTypedArray()
     var endTime = item.endTime.split("T").toTypedArray()
     var highestBidAmount = highestBidder.highestBid?.amount
 
-    //	2022-08-20T07:00:00.0000000
     val sdf = SimpleDateFormat("yyyy-MM-dd")
     val endTimeParsed: Date = sdf.parse(endTime[0])
     val utcTimeParsed: Date = sdf.parse(currentUtcTime[0])
     val userId = auctionItemDetailViewModel.userID
-
-    Log.d("SELLERORBIDDERUSERID", userId.toString())
 
     when {
         item.userId == userID -> {
@@ -72,42 +66,29 @@ fun StickyPlaceBidButton(
                     )
                 )
             )
-            Log.d("SELLERORBIDDERUSERID1", sellerOrBidderUserId.toString())
             when {
-                //+
                 utcTimeParsed.after(endTimeParsed) && highestBidAmount != 0.0 -> {
-                    //+
                     buttonTextState = "Contact Winner"
-                    Log.d("OWNERID", "CONTACT WINNER")
                 }
 
                 utcTimeParsed.after(endTimeParsed) && highestBidAmount == 0.0 -> {
-                    //+
                     buttonTextState = "Item not sold"
                     enabled = false
-                    Log.d("OWNERID", "ITEM NOT SOLD")
                 }
                 else -> {
-                    //+
                     buttonTextState = "Place a bid"
                     enabled = false
-                    val sellerOrBider = item
-                    Log.d("OWNERID", "PLACE A BID")
                 }
             }
         }
         highestBidder.highestBid?.userId ?: "" == userID -> {
             when {
-                //+
                 utcTimeParsed.after(endTimeParsed) -> {
                     buttonTextState = "Contact Seller"
                     enabled = true
-                    Log.d("HIGHESTBIDDER", "CONTACT SELLER")
                 }
 
                 endTimeParsed.after(utcTimeParsed) -> {
-                    //+
-                    Log.d("SELLERORBIDDERUSERID2", sellerOrBidderUserId.toString())
                     auctionItemDetailViewModel.onEvent(
                         AuctionItemDetailEvent.SellerOrBidderEvent(
                             SellerOrBidder(
@@ -131,7 +112,6 @@ fun StickyPlaceBidButton(
                     buttonTextState = "You're highest bidder"
                     enabled = false
 
-                    Log.d("HIGHESTBIDDER", "YOUREHIGHESRBIDDR")
                 }
             }
         }
@@ -141,11 +121,9 @@ fun StickyPlaceBidButton(
         }
     }
 
-    Log.d("ITEMID", item.toString())
     Button(
         onClick = {
             if (buttonTextState == "Contact Winner" || buttonTextState == "Contact Seller") {
-                Log.d("TEST", "CHATsSCREEN")
 
                 navController.currentBackStackEntry?.savedStateHandle?.set(
                     key = "itemDetails",
@@ -161,7 +139,6 @@ fun StickyPlaceBidButton(
                     key = "itemDetails",
                     value = item
                 )
-                Log.d("TEST", "PLACEBIDSCREEN")
 
                 navController.navigate(
                     Screen.PlaceBidAmountScreen.route
@@ -181,5 +158,4 @@ fun StickyPlaceBidButton(
             text = buttonTextState, fontSize = dpToSp(20.dp),
         )
     }
-
 }

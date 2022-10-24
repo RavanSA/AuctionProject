@@ -64,19 +64,13 @@ object AppModule {
     @Singleton
     fun provideAuthAPI(): AuthAPI {
 
-        val okHttpClient = OkHttpClient.Builder()
-            .readTimeout(5, TimeUnit.MINUTES)
-            .connectTimeout(5, TimeUnit.MINUTES)
-            .writeTimeout(5, TimeUnit.MINUTES)
-            .build()
+        val okHttpClient = OkHttpClient.Builder().readTimeout(5, TimeUnit.MINUTES)
+            .connectTimeout(5, TimeUnit.MINUTES).writeTimeout(5, TimeUnit.MINUTES).build()
 
 
 
-        return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(okHttpClient)
-            .build()
+        return Retrofit.Builder().baseUrl(Constants.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create()).client(okHttpClient).build()
             .create(AuthAPI::class.java)
     }
 
@@ -84,34 +78,27 @@ object AppModule {
     @Singleton
     fun provideAuctionAPI(): AuctionAPI {
 
-        val okHttpClient = OkHttpClient.Builder()
-            .readTimeout(5, TimeUnit.MINUTES)
-            .connectTimeout(5, TimeUnit.MINUTES)
-            .writeTimeout(5, TimeUnit.MINUTES)
-            .build()
+        val okHttpClient = OkHttpClient.Builder().readTimeout(5, TimeUnit.MINUTES)
+            .connectTimeout(5, TimeUnit.MINUTES).writeTimeout(5, TimeUnit.MINUTES).build()
 
 
 
-        return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(okHttpClient)
-            .build()
+        return Retrofit.Builder().baseUrl(Constants.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create()).client(okHttpClient).build()
             .create(AuctionAPI::class.java)
     }
 
     @Provides
     @Singleton
     fun provideSharedPref(app: Application): SharedPreferences {
-        return app.getSharedPreferences("prefs", MODE_PRIVATE)
+        return app.getSharedPreferences(Constants.PROVIDE_SHARED_PREF, MODE_PRIVATE)
     }
 
 
     @Provides
     @Singleton
     fun provideAuthRepository(
-        api: AuthAPI,
-        preferences: SharedPreferences
+        api: AuthAPI, preferences: SharedPreferences
     ): AuthRepository {
         return AuthRepositoryImpl(api, preferences)
     }
@@ -154,30 +141,25 @@ object AppModule {
             addFavoriteItem = AddFavoriteItem(repository = roomRepository),
             deleteFavoriteItem = DeleteFavoriteItem(repository = roomRepository),
             getFavoriteItems = GetFavoriteItems(
-                repository = roomRepository,
-                preferences = preferences
+                repository = roomRepository, preferences = preferences
             ),
             addItemBids = AddItemBids(repository = roomRepository),
             getHighestBidLocal = GetHighestBidLocal(repository = roomRepository),
             getFavoriteItemById = GetFavoriteItemById(
-                repository = roomRepository,
-                preferences = preferences
+                repository = roomRepository, preferences = preferences
             ),
             getItemPictures = GetItemPicture(repository = repository),
             getItemWithFilterCategories = ItemsSearch(repository = roomRepository),
             sellerOrBidder = SellerOrBidder(repository = roomRepository),
             getSellerOrBidderList = GetAuctionsForSellerOrBidder(
-                repository = roomRepository,
-                preferences = preferences
+                repository = roomRepository, preferences = preferences
             ),
             getUserInfoById = GetUserInfoById(repository = repository, preferences = preferences),
             updateUserInfo = UpdateUserInfo(
-                repository = repository,
-                cloudRepository = cloudRepository
+                repository = repository, cloudRepository = cloudRepository
             ),
             sendMessageToUser = SendMessageToUser(
-                repository = repository,
-                preferences = preferences
+                repository = repository, preferences = preferences
             ),
             getAllMessageByItemId = GetAllMessageByItemId(repository = repository)
         )
@@ -197,8 +179,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideAuctionAuthUseCases(
-        repository: AuthRepository,
-        preferences: SharedPreferences
+        repository: AuthRepository, preferences: SharedPreferences
     ): AuctionAuthUseCase {
         return AuctionAuthUseCase(
             signIn = SignIn(repository = repository, preferences = preferences),
@@ -213,9 +194,7 @@ object AppModule {
     @Provides
     fun provideAuctionDatabase(app: Application): AppDatabase {
         return Room.databaseBuilder(
-            app,
-            AppDatabase::class.java,
-            "auctiondb.db"
+            app, AppDatabase::class.java, Constants.DB_NAME
         ).build()
     }
 
@@ -223,10 +202,9 @@ object AppModule {
     fun provideFirebaseStorageRepository(
         repository: AuctionRepositoryImpl,
         preferences: SharedPreferences,
-    ): FirebaseStorageRepository =
-        FirebaseStorageRepositoryImpl(
-            repository = repository, preferences = preferences
-        )
+    ): FirebaseStorageRepository = FirebaseStorageRepositoryImpl(
+        repository = repository, preferences = preferences
+    )
 
 
 }

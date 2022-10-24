@@ -5,7 +5,6 @@ import android.project.auction.presentation.Screen
 import android.project.auction.presentation.auctionitemdetail.AuctionItemDetailEvent
 import android.project.auction.presentation.auctionitemdetail.AuctionItemDetailViewModel
 import android.project.auction.presentation.auth.AuthViewModel
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -38,10 +37,8 @@ fun FavoriteButton(
     val context = LocalContext.current
     var isFavorite by remember { mutableStateOf(false) }
     var changeColor by remember { mutableStateOf(false) }
-    Log.d("FIRSTISFAVORUTE", isAddedToFavorites.toString())
     val scope = rememberCoroutineScope()
 
-    Log.d("TEST2222", isAddedToFavorites.toString())
     isFavorite = isAddedToFavorites != null
 
     Column(
@@ -66,7 +63,6 @@ fun FavoriteButton(
                 modifier = Modifier.clickable {
                     if (isFavorite) {
 
-                        Log.d("SECONDISFAVORUTE", isFavorite.toString())
 
                         auctionItemDetailViewModel.onEvent(
                             AuctionItemDetailEvent.DeleteItem
@@ -85,7 +81,6 @@ fun FavoriteButton(
                             }
                         }
                     } else if (!isFavorite) {
-                        Log.d("THIRSFAVORITE", isFavorite.toString())
                         scope.launch {
                             viewModel.authResults.collect { authResult ->
                                 when (authResult) {

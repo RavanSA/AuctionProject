@@ -27,25 +27,6 @@ fun AuctionItemDetailScreen(
 
     val scaffoldState = rememberScaffoldState()
 
-//    val itemAddToFavorite = mutableStateOf(false)
-
-//    LaunchedEffect(key1 = true) {
-//        favoritesViewModel.eventFlow.collectLatest { event ->
-//            when (event) {
-//                is AuctionItemDetailViewModel.ItemDetailUiEvent.ShowSnackbar -> {
-//                    scaffoldState.snackbarHostState.showSnackbar(
-//                        message = event.message
-//                    )
-//                }
-//                is AuctionItemDetailViewModel.ItemDetailUiEvent.AddFavoriteItem -> {
-//                    scaffoldState.snackbarHostState.showSnackbar(
-//                        message = "Item Added to Favorites"
-//                    )
-//                }
-//            }
-//        }
-//    }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -70,18 +51,6 @@ fun AuctionItemDetailScreen(
                     }
                 },
                 actions = {
-//                        IconButton(onClick = {
-//                            auctionItemDetailViewModel.onEvent(
-//                                AuctionItemDetailEvent.AddItemToFavorites
-//                            )
-////                            itemAddToFavorite.value = true
-//                        }) {
-//
-//                            Icon(
-//                                Icons.Filled.Favorite,
-//                                contentDescription = ""
-//                            )
-//                        }
                 }
             )
         },

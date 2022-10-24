@@ -2,6 +2,7 @@ package android.project.auction.domain.use_case.authentication.auth
 
 import android.content.SharedPreferences
 import android.project.auction.common.AuthResult
+import android.project.auction.common.Constants
 import android.project.auction.domain.repository.AuthRepository
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -15,8 +16,8 @@ class Authentication @Inject constructor(
     suspend operator fun invoke(): AuthResult<Unit> {
         return try {
 
-            val token = preferences.getString("JWT", null) ?: return AuthResult.UnAuthorized()
-             repository.authenticate("Bearer $token")
+            val token = preferences.getString(Constants.TOKEN_JWT, null) ?: return AuthResult.UnAuthorized()
+             repository.authenticate("${Constants.JWT_BEARER} $token")
 
             AuthResult.Authorized()
 

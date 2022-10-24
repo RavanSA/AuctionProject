@@ -1,6 +1,7 @@
 package android.project.auction.domain.use_case.sendmessage
 
 import android.content.SharedPreferences
+import android.project.auction.common.Constants
 import android.project.auction.data.remote.dto.message.MessageRequest
 import android.project.auction.domain.repository.AuctionRepository
 import android.util.Log
@@ -13,13 +14,12 @@ class SendMessageToUser @Inject constructor(
 ) {
 
     suspend operator fun invoke(
-        message: String,
-        itemId: String,
-        sellerId: String
+        message: String, itemId: String, sellerId: String
     ) {
         try {
 
-            val userID = preferences.getString("USERID", null) ?: "NOT REGISTERED USER"
+            val userID =
+                preferences.getString(Constants.USER_ID, null) ?: Constants.UNAUTHORIZED_USER
 
             repository.sendMessageToUser(
                 MessageRequest(

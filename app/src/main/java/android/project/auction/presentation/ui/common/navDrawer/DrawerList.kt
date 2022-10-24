@@ -4,7 +4,6 @@ import android.project.auction.domain.model.userinfo.UserInfo
 import android.project.auction.presentation.Screen
 import android.project.auction.presentation.auth.AuthUiEvent
 import android.project.auction.presentation.auth.AuthViewModel
-import android.util.Log
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -20,8 +19,6 @@ fun DrawerList(
     userInfo: UserInfo?,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
-
-    Log.d("USERINFONAV", userInfo?.id.toString())
 
     if (userInfo?.id != null) {
         DrawerBody(

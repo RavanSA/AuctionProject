@@ -1,7 +1,6 @@
 package android.project.auction.presentation.auctionitemdetail.components
 
 import android.project.auction.domain.model.bids.Bids
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +17,6 @@ import androidx.compose.ui.unit.dp
 fun BidHistoryUserDetails(
     bids: Bids
 ) {
-    Log.d("BID HISTORY", bids.toString())
     Row(
         modifier = Modifier
             .padding(8.dp),

@@ -2,11 +2,11 @@ package android.project.auction.domain.use_case.createitem
 
 import android.content.SharedPreferences
 import android.net.Uri
+import android.project.auction.common.Constants
 import android.project.auction.common.Resource
 import android.project.auction.data.remote.dto.items.createitem.CreateItemRequest
 import android.project.auction.domain.repository.AuctionRepository
 import android.project.auction.domain.repository.FirebaseStorageRepository
-import android.util.Log
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
@@ -22,7 +22,7 @@ class CreateItem @Inject constructor(
 
             Resource.Loading<Unit>(true)
 
-            val userID = preferences.getString("USERID", null) ?: "NOT REGISTERED USER"
+            val userID = preferences.getString(Constants.USER_ID, null) ?: Constants.UNAUTHORIZED_USER
 
             val test = repository.createItem(
                 createItemRequest = CreateItemRequest(
@@ -45,12 +45,6 @@ class CreateItem @Inject constructor(
         } catch (e: IOException) {
             Resource.Error<Unit>("Couldn't reach server. Check your internet connection.")
         } catch (e: HttpException) {
-
-            if (e.code() == 401) {
-                Log.d("ERROR", e.toString())
-            } else {
-                Log.d("ERROR", e.toString())
-            }
             Resource.Error<Unit>(e.localizedMessage ?: "An unexpected error ocured")
         }
     }

@@ -2,6 +2,7 @@ package android.project.auction.domain.use_case.authentication.sign_in
 
 import android.content.SharedPreferences
 import android.project.auction.common.AuthResult
+import android.project.auction.common.Constants
 import android.project.auction.domain.repository.AuthRepository
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -22,12 +23,12 @@ class SignIn @Inject constructor(
 
             preferences
                 .edit()
-                .putString("JWT", response.data.token)
+                .putString(Constants.TOKEN_JWT, response.data.token)
                 .apply()
 
             preferences
                 .edit()
-                .putString("USERID", response.data.userId)
+                .putString(Constants.USER_ID, response.data.userId)
                 .apply()
 
             AuthResult.Authorized()
