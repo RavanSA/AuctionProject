@@ -9,6 +9,10 @@
 ![Platform](https://img.shields.io/badge/Platform-.NET-brightgreen.svg)
 ![Language](https://img.shields.io/badge/Language-C%23-yellowgreen.svg)
 ![Database](https://img.shields.io/badge/Database-MSSQL-brightgreen.svg)
+![Kotlin](https://img.shields.io/badge/Kotlin-1.7.0-blueviolet.svg)
+![Compose](https://img.shields.io/badge/compose-1.2.0-blue.svg)
+![SQLite](https://img.shields.io/badge/Database-SQLite-9cf.svg)
+![COAS](https://img.shields.io/badge/COAS-1.0.0alpha-important.svg)
 ![GitHub stars](https://img.shields.io/github/stars/RavanSA/AuctionProject)
 <br/>
 
@@ -17,7 +21,7 @@
 Before you begin, ensure you have met the following requirements:<br/>
 - You have `Android Studio` installed in your machine <br/>
 - You have a Android Device or Emulator with Android Version 6.0 or above. <br/>
-- You should read [SRS]() documentation.<br/>
+- You should read [SRS](https://github.com/RavanSA/AuctionProject/blob/master/preview/COAS_SRS.pdf) documentation.<br/>
 
 
 ## Install Auction Project <br/>
@@ -53,15 +57,14 @@ COAS is an android app that attempts to use the latest libraries and tools. As a
    - Room Persistence - construct a database using the abstract layer
    - Navigation Component - navigate screens within the application
    - Jetpack Compose - declarative UI Kit
-   - Hilt-Dagger - dependency injection
+   - Hilt - Dagger - dependency injection
 - Architecture
   - Clean Architecture (UI Layer - Domain Layer - Data Layer)
   - Repository Pattern
-  - Hilt - Dagger - dependency injection
 - Retrofit2 & Gson - construct the REST APIs
 - OkHttp3 - implementing interceptor, logging and mocking web server
-- Coil - 
-- Lottie - 
+- Coil - loading images via HTTP
+- Lottie - for animations
 - Material-Components - Material design components
 - Firebase Cloud Storage
 - Backend - C#, .NET, MSSQL, Swagger
@@ -78,6 +81,7 @@ COAS is an android app that attempts to use the latest libraries and tools. As a
 - The bidder can place a bid on auctions and see auction details	
 - Users can search for auctions by sorting, filtering, and categories
 - The users can add any auction to favorites and save the profile information and communication preferences
+- The bidder can see other bidders' bids.
 
 
 ## Project Status
